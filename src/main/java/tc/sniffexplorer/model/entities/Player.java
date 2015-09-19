@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.game;
+package tc.sniffexplorer.model.entities;
 
 /**
  *
  * @author chaouki
  */
 public class Player extends Unit{
+    
     private PlayerClass playerClass;
     private String name;
     
@@ -24,16 +25,16 @@ public class Player extends Unit{
         SHAMAN,
         WARLOCK,
         WARRIOR;
-    
     }
 
     public Player() {
     }
 
-    public Player(PlayerClass playerClass, String name, String GUID) {
+    public Player(String name, String GUID) {
         super(GUID);
-        this.playerClass = playerClass;
         this.name = name;
+        
+        // @todo: determine the class by GUID
     }
 
     public PlayerClass getPlayerClass() {

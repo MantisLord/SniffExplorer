@@ -17,7 +17,8 @@ public class SniffExplorer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new Core().execute();
+//        new Core().parseFile("sniff1.txt");
+        new Core().parseFile("sniff3.txt");
     }
     
 }

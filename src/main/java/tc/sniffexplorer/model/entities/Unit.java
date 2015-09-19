@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.game;
+package tc.sniffexplorer.model.entities;
 
 import java.util.Objects;
 
@@ -11,8 +11,9 @@ import java.util.Objects;
  *
  * @author chaouki
  */
-public class Unit {
+public abstract class Unit {
     protected String GUID;
+//    protected Integer lowGUID;
 
     public Unit() {
     }

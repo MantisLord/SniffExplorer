@@ -32,22 +32,23 @@ public class Core {
     
     private static Logger log = LoggerFactory.getLogger(Core.class);
     
-    private final boolean OUTPUT=false;
+    private static final boolean OUTPUT=false;
     
     private static int countSMSG=0;
     private static int countCMSG=0;
     
-    public void execute(){
-//        File file=new File();
+    public static void parseFile(String fileName){
         
-        String file = "sniff2.txt";
         List<String> lines=new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             for (String line; (line = br.readLine()) != null;) {
-                if(!line.isEmpty())
+                if(!line.isEmpty() && !line.trim().startsWith("# "))
                     lines.add(line);
-                else{
-                    processOneMessage(lines);
+                else if(!lines.isEmpty()){
+                    Message msg=parseOneMessage(lines);
+                    if(msg!=null && isMsgToBeIncluded(msg))
+                        addToModel(msg);
+                    
                     lines.clear();
                 }
             }
@@ -58,7 +59,7 @@ public class Core {
         }
     }
 
-    private void processOneMessage(List<String> lines) {
+    private static Message parseOneMessage(List<String> lines) {
         Message msg=null;
         
         //      0               1               2       3     4     5     6   7     8           9           10      11
@@ -68,10 +69,9 @@ public class Core {
         if(words.length!=12 || !words[3].equals("Length:") || !words[5].equals("ConnIdx:") || !words[7].equals("Time:") || !words[10].equals("Number:")){
             log.info("Unidentified message found:");
             log.info(lines.get(0));
-            return;
+            return null;
         }
         
-        String opCodeTypeString=words[0];
         String opCodeString=words[1];
         String dateString=words[8];
         String timeString=words[9];
@@ -80,11 +80,11 @@ public class Core {
          *   READ OPCODE AND CONSTRUCT APPROPRIATE MESSAGE OBJECT
          */
         
-        // unnamed op code
-        if(!opCodeString.substring(1, 4).equals("MSG")){
-                log.info("Unnamed OpCode found: (skipping)");
-                log.info(lines.get(0));
-                return;
+        // unnamed op code. dont process.
+        if(opCodeString.length()<4 || !opCodeString.substring(1, 4).equals("MSG")){
+                log.debug("Unvalid OpCode found:");
+                log.debug(lines.get(0));
+                return null;
         }
         
         switch(opCodeString){
@@ -117,24 +117,41 @@ public class Core {
 //                break;
                 
             default:
-                log.info("Unidentified OpCode found: "+opCodeString);
-                return;
+                log.info("Unsupported OpCode found: "+opCodeString);
+                return null;
         }
         
         /**
-         *  READ AND SET UP TIME AND DATE @todo: implement this
+         *  READ AND SET UP TIME AND DATE 
          */
+        // @todo: implement this
         
         /**
          *  SPECIFIC MESSAGE READING PROSEDURE
          */
-        msg.initialize(lines);
+        try {
+           msg.initialize(lines);
+        } catch (Exception e) {
+            log.error("Parsing failed", e);
+            msg.printError(lines);
+        }
         
         if(OUTPUT){
         for(String line:lines)
             System.out.println(line);
         System.out.println("FIN-------------------------");
         }
+        
+        return msg;
+    }
+
+    private static boolean isMsgToBeIncluded(Message msg) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
+    }
+
+    private static void addToModel(Message msg) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
