@@ -1,2 +1,4 @@
 *.txt
 target/*
+nbactions.xml
+nb-configuration.xml
