@@ -6,20 +6,34 @@
 package tc.sniffexplorer.model.smsg;
 
 import java.util.List;
+import tc.sniffexplorer.exceptions.ParseException;
 import tc.sniffexplorer.model.Message;
+import tc.sniffexplorer.model.entities.Creature;
+import tc.sniffexplorer.model.entities.Pet;
+import tc.sniffexplorer.model.entities.Player;
+import tc.sniffexplorer.model.entities.Unit;
+import tc.sniffexplorer.model.entities.Vehicule;
 
-/** Class which represent SMSG_SPELL_START messages
+/** Class which represent SMSG_SPELL_GO messages
  *
  * @author chaouki
  */
-public class SpellGoMessage extends Message {
-    private String CasterGUID;
-    private String targetGUID;
+public class SpellGoMessage extends SpellMessage {
+    
+
+    private Integer targetFlags;
+    private Unit targetUnit;
 
     @Override
-    public void initialize(List<String> lines) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
+        
+        /**
+         * Target(s)
+         */
+//        throw new ParseException("Targets search unsupported yet.");
     }
+    
 
 
     

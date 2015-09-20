@@ -5,7 +5,7 @@
  */
 package tc.sniffexplorer.launcher;
 
-import tc.sniffexplorer.core.Core;
+import tc.sniffexplorer.core.Interpreter;
 
 /**
  *
@@ -18,7 +18,7 @@ public class SniffExplorer {
      */
     public static void main(String[] args) {
 //        new Core().parseFile("sniff1.txt");
-        new Core().parseFile("sniff3.txt");
+        new Interpreter().interpretFile("sniff4.txt");
     }
     
 }

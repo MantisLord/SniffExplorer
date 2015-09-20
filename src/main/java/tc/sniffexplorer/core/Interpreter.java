@@ -28,16 +28,14 @@ import tc.sniffexplorer.model.smsg.UpdateObjectMessage;
  *
  * @author chaouki
  */
-public class Core {
+public class Interpreter {
     
-    private static Logger log = LoggerFactory.getLogger(Core.class);
+    private static Logger log = LoggerFactory.getLogger(Interpreter.class);
     
-    private static final boolean OUTPUT=false;
+    private int countSMSG=0;
+    private int countCMSG=0;
     
-    private static int countSMSG=0;
-    private static int countCMSG=0;
-    
-    public static void parseFile(String fileName){
+    public void interpretFile(String fileName){
         
         List<String> lines=new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -59,7 +57,7 @@ public class Core {
         }
     }
 
-    private static Message parseOneMessage(List<String> lines) {
+    private Message parseOneMessage(List<String> lines) {
         Message msg=null;
         
         //      0               1               2       3     4     5     6   7     8           9           10      11
@@ -82,7 +80,7 @@ public class Core {
         
         // unnamed op code. dont process.
         if(opCodeString.length()<4 || !opCodeString.substring(1, 4).equals("MSG")){
-                log.debug("Unvalid OpCode found:");
+                log.debug("Unidentified OpCode found:");
                 log.debug(lines.get(0));
                 return null;
         }
@@ -136,22 +134,20 @@ public class Core {
             msg.printError(lines);
         }
         
-        if(OUTPUT){
-        for(String line:lines)
-            System.out.println(line);
-        System.out.println("FIN-------------------------");
-        }
-        
         return msg;
     }
 
-    private static boolean isMsgToBeIncluded(Message msg) {
+    private boolean isMsgToBeIncluded(Message msg) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return true;
     }
 
-    private static void addToModel(Message msg) {
+    private void addToModel(Message msg) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public void setCriterion(){
+        
     }
     
 }

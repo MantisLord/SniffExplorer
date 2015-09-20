@@ -9,6 +9,7 @@ import java.util.List;
 import tc.sniffexplorer.exceptions.ParseException;
 import tc.sniffexplorer.model.Message;
 import tc.sniffexplorer.model.entities.Creature;
+import tc.sniffexplorer.model.entities.GameObject;
 import tc.sniffexplorer.model.entities.Pet;
 import tc.sniffexplorer.model.entities.Player;
 import tc.sniffexplorer.model.entities.Unit;
@@ -18,66 +19,41 @@ import tc.sniffexplorer.model.entities.Vehicule;
  *
  * @author chaouki
  */
-public class SpellStartMessage extends Message {
-    private Unit casterUnit;
-    private String itemCasterGUID;
+public class SpellStartMessage extends SpellMessage {
     
     private Integer targetFlags;
     private Unit targetUnit;
     
-    private Integer spellId;
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        /**
-         * Caster
-         */
-        String[] words=lines.get(1).split("\\s+");
-        if(!words[0].equals("Caster") || (!words[5].equals("Creature") && !words[5].equals("Player") && !words[5].equals("Vehicle") && !words[5].equals("Pet") && !words[5].equals("Item")))
-            throw new ParseException();
-            
-        if(words[5].equals("Creature"))
-            casterUnit=new Creature(words[7], words[3]);
-        else if(words[5].equals("Player"))
-            casterUnit=new Player((words.length==10)?words[9]:"", words[3]);
-        else if(words[5].equals("Vehicle"))
-            casterUnit=new Vehicule(words[7], words[3]);
-        else if(words[5].equals("Pet"))
-            casterUnit=new Pet(words[3]);
-        else if(words[5].equals("Item")){
-            itemCasterGUID=words[3];
-            
-            words=lines.get(2).split("\\s+");
-            if(words[6].equals("Player"))
-                casterUnit=new Player((words.length==11)?words[10]:"", words[4]);
-            else
-                throw new ParseException();
-        }
+        super.initialize(lines);
         
         /**
-         *  Spell ID
+         * Target(s)
          */
-        words=lines.get(4).split("\\s+");
-        if(!words[0].equals("Spell") || !words[1].equals("ID:"))
-            throw new ParseException();
-        
-        spellId=Integer.valueOf(words[2]);
-        
-        /**
-         * Target
-         */
-        words=lines.get(8).split("\\s+"); // Target Flags
+        String[] words=lines.get(8).split("\\s+"); // Target Flags
         if(!words[0].equals("Target") || !words[1].equals("Flags:"))
             throw new ParseException();
         
-        targetFlags=Integer.valueOf(words[words.length-1].substring(1, words.length-2)); // String "(XXX)" to Integer XXX
+        String number = words[words.length-1].replace(')', ' ').replace('(', ' ').trim();
+        
+        targetFlags=Integer.valueOf(number); // String "(XXX)" to Integer XXX
+        if(targetFlags==6)
+            log.debug(null);
         
         if(targetFlags==0){ // case Self
-            targetUnit=casterUnit;
+            targetUnit=getCasterUnit();
         }
         else if(targetFlags==2){ // case Unit
             words=lines.get(9).split("\\s+");
-            if(!words[0].equals("Target") || (!words[5].equals("Creature") && !words[5].equals("Player") && !words[5].equals("Vehicle")  && !words[5].equals("Pet")))
+            if(!words[0].equals("Target") || 
+                    (!words[5].equals("Creature") 
+                    && !words[5].equals("Player") 
+                    && !words[5].equals("Vehicle") 
+                    && !words[5].equals("Pet") 
+                    && !words[5].equals("Item")
+                    && !words[5].equals("GameObject")))
                 throw new ParseException();
             
             if(words[5].equals("Creature"))
@@ -88,11 +64,21 @@ public class SpellStartMessage extends Message {
                 targetUnit=new Vehicule(words[7], words[3]);
             else if(words[5].equals("Pet"))
                 targetUnit=new Pet(words[3]);
-        } 
-//        else if()
-//            ;
+            else if(words[5].equals("GameObject")) // @todo: harmonize the way GOs are modeled and stored.
+                targetUnit=new GameObject(words[7], words[3]);
+            else
+                throw new ParseException();
+        }
+        else if(targetFlags==16)                                    // Item
+            log.info("targetFlags 16 unsupported yet.");
+        else if(targetFlags==64)                                    // DestinationLocation
+            log.info("targetFlags 64 unsupported yet.");
+        else if(targetFlags==96)                                    // SourceLocation, DestinationLocation
+            log.info("targetFlags 96 unsupported yet.");
+        else if(targetFlags==2048)                                  // GameObject
+            log.info("targetFlags 2048 unsupported yet.");
         else
-            throw new ParseException("Target Flag "+targetFlags+" unsupported yet");
+            throw new ParseException("Target Flag "+targetFlags+" unsupported yet.");
     }
 
     /* template
@@ -135,21 +121,7 @@ public class SpellStartMessage extends Message {
     Target Flags: Self (0)
     */
 
-    public Unit getCasterUnit() {
-        return casterUnit;
-    }
 
-    public void setCasterUnit(Unit casterUnit) {
-        this.casterUnit = casterUnit;
-    }
-
-    public String getItemCasterGUID() {
-        return itemCasterGUID;
-    }
-
-    public void setItemCasterGUID(String itemCasterGUID) {
-        this.itemCasterGUID = itemCasterGUID;
-    }
 
     public Unit getTargetUnit() {
         return targetUnit;
@@ -157,16 +129,6 @@ public class SpellStartMessage extends Message {
 
     public void setTargetUnit(Unit targetUnit) {
         this.targetUnit = targetUnit;
-    }
-
-    
-
-    public Integer getSpellId() {
-        return spellId;
-    }
-
-    public void setSpellId(Integer spellId) {
-        this.spellId = spellId;
     }
     
 }
