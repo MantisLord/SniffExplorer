@@ -7,12 +7,23 @@ package tc.sniffexplorer.model.smsg;
 
 import java.util.List;
 import tc.sniffexplorer.model.Message;
+import tc.sniffexplorer.model.OpCodeType;
 
 /**
  *
  * @author chaouki
  */
 public class EmoteMessage extends Message{
+    
+    @Override
+    public String getOpCode() {
+        return "SMSG_EMOTE";
+    }
+
+    @Override
+    public OpCodeType getOpCodeType() {
+        return OpCodeType.SMSG;
+    }
 
     @Override
     public void initialize(List<String> lines) {

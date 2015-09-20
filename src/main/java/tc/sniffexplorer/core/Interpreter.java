@@ -88,27 +88,21 @@ public class Interpreter {
         switch(opCodeString){
             case "SMSG_SPELL_START":                        // 0x131
                 msg=new SpellStartMessage();
-                msg.setType(OpCodeType.SMSG);
                 break;
             case "SMSG_SPELL_GO":                           // 0x132
                 msg=new SpellGoMessage();
-                msg.setType(OpCodeType.SMSG);
                 break;
             case "SMSG_SPELL_PERIODIC_AURA_LOG":            // 0x24E
                 msg=new SpellPeriodicAuraLogMessage();
-                msg.setType(OpCodeType.SMSG);
                 break;
             case "SMSG_EMOTE":                              // 0x103
                 msg=new EmoteMessage();
-                msg.setType(OpCodeType.SMSG);
                 break;
             case "SMSG_UPDATE_OBJECT":                      // 0x0A9
                 msg=new UpdateObjectMessage();
-                msg.setType(OpCodeType.SMSG);
                 break;
             case "SMSG_ON_MONSTER_MOVE":                    // 0x0DD
                 msg=new OnMonsterMoveMessage();
-                msg.setType(OpCodeType.SMSG);
                 break;
 //            case "SMSG_MOVE_UPDATE":                        // XXXXXXX
 //                msg=new SpellStartMessage();

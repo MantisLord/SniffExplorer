@@ -7,12 +7,8 @@ package tc.sniffexplorer.model.smsg;
 
 import java.util.List;
 import tc.sniffexplorer.exceptions.ParseException;
-import tc.sniffexplorer.model.Message;
-import tc.sniffexplorer.model.entities.Creature;
-import tc.sniffexplorer.model.entities.Pet;
-import tc.sniffexplorer.model.entities.Player;
+import tc.sniffexplorer.model.OpCodeType;
 import tc.sniffexplorer.model.entities.Unit;
-import tc.sniffexplorer.model.entities.Vehicule;
 
 /** Class which represent SMSG_SPELL_GO messages
  *
@@ -20,6 +16,15 @@ import tc.sniffexplorer.model.entities.Vehicule;
  */
 public class SpellGoMessage extends SpellMessage {
     
+    @Override
+    public String getOpCode() {
+        return "SMSG_SPELL_GO";
+    }
+
+    @Override
+    public OpCodeType getOpCodeType() {
+        return OpCodeType.SMSG;
+    }
 
     private Integer targetFlags;
     private Unit targetUnit;
@@ -33,8 +38,5 @@ public class SpellGoMessage extends SpellMessage {
          */
 //        throw new ParseException("Targets search unsupported yet.");
     }
-    
-
-
     
 }

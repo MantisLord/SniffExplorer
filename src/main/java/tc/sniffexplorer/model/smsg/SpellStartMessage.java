@@ -8,6 +8,7 @@ package tc.sniffexplorer.model.smsg;
 import java.util.List;
 import tc.sniffexplorer.exceptions.ParseException;
 import tc.sniffexplorer.model.Message;
+import tc.sniffexplorer.model.OpCodeType;
 import tc.sniffexplorer.model.entities.Creature;
 import tc.sniffexplorer.model.entities.GameObject;
 import tc.sniffexplorer.model.entities.Pet;
@@ -20,6 +21,16 @@ import tc.sniffexplorer.model.entities.Vehicule;
  * @author chaouki
  */
 public class SpellStartMessage extends SpellMessage {
+    
+    @Override
+    public String getOpCode() {
+        return "SMSG_SPELL_START";
+    }
+
+    @Override
+    public OpCodeType getOpCodeType() {
+        return OpCodeType.SMSG;
+    }
     
     private Integer targetFlags;
     private Unit targetUnit;

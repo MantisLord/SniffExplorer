@@ -19,11 +19,12 @@ public abstract class Message {
     protected static Logger log = LoggerFactory.getLogger(Message.class);
     
     private int id;
-    private OpCodeType type;
 //    private String message;
 //    private Date time;
     
     public abstract void initialize(List<String> lines) throws ParseException;
+    public abstract String getOpCode();
+    public abstract OpCodeType getOpCodeType();
 
     public int getId() {
         return id;
@@ -31,21 +32,6 @@ public abstract class Message {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public OpCodeType getType() {
-        return type;
-    }
-
-    public void setType(OpCodeType type) {
-        this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        String ret=type.toString()+System.getProperty("line.separator");
-        
-        return ret;
     }
     
     public void printError(List<String> lines){
