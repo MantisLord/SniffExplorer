@@ -9,12 +9,12 @@ import java.util.List;
 import tc.sniffexplorer.exceptions.ParseException;
 import tc.sniffexplorer.model.Message;
 import tc.sniffexplorer.model.OpCodeType;
-import tc.sniffexplorer.model.entities.Creature;
-import tc.sniffexplorer.model.entities.GameObject;
-import tc.sniffexplorer.model.entities.Pet;
-import tc.sniffexplorer.model.entities.Player;
-import tc.sniffexplorer.model.entities.Unit;
-import tc.sniffexplorer.model.entities.Vehicule;
+import tc.sniffexplorer.model.gameentities.Creature;
+import tc.sniffexplorer.model.gameentities.GameObject;
+import tc.sniffexplorer.model.gameentities.Pet;
+import tc.sniffexplorer.model.gameentities.Player;
+import tc.sniffexplorer.model.gameentities.Unit;
+import tc.sniffexplorer.model.gameentities.Vehicule;
 
 /** Class which represent SMSG_SPELL_START messages
  *

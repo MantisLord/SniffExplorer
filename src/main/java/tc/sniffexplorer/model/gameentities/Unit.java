@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.entities;
+package tc.sniffexplorer.model.gameentities;
 
 import java.util.Objects;
 

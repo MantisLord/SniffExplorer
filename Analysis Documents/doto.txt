@@ -1,0 +1,14 @@
+Core:
+- Make a choice: Use unsigned long or String for GUIDs?
+- Make a choice, use Calendar, Date or String for date and time?
+- add in parsing and in criteria the date and time !!!
+- Complete launcher for basic case of treating only SPELL_START messages
+
+GUI:
+- Almost everything is missing
+
+initialize() of the specific message handlers:
+- Everything except SpellStartMessage (and part of SpellGoMessage)
+
+isSatisfiedBy() for the criteria object associated with the specific messages handlers:
+- Everything, including the base class Criteria.

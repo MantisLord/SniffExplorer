@@ -8,10 +8,13 @@ package tc.sniffexplorer.core;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tc.sniffexplorer.model.Message;
@@ -28,24 +31,43 @@ import tc.sniffexplorer.model.smsg.UpdateObjectMessage;
  *
  * @author chaouki
  */
-public class Interpreter {
+public class Parser {
     
-    private static Logger log = LoggerFactory.getLogger(Interpreter.class);
+    private static Logger log = LoggerFactory.getLogger(Parser.class);
     
-    private int countSMSG=0;
-    private int countCMSG=0;
+//    private int countSMSG=0;
+//    private int countCMSG=0;
+
+    // file procuded during the serialiation of 
+    // the messages after they have been all parsed and before they are selected by the criterias.
+    // the goal here is to retake the data from this file each time the user use different filters.
+    // this way, the parsing phase (first phase) can be skipped.
+    public final static String DATA_FILE_NAME="data.ser";
+    private String inputFileName; // sniff produced by wpp
+    private FileOutputStream fop;
+    private ObjectOutputStream oos;
     
-    public void interpretFile(String fileName){
+    public Parser(String fileName){
+        this.inputFileName=fileName;
+        try {
+            fop = new FileOutputStream(DATA_FILE_NAME);
+            oos = new ObjectOutputStream(fop);
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void parseFile(){
         
         List<String> lines=new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFileName))) {
             for (String line; (line = br.readLine()) != null;) {
                 if(!line.isEmpty() && !line.trim().startsWith("# "))
                     lines.add(line);
                 else if(!lines.isEmpty()){
                     Message msg=parseOneMessage(lines);
-                    if(msg!=null && isMsgToBeIncluded(msg))
-                        addToModel(msg);
+                    if(msg!=null)
+                        serialize(msg);
                     
                     lines.clear();
                 }
@@ -54,6 +76,8 @@ public class Interpreter {
             log.error(null, ex);
         } catch (IOException ex) {
             log.error(null, ex);
+        } finally{
+            cleanUp();
         }
     }
 
@@ -119,29 +143,37 @@ public class Interpreter {
         // @todo: implement this
         
         /**
-         *  SPECIFIC MESSAGE READING PROSEDURE
+         *  SPECIFIC MESSAGES PARSING PROCEDURE (dependent on the opcode)
          */
         try {
            msg.initialize(lines);
         } catch (Exception e) {
-            log.error("Parsing failed", e);
+            log.error("Complete parsing failed:", e);
             msg.printError(lines);
         }
         
         return msg;
     }
 
-    private boolean isMsgToBeIncluded(Message msg) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        return true;
+    /** THE OBJECT MUST BE SERIALIZED (AND UNSERIALIZED) ONE BY ONE. WE ARE NOT SERIALIZING A Collection<Message> OBJECT. THIS IS DONE ON PURPOSE.
+     * 
+     * @param msg 
+     */
+    private void serialize(Message msg) {
+        try {
+            oos.writeObject(msg);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    private void addToModel(Message msg) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    public void setCriterion(){
-        
+    private void cleanUp() {
+        try {
+            fop.close();
+            oos.close();
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

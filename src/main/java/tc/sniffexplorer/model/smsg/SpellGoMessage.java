@@ -8,7 +8,7 @@ package tc.sniffexplorer.model.smsg;
 import java.util.List;
 import tc.sniffexplorer.exceptions.ParseException;
 import tc.sniffexplorer.model.OpCodeType;
-import tc.sniffexplorer.model.entities.Unit;
+import tc.sniffexplorer.model.gameentities.Unit;
 
 /** Class which represent SMSG_SPELL_GO messages
  *

@@ -3,24 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.entities;
+package tc.sniffexplorer.model.gameentities;
 
 /**
  *
  * @author chaouki
  */
-public class Vehicule extends Unit{
+public class Creature extends Unit {
     
     private String entry;
 
-    public Vehicule() {
+    public Creature() {
     }
 
-    public Vehicule(String entry, String GUID) {
+    public Creature(String entry, String GUID) {
         super(GUID);
         this.entry = entry;
     }
-
+    
     public String getEntry() {
         return entry;
     }
@@ -28,6 +28,5 @@ public class Vehicule extends Unit{
     public void setEntry(String entry) {
         this.entry = entry;
     }
-    
     
 }

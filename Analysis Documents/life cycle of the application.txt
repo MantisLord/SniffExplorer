@@ -1,0 +1,13 @@
+Phase 1: Parsing
+The file produced by WPP is parsed and each "packet" is modeled by a Message object. The actual class of the Message depends on the opcode of the packet. Each specific types of messages are parsed using an implementation of the abstract initialize() method.
+
+Phase 2: Serialization of all Messages
+Every successfuly parsed Message is serialized (stored) in the "data.ser" file (in the same directory as the application .jar).
+
+Phase 3: Filtering
+The criteria (or criterion, plural of criteria) asked by the user are used to filter the messages. Each message is individualy deserialized (retrived from the "data.ser" file) and if it satisfy at least one of the criteria, it is added to the MessageSet.
+
+Phase 4: Display of all Messages remaining after the filtering
+TBD. The application will display all the messages asked by the user, either by text or by GUI (using possibly a table).
+
+After that the user is done exploring the data, he can either choose to open another sniff or change the filters. IMPORTANT NOTE: One of the objectives of the program is that during a single execution of the program, the user should be able to change the filters and the program will then reuse "data.ser" in order to save the time of the parsing phase.

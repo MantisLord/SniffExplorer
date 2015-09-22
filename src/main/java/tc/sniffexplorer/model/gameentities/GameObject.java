@@ -3,20 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.entities;
+package tc.sniffexplorer.model.gameentities;
 
 /**
  *
  * @author chaouki
  */
-public class Creature extends Unit {
+public class GameObject extends Unit {
     
     private String entry;
 
-    public Creature() {
+    public GameObject() {
     }
 
-    public Creature(String entry, String GUID) {
+    public GameObject(String entry, String GUID) {
         super(GUID);
         this.entry = entry;
     }

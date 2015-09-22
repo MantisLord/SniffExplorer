@@ -3,17 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model;
+package tc.sniffexplorer.criteria.smsg;
 
-import java.util.List;
-import tc.sniffexplorer.criteria.CriteriaSet;
+import tc.sniffexplorer.criteria.Criteria;
 
 /**
  *
  * @author chaouki
  */
-public class MessageSet {
-    private List<Message> messages;
-    private CriteriaSet criteriaSet;
+public class SpellCriteria extends Criteria {
     
 }

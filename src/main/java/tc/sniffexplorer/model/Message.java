@@ -19,7 +19,6 @@ public abstract class Message {
     protected static Logger log = LoggerFactory.getLogger(Message.class);
     
     private int id;
-//    private String message;
 //    private Date time;
     
     public abstract void initialize(List<String> lines) throws ParseException;
