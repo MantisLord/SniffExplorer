@@ -38,47 +38,24 @@ public class Parser {
 //    private int countSMSG=0;
 //    private int countCMSG=0;
 
-    // file procuded during the serialiation of 
-    // the messages after they have been all parsed and before they are selected by the criterias.
-    // the goal here is to retake the data from this file each time the user use different filters.
-    // this way, the parsing phase (first phase) can be skipped.
-    public final static String DATA_FILE_NAME="data.ser";
-    private String inputFileName; // sniff produced by wpp
-    private FileOutputStream fop;
-    private ObjectOutputStream oos;
-    
-    public Parser(String fileName){
-        this.inputFileName=fileName;
-        try {
-            fop = new FileOutputStream(DATA_FILE_NAME);
-            oos = new ObjectOutputStream(fop);
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    public void parseFile(){
+    public void parseFile(FileIO fileIO, String sniffFileName){
         
         List<String> lines=new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(inputFileName))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(sniffFileName))) {
             for (String line; (line = br.readLine()) != null;) {
                 if(!line.isEmpty() && !line.trim().startsWith("# "))
                     lines.add(line);
                 else if(!lines.isEmpty()){
                     Message msg=parseOneMessage(lines);
                     if(msg!=null)
-                        serialize(msg);
+                        fileIO.serializeOneMessage(msg);
                     
                     lines.clear();
                 }
             }
-        } catch (FileNotFoundException ex) {
-            log.error(null, ex);
         } catch (IOException ex) {
-            log.error(null, ex);
-        } finally{
-            cleanUp();
-        }
+            java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }
 
     private Message parseOneMessage(List<String> lines) {
@@ -155,25 +132,5 @@ public class Parser {
         return msg;
     }
 
-    /** THE OBJECT MUST BE SERIALIZED (AND UNSERIALIZED) ONE BY ONE. WE ARE NOT SERIALIZING A Collection<Message> OBJECT. THIS IS DONE ON PURPOSE.
-     * 
-     * @param msg 
-     */
-    private void serialize(Message msg) {
-        try {
-            oos.writeObject(msg);
-        } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void cleanUp() {
-        try {
-            fop.close();
-            oos.close();
-        } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
 }

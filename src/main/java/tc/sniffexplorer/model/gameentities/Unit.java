@@ -5,13 +5,14 @@
  */
 package tc.sniffexplorer.model.gameentities;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author chaouki
  */
-public abstract class Unit {
+public abstract class Unit implements Serializable {
     protected String GUID;
 //    protected Integer lowGUID;
 

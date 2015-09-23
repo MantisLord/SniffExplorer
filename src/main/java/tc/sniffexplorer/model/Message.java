@@ -5,6 +5,7 @@
  */
 package tc.sniffexplorer.model;
 
+import java.io.Serializable;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ import tc.sniffexplorer.exceptions.ParseException;
  *
  * @author chaouki
  */
-public abstract class Message {
+public abstract class Message implements Serializable {
     
     protected static Logger log = LoggerFactory.getLogger(Message.class);
     
