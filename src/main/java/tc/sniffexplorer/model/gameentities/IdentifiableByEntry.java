@@ -9,17 +9,6 @@ package tc.sniffexplorer.model.gameentities;
  *
  * @author chaouki
  */
-public class Pet extends Unit{
-
-    public Pet() {
-    }
-
-    public Pet(String GUID) {
-        super(GUID);
-    }
-    
-    @Override
-    public String toString() {
-        return "Pet{GUI="+GUID+"}";
-    }
+public interface IdentifiableByEntry {
+    public Integer getEntry();
 }

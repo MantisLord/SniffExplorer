@@ -7,6 +7,7 @@ package tc.sniffexplorer.model.smsg;
 
 import java.util.List;
 import tc.sniffexplorer.exceptions.ParseException;
+import tc.sniffexplorer.model.OpCode;
 import tc.sniffexplorer.model.OpCodeType;
 import tc.sniffexplorer.model.gameentities.Unit;
 
@@ -17,8 +18,8 @@ import tc.sniffexplorer.model.gameentities.Unit;
 public class SpellGoMessage extends SpellMessage {
     
     @Override
-    public String getOpCode() {
-        return "SMSG_SPELL_GO";
+    public OpCode getOpCode() {
+        return OpCode.SMSG_SPELL_GO;
     }
 
     @Override
@@ -37,6 +38,16 @@ public class SpellGoMessage extends SpellMessage {
          * Target(s)
          */
 //        throw new ParseException("Targets search unsupported yet.");
+    }
+
+    @Override
+    public boolean contains(Integer relatedEntry) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean contains(Long relatedGUID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

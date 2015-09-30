@@ -11,7 +11,11 @@ package tc.sniffexplorer.model;
  */
 public enum OpCode {
     // SMSG
+    SMSG_SPELL_START,
+    SMSG_SPELL_GO,
+    SMSG_SPELL_PERIODIC_AURA_LOG,
     SMSG_MOVE_UPDATE,
     SMSG_ON_MONSTER_MOVE,
     SMSG_UPDATE_OBJECT,
+    SMSG_EMOTE;
 }

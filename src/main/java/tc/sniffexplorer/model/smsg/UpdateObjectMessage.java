@@ -7,6 +7,7 @@ package tc.sniffexplorer.model.smsg;
 
 import java.util.List;
 import tc.sniffexplorer.model.Message;
+import tc.sniffexplorer.model.OpCode;
 import tc.sniffexplorer.model.OpCodeType;
 
 /**
@@ -16,8 +17,8 @@ import tc.sniffexplorer.model.OpCodeType;
 public class UpdateObjectMessage extends Message{
     
     @Override
-    public String getOpCode() {
-        return "SMSG_UPDATE_OBJECT";
+    public OpCode getOpCode() {
+        return OpCode.SMSG_UPDATE_OBJECT;
     }
 
     @Override
@@ -28,6 +29,16 @@ public class UpdateObjectMessage extends Message{
     @Override
     public void initialize(List<String> lines) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean contains(Integer relatedEntry) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean contains(Long relatedGUID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

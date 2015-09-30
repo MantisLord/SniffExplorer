@@ -43,11 +43,11 @@ public abstract class SpellMessage extends Message {
             throw new ParseException();
             
         if(words[5].equals("Creature"))
-            casterUnit=new Creature(words[7], words[3]);
+            casterUnit=new Creature(Integer.parseInt(words[7]), words[3]);
         else if(words[5].equals("Player"))
             casterUnit=new Player((words.length==10)?words[9]:"", words[3]);
         else if(words[5].equals("Vehicle"))
-            casterUnit=new Vehicule(words[7], words[3]);
+            casterUnit=new Vehicule(Integer.parseInt(words[7]), words[3]);
         else if(words[5].equals("Pet"))
             casterUnit=new Pet(words[3]);
         else if(words[5].equals("Item")){
@@ -60,7 +60,7 @@ public abstract class SpellMessage extends Message {
                 throw new ParseException();
         }
         else if(words[5].equals("GameObject")) // @todo: harmonize the way GOs are modeled and stored.
-            casterUnit=new GameObject(words[7], words[3]);
+            casterUnit=new GameObject(Integer.parseInt(words[7]), words[3]);
         else
             throw new ParseException();
         
@@ -96,6 +96,11 @@ public abstract class SpellMessage extends Message {
 
     public void setSpellId(Integer spellId) {
         this.spellId = spellId;
+    }
+
+    @Override
+    public String toString() {
+        return "SpellMessage{" + "casterUnit=" + casterUnit + ", itemCasterGUID=" + itemCasterGUID + ", spellId=" + spellId;
     }
     
     

@@ -53,5 +53,8 @@ public class Player extends Unit{
         this.name = name;
     }
     
-    
+    @Override
+    public String toString() {
+        return "Player{GUI="+GUID+"}";
+    }
 }

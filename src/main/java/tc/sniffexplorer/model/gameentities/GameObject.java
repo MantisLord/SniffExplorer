@@ -9,24 +9,29 @@ package tc.sniffexplorer.model.gameentities;
  *
  * @author chaouki
  */
-public class GameObject extends Unit {
+public class GameObject extends Unit implements IdentifiableByEntry {
     
-    private String entry;
+    private Integer entry;
 
     public GameObject() {
     }
 
-    public GameObject(String entry, String GUID) {
+    public GameObject(Integer entry, String GUID) {
         super(GUID);
         this.entry = entry;
     }
     
-    public String getEntry() {
+    @Override
+    public Integer getEntry() {
         return entry;
     }
 
-    public void setEntry(String entry) {
+    public void setEntry(Integer entry) {
         this.entry = entry;
     }
     
+    @Override
+    public String toString() {
+        return "GameObject{" + "entry=" + entry + ", GUI="+GUID+"}";
+    }
 }

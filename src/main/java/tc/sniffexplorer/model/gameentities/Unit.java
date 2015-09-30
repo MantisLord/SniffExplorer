@@ -45,6 +45,11 @@ public abstract class Unit implements Serializable {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Unit{" + "GUID=" + GUID + '}';
+    }
     
     
 }

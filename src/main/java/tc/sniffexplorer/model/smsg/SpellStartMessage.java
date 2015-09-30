@@ -7,7 +7,7 @@ package tc.sniffexplorer.model.smsg;
 
 import java.util.List;
 import tc.sniffexplorer.exceptions.ParseException;
-import tc.sniffexplorer.model.Message;
+import tc.sniffexplorer.model.OpCode;
 import tc.sniffexplorer.model.OpCodeType;
 import tc.sniffexplorer.model.gameentities.Creature;
 import tc.sniffexplorer.model.gameentities.GameObject;
@@ -23,8 +23,8 @@ import tc.sniffexplorer.model.gameentities.Vehicule;
 public class SpellStartMessage extends SpellMessage {
     
     @Override
-    public String getOpCode() {
-        return "SMSG_SPELL_START";
+    public OpCode getOpCode() {
+        return OpCode.SMSG_SPELL_START;
     }
 
     @Override
@@ -68,15 +68,15 @@ public class SpellStartMessage extends SpellMessage {
                 throw new ParseException();
             
             if(words[5].equals("Creature"))
-                targetUnit=new Creature(words[7], words[3]);
+                targetUnit=new Creature(Integer.parseInt(words[7]), words[3]);
             else if(words[5].equals("Player"))
                 targetUnit=new Player((words.length==10)?words[9]:"", words[3]);
             else if(words[5].equals("Vehicle"))
-                targetUnit=new Vehicule(words[7], words[3]);
+                targetUnit=new Vehicule(Integer.parseInt(words[7]), words[3]);
             else if(words[5].equals("Pet"))
                 targetUnit=new Pet(words[3]);
             else if(words[5].equals("GameObject")) // @todo: harmonize the way GOs are modeled and stored.
-                targetUnit=new GameObject(words[7], words[3]);
+                targetUnit=new GameObject(Integer.parseInt(words[7]), words[3]);
             else
                 throw new ParseException();
         }
@@ -92,6 +92,61 @@ public class SpellStartMessage extends SpellMessage {
             throw new ParseException("Target Flag "+targetFlags+" unsupported yet.");
     }
 
+        @Override
+    public boolean contains(Integer relatedEntry) {
+        // the caster could have the specified entry...
+        if(getCasterUnit() instanceof Creature){
+            Creature caster=(Creature)getCasterUnit();
+            if(caster.getEntry().equals(relatedEntry))
+                return true;
+        } else if(getCasterUnit() instanceof GameObject){
+            GameObject caster=(GameObject)getCasterUnit();
+            if(caster.getEntry().equals(relatedEntry))
+                return true;
+        } else if(getCasterUnit() instanceof Vehicule){
+            Vehicule caster=(Vehicule)getCasterUnit();
+            if(caster.getEntry().equals(relatedEntry))
+                return true;
+        }
+        
+        // or the target...
+        if(getTargetUnit() instanceof Creature){
+            Creature target=(Creature)getTargetUnit();
+            if(target.getEntry().equals(relatedEntry))
+                return true;
+        } else if(getTargetUnit() instanceof GameObject){
+            GameObject target=(GameObject)getTargetUnit();
+            if(target.getEntry().equals(relatedEntry))
+                return true;
+        } else if(getTargetUnit() instanceof Vehicule){
+            Vehicule target=(Vehicule)getTargetUnit();
+            if(target.getEntry().equals(relatedEntry))
+                return true;
+        }
+        
+        // and that's it
+        return false;
+    }
+
+    @Override
+    public boolean contains(Long relatedGUID) {
+        if(getCasterUnit().getGUID().equals(relatedGUID))
+            return true;
+        
+        if(getTargetUnit().getGUID().equals(relatedGUID))
+            return true;
+        
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()+", SpellStartMessage{" + "targetFlags=" + targetFlags + ", targetUnit=" + targetUnit + '}';
+    }
+
+  
+    
+    
     /* template
  0   ServerToClient: SMSG_SPELL_START (0x6415) Length: 53 ConnIdx: 2 Time: 06/17/2012 01:41:34.793 Number: 413913
  1   Caster GUID: Full: 0xF130CD160001CF6B Type: Creature Entry: 52502 Low: 118635
@@ -122,8 +177,8 @@ public class SpellStartMessage extends SpellMessage {
     
     /*
     ServerToClient: SMSG_SPELL_START (0x6415) Length: 33 ConnIdx: 2 Time: 06/17/2012 01:41:15.932 Number: 412134
-    Caster GUID: Full: 0x60000000456E3D8 Type: Player Low: 72803288 Name: Salantharasa
-    Caster Unit GUID: Full: 0x60000000456E3D8 Type: Player Low: 72803288 Name: Salantharasa
+    Caster GUID: Full: 0xFFFFEEEEDDDDCCC Type: Player Low: 11112222 Name: XXXXX
+    Caster Unit GUID: Full: 0xFFFFEEEEDDDDCCC Type: Player Low: 11112222 Name: XXXXX
     Cast Count: 0
     Spell ID: 54181 (54181)
     Cast Flags: PendingCast, HasTrajectory, Unknown3 (11)
@@ -141,5 +196,4 @@ public class SpellStartMessage extends SpellMessage {
     public void setTargetUnit(Unit targetUnit) {
         this.targetUnit = targetUnit;
     }
-    
 }

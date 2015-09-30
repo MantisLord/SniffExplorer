@@ -9,24 +9,30 @@ package tc.sniffexplorer.model.gameentities;
  *
  * @author chaouki
  */
-public class Vehicule extends Unit{
+public class Vehicule extends Unit implements IdentifiableByEntry{
     
-    private String entry;
+    private Integer entry;
 
     public Vehicule() {
     }
 
-    public Vehicule(String entry, String GUID) {
+    public Vehicule(Integer entry, String GUID) {
         super(GUID);
         this.entry = entry;
     }
 
-    public String getEntry() {
+    @Override
+    public Integer getEntry() {
         return entry;
     }
 
-    public void setEntry(String entry) {
+    public void setEntry(Integer entry) {
         this.entry = entry;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicule{" + "entry=" + entry + ", GUI="+GUID+"}";
     }
     
     

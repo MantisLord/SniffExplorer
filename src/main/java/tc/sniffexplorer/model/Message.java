@@ -23,8 +23,10 @@ public abstract class Message implements Serializable {
 //    private Date time;
     
     public abstract void initialize(List<String> lines) throws ParseException;
-    public abstract String getOpCode();
+    public abstract OpCode getOpCode();
     public abstract OpCodeType getOpCodeType();
+    abstract public boolean contains(Integer relatedEntry);
+    abstract public boolean contains(Long relatedGUID);
 
     public int getId() {
         return id;
