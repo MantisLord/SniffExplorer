@@ -31,7 +31,9 @@ public abstract class SpellCriteria extends Criteria {
             throw new IllegalArgumentException();
         SpellMessage spellMessage=(SpellMessage) message;
         
-        if(casterEntry!=null && spellMessage.getCasterUnit() instanceof IdentifiableByEntry){
+        if(casterEntry!=null){
+            if(!(spellMessage.getCasterUnit() instanceof IdentifiableByEntry))
+                return false;
             IdentifiableByEntry entryInstance = (IdentifiableByEntry) spellMessage.getCasterUnit();
             if(!entryInstance.getEntry().equals(casterEntry))
                 return false;

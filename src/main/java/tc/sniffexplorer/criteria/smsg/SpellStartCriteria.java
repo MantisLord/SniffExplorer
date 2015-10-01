@@ -36,7 +36,9 @@ public class SpellStartCriteria extends SpellCriteria {
             throw new IllegalArgumentException();
         SpellStartMessage spellStartMessage=(SpellStartMessage) message;
         
-        if(targetEntry!=null && spellStartMessage.getTargetUnit()instanceof IdentifiableByEntry){
+        if(targetEntry!=null){
+            if(!(spellStartMessage.getTargetUnit()instanceof IdentifiableByEntry))
+                return false;
             IdentifiableByEntry entryInstance = (IdentifiableByEntry) spellStartMessage.getTargetUnit();
             if(!entryInstance.getEntry().equals(targetEntry))
                 return false;
