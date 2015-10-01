@@ -141,7 +141,16 @@ public class SpellStartMessage extends SpellMessage {
 
     @Override
     public String toString() {
-        return super.toString()+", SpellStartMessage{" + "targetFlags=" + targetFlags + ", targetUnit=" + targetUnit + '}';
+        StringBuilder sb=new StringBuilder(getOpCode().toString()+". ");
+        
+        sb.append("Caster Unit: "+getCasterUnit()+". ");
+        sb.append( (getItemCasterGUID()!=null)? "Item caster GUID: "+getItemCasterGUID()+". " : ""   );
+        sb.append("Spell ID: "+getSpellId()+" ");
+        
+        sb.append("Target Flags: "+getTargetFlags()+". ");
+        sb.append("Target Unit: "+getTargetUnit()+". ");
+        
+        return sb.toString();
     }
 
   
@@ -196,4 +205,14 @@ public class SpellStartMessage extends SpellMessage {
     public void setTargetUnit(Unit targetUnit) {
         this.targetUnit = targetUnit;
     }
+
+    public Integer getTargetFlags() {
+        return targetFlags;
+    }
+
+    public void setTargetFlags(Integer targetFlags) {
+        this.targetFlags = targetFlags;
+    }
+    
+    
 }
