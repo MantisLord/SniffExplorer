@@ -15,3 +15,6 @@ The progression and more documents can be found here:
 https://docs.google.com/spreadsheets/d/17NXOHlyx4Nce3DbCgIF9WEjKOkcb-Cxd4U1Ygon71iY/edit?usp=sharing
 
 For any discussion about the software, see its post in the forum here: http://community.trinitycore.org/topic/11952-sniffexplorer/
+
+#### Current example of output
+https://gist.github.com/chaodhib/27d293e51b269545edb8#file-gistfile1-txt
