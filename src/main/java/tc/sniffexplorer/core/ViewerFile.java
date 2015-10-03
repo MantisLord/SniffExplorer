@@ -29,7 +29,8 @@ public class ViewerFile implements Viewer{
 
     @Override
     public void show(Message message) {
-        out.println(message);
+        message.display(out);
+        
     }
     
     @Override

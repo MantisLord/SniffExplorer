@@ -5,6 +5,8 @@
  */
 package tc.sniffexplorer.model;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.List;
 import org.slf4j.Logger;
@@ -27,6 +29,7 @@ public abstract class Message implements Serializable {
     public abstract OpCodeType getOpCodeType();
     abstract public boolean contains(Integer relatedEntry);
     abstract public boolean contains(Long relatedGUID);
+    abstract public void display(PrintWriter printWriter);
 
     public int getId() {
         return id;

@@ -5,6 +5,7 @@
  */
 package tc.sniffexplorer.model.smsg;
 
+import java.io.PrintWriter;
 import java.util.List;
 import tc.sniffexplorer.exceptions.ParseException;
 import tc.sniffexplorer.model.OpCode;
@@ -47,11 +48,9 @@ public class SpellStartMessage extends SpellMessage {
         if(!words[0].equals("Target") || !words[1].equals("Flags:"))
             throw new ParseException();
         
+        // Extract the integer inside the string "Target Flags: (XX)"
         String number = words[words.length-1].replace(')', ' ').replace('(', ' ').trim();
-        
-        targetFlags=Integer.valueOf(number); // String "(XXX)" to Integer XXX
-        if(targetFlags==6)
-            log.debug(null);
+        targetFlags=Integer.valueOf(number);
         
         if(targetFlags==0){ // case Self
             targetUnit=getCasterUnit();
@@ -140,20 +139,14 @@ public class SpellStartMessage extends SpellMessage {
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb=new StringBuilder(getOpCode().toString()+". ");
+    public void display(PrintWriter writer) {
+        writer.print(getOpCode().toString()+". ");
         
-        sb.append("Caster Unit: "+getCasterUnit()+". ");
-        sb.append( (getItemCasterGUID()!=null)? "Item caster GUID: "+getItemCasterGUID()+". " : ""   );
-        sb.append("Spell ID: "+getSpellId()+" ");
-        
-        sb.append("Target Flags: "+getTargetFlags()+". ");
-        sb.append("Target Unit: "+getTargetUnit()+". ");
-        
-        return sb.toString();
+        writer.format("Spell ID: %6d. Caster Unit: %s. ", getSpellId(), getCasterUnit().toString());
+        if(getItemCasterGUID()!=null)
+            writer.format("Item caster GUID: %18s. ", getItemCasterGUID().toString());
+        writer.format("Target Flags: %2d. Target Unit: %-20s.%n", getTargetFlags(), getTargetUnit());
     }
-
-  
     
     
     /* template
@@ -213,6 +206,4 @@ public class SpellStartMessage extends SpellMessage {
     public void setTargetFlags(Integer targetFlags) {
         this.targetFlags = targetFlags;
     }
-    
-    
 }

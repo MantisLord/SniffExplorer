@@ -97,11 +97,4 @@ public abstract class SpellMessage extends Message {
     public void setSpellId(Integer spellId) {
         this.spellId = spellId;
     }
-
-    @Override
-    public String toString() {
-        return "SpellMessage{" + "casterUnit=" + casterUnit + ", itemCasterGUID=" + itemCasterGUID + ", spellId=" + spellId;
-    }
-    
-    
 }

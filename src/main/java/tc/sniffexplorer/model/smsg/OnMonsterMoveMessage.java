@@ -5,6 +5,7 @@
  */
 package tc.sniffexplorer.model.smsg;
 
+import java.io.PrintWriter;
 import java.util.List;
 import tc.sniffexplorer.model.Message;
 import tc.sniffexplorer.model.OpCode;
@@ -38,6 +39,11 @@ public class OnMonsterMoveMessage extends Message {
 
     @Override
     public boolean contains(Long relatedGUID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void display(PrintWriter printWriter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
