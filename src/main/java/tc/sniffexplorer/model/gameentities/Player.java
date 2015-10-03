@@ -14,6 +14,8 @@ public class Player extends Unit{
     private PlayerClass playerClass;
     private String name;
     
+    private static final boolean ANONYMIZE_GUIDS=false;
+    
     enum PlayerClass{
         DEATHKNIGHT,
         DRUID,
@@ -55,6 +57,9 @@ public class Player extends Unit{
     
     @Override
     public String toString() {
-        return "Player{GUI="+GUID+"}";
+        if(!ANONYMIZE_GUIDS)
+            return "Player{GUI="+GUID+"}";
+        else
+            return "Player{GUI=XXXXXXXXXXXXXXXXXX}";
     }
 }
