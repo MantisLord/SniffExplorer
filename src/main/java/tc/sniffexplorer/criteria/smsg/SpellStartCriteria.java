@@ -12,6 +12,13 @@ import tc.sniffexplorer.model.gameentities.IdentifiableByEntry;
 import tc.sniffexplorer.model.smsg.SpellStartMessage;
 
 /**
+ * The search parameters specific to SMSG_SPELL_START should be:
+ * - target GUID
+ * - target entry
+ * 
+ * canceled:
+ * - caster destination
+ * - target destination
  *
  * @author chaouki
  */

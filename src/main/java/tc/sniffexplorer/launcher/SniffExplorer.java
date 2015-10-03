@@ -18,18 +18,19 @@ import tc.sniffexplorer.criteria.smsg.SpellStartCriteria;
 public class SniffExplorer {
     
     private static final String SNIFF_FILE_NAME="sniff.txt";
+    private static final Integer CASTER_ENTRY=15989; // Sapphiron's entry in Naxx 10.
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         
-        /** We gonna ask the user for his criterias. in the early 
-         * versions of the software, until criteria UI is ready, we are going to display  
-         * the SPELL_START messages only. 
+        /**
+         * In the early  versions of the software, until the criteria UI is ready, 
+         * we are going to display the SMSG_SPELL_START messages only. 
          */
         SpellStartCriteria criteria=new SpellStartCriteria();
-        criteria.setCasterEntry(15989); // Sapphiron's entry in 10 man
+        criteria.setCasterEntry((args.length==2)? Integer.parseInt(args[1]):CASTER_ENTRY);
         CriteriaSet criteriaSet=new CriteriaSet();
         criteriaSet.addCriteria(criteria);
         

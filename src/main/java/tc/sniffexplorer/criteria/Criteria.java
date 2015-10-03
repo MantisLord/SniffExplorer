@@ -22,7 +22,7 @@ public class Criteria {
     private Long relatedGUID; // (do not forget to use Long.parseUnsignedLong() and Long.toUnsignedString() for this Long.
     private Integer relatedEntry; //  search for this entry in every Entry mentioned by the message
     
-    public boolean isSatisfiedBy(Message message){ // AND is applied between each condition. Meaning if one condition fails, the whole thing fails.
+    public boolean isSatisfiedBy(Message message){ // AND is applied between each condition inside a Criteria object. Meaning if one condition fails, the whole thing fails.
         if(message==null)
             return false;
         
