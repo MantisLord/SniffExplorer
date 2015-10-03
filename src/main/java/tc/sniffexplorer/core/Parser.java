@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tc.sniffexplorer.criteria.CriteriaSet;
 import tc.sniffexplorer.model.Message;
 import tc.sniffexplorer.model.OpCode;
 import tc.sniffexplorer.model.OpCodeType;
@@ -38,7 +39,7 @@ public class Parser {
 //    private int countSMSG=0;
 //    private int countCMSG=0;
 
-    public void parseFile(FileIO fileIO, String sniffFileName){
+    public void parseFile(String sniffFileName, CriteriaSet criteriaSet, Viewer viewer){
         
         List<String> lines=new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(sniffFileName))) {
@@ -47,8 +48,8 @@ public class Parser {
                     lines.add(line);
                 else if(!lines.isEmpty()){
                     Message msg=parseOneMessage(lines);
-                    if(msg!=null)
-                        fileIO.serializeOneMessage(msg);
+                    if(msg!=null && criteriaSet.IsSatisfiedBy(msg))
+                        viewer.show(msg);
                     
                     lines.clear();
                 }

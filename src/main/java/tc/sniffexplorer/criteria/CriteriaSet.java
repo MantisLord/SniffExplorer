@@ -14,7 +14,7 @@ import tc.sniffexplorer.model.Message;
  * @author chaouki
  */
 public class CriteriaSet {
-    private Set<Criteria> criterion=new HashSet<>(); // two "same" criteria object shound be in the set. 
+    private Set<Criteria> criterion=new HashSet<>(); // two "same" criteria object shoudn't be in the set. 
     // therefore, equals() and hashcode() need to be reimplemented for Criteria and each child classes.
     
     public boolean IsSatisfiedBy(Message message){
