@@ -11,4 +11,7 @@ Well, I started to work on it and I named it SniffExplorer. **Its main goal is t
 The project is written in Java and any contribution is more than welcome.
 **If you are starting here and wish to understand how the project works**, I recommend that you start by reading [the life cycle of the application](https://github.com/chaodhib/SniffExplorer/blob/master/Analysis%20Documents/life%20cycle%20of%20the%20application.txt) and then look at the class diagram and the “todo” list in the [analysis folder]( https://github.com/chaodhib/SniffExplorer/tree/master/Analysis%20Documents).
 
+The progression and more documents can be found here:
+https://docs.google.com/spreadsheets/d/17NXOHlyx4Nce3DbCgIF9WEjKOkcb-Cxd4U1Ygon71iY/edit?usp=sharing
+
 For any discussion about the software, see its post in the forum here: http://community.trinitycore.org/topic/11952-sniffexplorer/
