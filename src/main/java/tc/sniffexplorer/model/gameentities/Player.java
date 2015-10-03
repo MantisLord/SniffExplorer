@@ -58,8 +58,8 @@ public class Player extends Unit{
     @Override
     public String toString() {
         if(!ANONYMIZE_GUIDS)
-            return "Player{GUI="+GUID+"}";
+            return "Player{GUID="+GUID+"}";
         else
-            return "Player{GUI=XXXXXXXXXXXXXXXXXX}";
+            return "Player{GUID=XXXXXXXXXXXXXXXXXX}";
     }
 }

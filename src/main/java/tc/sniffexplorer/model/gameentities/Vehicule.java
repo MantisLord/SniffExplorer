@@ -32,7 +32,7 @@ public class Vehicule extends Unit implements IdentifiableByEntry{
 
     @Override
     public String toString() {
-        return "Vehicule{" + "entry=" + entry + ", GUI="+GUID+"}";
+        return "Vehicule{" + "entry=" + entry + ", GUID="+GUID+"}";
     }
     
     

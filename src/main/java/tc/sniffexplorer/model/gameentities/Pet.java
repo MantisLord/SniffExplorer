@@ -20,6 +20,6 @@ public class Pet extends Unit{
     
     @Override
     public String toString() {
-        return "Pet{GUI="+GUID+"}";
+        return "Pet{GUID="+GUID+"}";
     }
 }

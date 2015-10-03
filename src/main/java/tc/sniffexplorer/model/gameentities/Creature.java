@@ -32,7 +32,7 @@ public class Creature extends Unit implements IdentifiableByEntry {
 
     @Override
     public String toString() {
-        return "Creature{" + "entry=" + entry + ", GUI="+GUID+"}";
+        return "Creature{" + "entry=" + entry + ", GUID="+GUID+"}";
     }
     
     

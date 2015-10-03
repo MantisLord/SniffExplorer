@@ -32,6 +32,6 @@ public class GameObject extends Unit implements IdentifiableByEntry {
     
     @Override
     public String toString() {
-        return "GameObject{" + "entry=" + entry + ", GUI="+GUID+"}";
+        return "GameObject{" + "entry=" + entry + ", GUID="+GUID+"}";
     }
 }
