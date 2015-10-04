@@ -6,10 +6,10 @@
 package tc.sniffexplorer.criteria.smsg;
 
 import tc.sniffexplorer.criteria.Criteria;
-import tc.sniffexplorer.model.Message;
-import tc.sniffexplorer.model.gameentities.IdentifiableByEntry;
-import tc.sniffexplorer.model.smsg.SpellMessage;
-import tc.sniffexplorer.model.smsg.SpellStartMessage;
+import tc.sniffexplorer.message.Message;
+import tc.sniffexplorer.gameentities.IdentifiableByEntry;
+import tc.sniffexplorer.message.smsg.SpellMessage;
+import tc.sniffexplorer.message.smsg.SpellStartMessage;
 
 /**
  *

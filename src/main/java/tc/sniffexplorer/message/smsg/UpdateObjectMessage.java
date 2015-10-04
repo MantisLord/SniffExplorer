@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.smsg;
+package tc.sniffexplorer.message.smsg;
 
 import java.io.PrintWriter;
 import java.util.List;
-import tc.sniffexplorer.model.Message;
-import tc.sniffexplorer.model.OpCode;
-import tc.sniffexplorer.model.OpCodeType;
+import tc.sniffexplorer.message.Message;
+import tc.sniffexplorer.message.OpCode;
+import tc.sniffexplorer.message.OpCodeType;
 
 /**
  *

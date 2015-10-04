@@ -3,23 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.smsg;
+package tc.sniffexplorer.message.smsg;
 
 import java.io.PrintWriter;
 import java.util.List;
-import tc.sniffexplorer.model.Message;
-import tc.sniffexplorer.model.OpCode;
-import tc.sniffexplorer.model.OpCodeType;
+import tc.sniffexplorer.message.Message;
+import tc.sniffexplorer.message.OpCode;
+import tc.sniffexplorer.message.OpCodeType;
 
 /**
  *
  * @author chaouki
  */
-public class SpellPeriodicAuraLogMessage extends Message {
+public class EmoteMessage extends Message{
     
     @Override
     public OpCode getOpCode() {
-        return OpCode.SMSG_SPELL_PERIODIC_AURA_LOG;
+        return OpCode.SMSG_EMOTE;
     }
 
     @Override
@@ -46,5 +46,6 @@ public class SpellPeriodicAuraLogMessage extends Message {
     public void display(PrintWriter printWriter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 
 }

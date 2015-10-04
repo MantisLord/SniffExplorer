@@ -6,10 +6,10 @@
 package tc.sniffexplorer.criteria.smsg;
 
 import tc.sniffexplorer.criteria.Criteria;
-import tc.sniffexplorer.model.Message;
-import tc.sniffexplorer.model.OpCode;
-import tc.sniffexplorer.model.gameentities.IdentifiableByEntry;
-import tc.sniffexplorer.model.smsg.SpellStartMessage;
+import tc.sniffexplorer.message.Message;
+import tc.sniffexplorer.message.OpCode;
+import tc.sniffexplorer.gameentities.IdentifiableByEntry;
+import tc.sniffexplorer.message.smsg.SpellStartMessage;
 
 /**
  * The search parameters specific to SMSG_SPELL_START should be:

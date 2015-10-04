@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.smsg;
+package tc.sniffexplorer.message.smsg;
 
 import java.util.List;
 import tc.sniffexplorer.exceptions.ParseException;
-import tc.sniffexplorer.model.Message;
-import tc.sniffexplorer.model.gameentities.Creature;
-import tc.sniffexplorer.model.gameentities.GameObject;
-import tc.sniffexplorer.model.gameentities.Pet;
-import tc.sniffexplorer.model.gameentities.Player;
-import tc.sniffexplorer.model.gameentities.Unit;
-import tc.sniffexplorer.model.gameentities.Vehicule;
+import tc.sniffexplorer.message.Message;
+import tc.sniffexplorer.gameentities.Creature;
+import tc.sniffexplorer.gameentities.GameObject;
+import tc.sniffexplorer.gameentities.Pet;
+import tc.sniffexplorer.gameentities.Player;
+import tc.sniffexplorer.gameentities.Unit;
+import tc.sniffexplorer.gameentities.Vehicule;
 
 /**
  *

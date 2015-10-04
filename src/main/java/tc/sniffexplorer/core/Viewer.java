@@ -5,7 +5,7 @@
  */
 package tc.sniffexplorer.core;
 
-import tc.sniffexplorer.model.Message;
+import tc.sniffexplorer.message.Message;
 
 /**
  *

@@ -3,20 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.gameentities;
+package tc.sniffexplorer.gameentities;
 
 /**
  *
  * @author chaouki
  */
-public class Creature extends Unit implements IdentifiableByEntry {
+public class GameObject extends Unit implements IdentifiableByEntry {
     
     private Integer entry;
 
-    public Creature() {
+    public GameObject() {
     }
 
-    public Creature(Integer entry, String GUID) {
+    public GameObject(Integer entry, String GUID) {
         super(GUID);
         this.entry = entry;
     }
@@ -26,14 +26,12 @@ public class Creature extends Unit implements IdentifiableByEntry {
         return entry;
     }
 
-    public void Integer(Integer entry) {
+    public void setEntry(Integer entry) {
         this.entry = entry;
     }
-
+    
     @Override
     public String toString() {
-        return "Creature{" + "entry=" + entry + ", GUID="+GUID+"}";
+        return "GameObject{" + "entry=" + entry + ", GUID="+GUID+"}";
     }
-    
-    
 }

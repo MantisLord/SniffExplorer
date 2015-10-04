@@ -5,8 +5,8 @@
  */
 package tc.sniffexplorer.criteria;
 
-import tc.sniffexplorer.model.Message;
-import tc.sniffexplorer.model.OpCode;
+import tc.sniffexplorer.message.Message;
+import tc.sniffexplorer.message.OpCode;
 
 /**
  *

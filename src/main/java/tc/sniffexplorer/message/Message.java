@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model;
+package tc.sniffexplorer.message;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public abstract class Message implements Serializable {
     protected static Logger log = LoggerFactory.getLogger(Message.class);
     
     private int id;
-//    private Date time;
+    private Date date;
     
     public abstract void initialize(List<String> lines) throws ParseException;
     public abstract OpCode getOpCode();
@@ -37,6 +38,14 @@ public abstract class Message implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
     
     public void printError(List<String> lines){

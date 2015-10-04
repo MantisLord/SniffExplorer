@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import tc.sniffexplorer.model.Message;
+import tc.sniffexplorer.message.Message;
 
 /**
  *

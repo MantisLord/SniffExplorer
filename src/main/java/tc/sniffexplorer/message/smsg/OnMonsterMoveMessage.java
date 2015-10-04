@@ -3,24 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.smsg;
+package tc.sniffexplorer.message.smsg;
 
 import java.io.PrintWriter;
 import java.util.List;
-import tc.sniffexplorer.exceptions.ParseException;
-import tc.sniffexplorer.model.OpCode;
-import tc.sniffexplorer.model.OpCodeType;
-import tc.sniffexplorer.model.gameentities.Unit;
+import tc.sniffexplorer.message.Message;
+import tc.sniffexplorer.message.OpCode;
+import tc.sniffexplorer.message.OpCodeType;
 
-/** Class which represent SMSG_SPELL_GO messages
+/**
  *
  * @author chaouki
  */
-public class SpellGoMessage extends SpellMessage {
+public class OnMonsterMoveMessage extends Message {
     
     @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_SPELL_GO;
+    public OpCode  getOpCode() {
+        return OpCode.SMSG_ON_MONSTER_MOVE;
     }
 
     @Override
@@ -28,17 +27,9 @@ public class SpellGoMessage extends SpellMessage {
         return OpCodeType.SMSG;
     }
 
-    private Integer targetFlags;
-    private Unit targetUnit;
-
     @Override
-    public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
-        
-        /**
-         * Target(s)
-         */
-//        throw new ParseException("Targets search unsupported yet.");
+    public void initialize(List<String> lines) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -55,5 +46,5 @@ public class SpellGoMessage extends SpellMessage {
     public void display(PrintWriter printWriter) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

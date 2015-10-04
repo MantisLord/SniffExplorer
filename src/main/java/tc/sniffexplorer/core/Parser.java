@@ -6,27 +6,26 @@
 package tc.sniffexplorer.core;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tc.sniffexplorer.criteria.CriteriaSet;
-import tc.sniffexplorer.model.Message;
-import tc.sniffexplorer.model.OpCode;
-import tc.sniffexplorer.model.OpCodeType;
-import tc.sniffexplorer.model.smsg.EmoteMessage;
-import tc.sniffexplorer.model.smsg.OnMonsterMoveMessage;
-import tc.sniffexplorer.model.smsg.SpellGoMessage;
-import tc.sniffexplorer.model.smsg.SpellPeriodicAuraLogMessage;
-import tc.sniffexplorer.model.smsg.SpellStartMessage;
-import tc.sniffexplorer.model.smsg.UpdateObjectMessage;
+import tc.sniffexplorer.message.Message;
+import tc.sniffexplorer.message.smsg.EmoteMessage;
+import tc.sniffexplorer.message.smsg.OnMonsterMoveMessage;
+import tc.sniffexplorer.message.smsg.SpellGoMessage;
+import tc.sniffexplorer.message.smsg.SpellPeriodicAuraLogMessage;
+import tc.sniffexplorer.message.smsg.SpellStartMessage;
+import tc.sniffexplorer.message.smsg.UpdateObjectMessage;
 
 /**
  *
@@ -116,9 +115,17 @@ public class Parser {
         }
         
         /**
-         *  READ AND SET UP TIME AND DATE 
+         * READ AND SET UP TIME AND DATE 
+         * Template: 06/16/2012 22:48:04.393
          */
-        // @todo: implement this
+        String date=words[8]+" "+words[9];
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS", Locale.ENGLISH);
+        try {  
+            Date result =  df.parse(date);
+            msg.setDate(result);
+        } catch (ParseException ex) {
+            java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         /**
          *  SPECIFIC MESSAGES PARSING PROCEDURE (dependent on the opcode)

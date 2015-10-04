@@ -7,7 +7,7 @@ package tc.sniffexplorer.criteria;
 
 import java.util.HashSet;
 import java.util.Set;
-import tc.sniffexplorer.model.Message;
+import tc.sniffexplorer.message.Message;
 
 /**
  *

@@ -3,19 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tc.sniffexplorer.model.smsg;
+package tc.sniffexplorer.message.smsg;
 
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import tc.sniffexplorer.exceptions.ParseException;
-import tc.sniffexplorer.model.OpCode;
-import tc.sniffexplorer.model.OpCodeType;
-import tc.sniffexplorer.model.gameentities.Creature;
-import tc.sniffexplorer.model.gameentities.GameObject;
-import tc.sniffexplorer.model.gameentities.Pet;
-import tc.sniffexplorer.model.gameentities.Player;
-import tc.sniffexplorer.model.gameentities.Unit;
-import tc.sniffexplorer.model.gameentities.Vehicule;
+import tc.sniffexplorer.message.OpCode;
+import tc.sniffexplorer.message.OpCodeType;
+import tc.sniffexplorer.gameentities.Creature;
+import tc.sniffexplorer.gameentities.GameObject;
+import tc.sniffexplorer.gameentities.Pet;
+import tc.sniffexplorer.gameentities.Player;
+import tc.sniffexplorer.gameentities.Unit;
+import tc.sniffexplorer.gameentities.Vehicule;
 
 /** Class which represent SMSG_SPELL_START messages
  *
@@ -140,7 +142,8 @@ public class SpellStartMessage extends SpellMessage {
 
     @Override
     public void display(PrintWriter writer) {
-        writer.print(getOpCode().toString()+". ");
+        DateFormat dateFormat=new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+        writer.print(getOpCode().toString()+" "+dateFormat.format(getDate())+" ");
         
         writer.format("Spell ID: %6d. Caster Unit: %s. ", getSpellId(), getCasterUnit().toString());
         if(getItemCasterGUID()!=null)
