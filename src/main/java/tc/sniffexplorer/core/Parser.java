@@ -115,7 +115,7 @@ public class Parser {
         }
         
         /**
-         * READ AND SET UP TIME AND DATE 
+         * READ AND SET UP THE TIME AND DATE 
          * Template: 06/16/2012 22:48:04.393
          */
         String date=words[8]+" "+words[9];
@@ -125,6 +125,16 @@ public class Parser {
             msg.setDate(result);
         } catch (ParseException ex) {
             java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        /**
+         * READ AND SET UP THE ID
+         */
+        try{
+            msg.setId(Integer.valueOf(words[11]));
+        }catch(Exception e){
+            e.printStackTrace();
+            msg.setId(-1);
         }
         
         /**
