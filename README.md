@@ -1,8 +1,16 @@
-# SniffExplorer
+﻿# SniffExplorer
 Tool to more easily analyze and acquire relevant data contained in sniffs.
 
 #### Current example of output
 https://gist.github.com/chaodhib/27d293e51b269545edb8#file-gistfile1-txt
+
+#### How to use
+
+Warning, the project is still in a very early version and not many functionalities are working. 
+
+You need Java 8 installed. Right now, to use the program, put a parsed sniff file produced by WPP in the base folder and renamme it to "sniff.txt". Start the application. Wait around 5-10s, it will then produce the output.txt file.
+
+There is no way to modify the filter right now other than changing it in the code.
 
 #### You wish to explore the code and possibly contribute?
 
