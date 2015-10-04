@@ -30,14 +30,14 @@ public class SniffExplorer {
          * we are going to display the SMSG_SPELL_START messages only. 
          */
         SpellStartCriteria criteria=new SpellStartCriteria();
-        criteria.setCasterEntry((args.length==2)? Integer.parseInt(args[1]):CASTER_ENTRY);
+        criteria.setCasterEntry(CASTER_ENTRY);
         CriteriaSet criteriaSet=new CriteriaSet();
         criteriaSet.addCriteria(criteria);
         
         Viewer viewer=new ViewerFile();
         
         Parser parser=new Parser();
-        parser.parseFile((args.length>0)?args[0]:SNIFF_FILE_NAME, criteriaSet, viewer); // the name of the file is either given as a parameter when executing the jar or it defaults to the one specified above
+        parser.parseFile(SNIFF_FILE_NAME, criteriaSet, viewer); // the name of the file is either given as a parameter when executing the jar or it defaults to the one specified above
         
         viewer.cleanup();
     }
