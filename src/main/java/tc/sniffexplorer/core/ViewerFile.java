@@ -19,9 +19,9 @@ public class ViewerFile implements Viewer{
     
     private PrintWriter out;
     
-    public ViewerFile(){
+    public ViewerFile(String fileName){
         try {
-            out= new PrintWriter("sniffexplorer.txt");
+            out= new PrintWriter(fileName);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ViewerFile.class.getName()).log(Level.SEVERE, null, ex);
         }

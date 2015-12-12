@@ -16,8 +16,10 @@ import tc.sniffexplorer.criteria.smsg.SpellStartCriteria;
  * @author chaouki
  */
 public class SniffExplorer {
-    
-    private static final String SNIFF_FILE_NAME="sniff.txt";
+
+    private static final String INPUT_SNIFF_FILE_NAME ="sniff.txt";
+    private static final String OUTPUT_SNIFF_FILE_NAME = "sniffexplorer.txt";
+
     private static final Integer CASTER_ENTRY=15989; // Sapphiron's entry in Naxx 10.
 
     /**
@@ -34,10 +36,10 @@ public class SniffExplorer {
         CriteriaSet criteriaSet=new CriteriaSet();
         criteriaSet.addCriteria(criteria);
         
-        Viewer viewer=new ViewerFile();
+        Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME);
         
         Parser parser=new Parser();
-        parser.parseFile(SNIFF_FILE_NAME, criteriaSet, viewer); // the name of the file is either given as a parameter when executing the jar or it defaults to the one specified above
+        parser.parseFile(INPUT_SNIFF_FILE_NAME, criteriaSet, viewer); // the name of the file is either given as a parameter when executing the jar or it defaults to the one specified above
         
         viewer.cleanup();
     }
