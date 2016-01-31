@@ -22,7 +22,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>tc.sniffexplorer.launcher.SniffExplorer</mainClass>
+                            <mainClass>com.trinitycore.sniffexplorer.launcher.SniffExplorer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
