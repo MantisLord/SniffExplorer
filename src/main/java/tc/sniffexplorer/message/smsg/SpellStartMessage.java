@@ -19,7 +19,9 @@ import tc.sniffexplorer.gameentities.Player;
 import tc.sniffexplorer.gameentities.Unit;
 import tc.sniffexplorer.gameentities.Vehicule;
 
-/** Class which represent SMSG_SPELL_START messages
+/** Class which represent a SMSG_SPELL_START message
+ * 
+ * https://github.com/TrinityCore/WowPacketParser/blob/master/WowPacketParser/Parsing/Parsers/SpellHandler.cs#L726
  *
  * @author chaouki
  */

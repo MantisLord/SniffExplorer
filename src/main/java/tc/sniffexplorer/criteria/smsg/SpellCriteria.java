@@ -12,10 +12,11 @@ import tc.sniffexplorer.message.smsg.SpellMessage;
 import tc.sniffexplorer.message.smsg.SpellStartMessage;
 
 /**
+ * Valid for SPELL_START or SPELL_GO messages
  *
  * @author chaouki
  */
-public abstract class SpellCriteria extends Criteria {
+public class SpellCriteria extends Criteria {
     
     private Integer casterEntry;
     private String casterGUID;
@@ -28,7 +29,8 @@ public abstract class SpellCriteria extends Criteria {
             return false;
         
         if(!(message instanceof SpellMessage))
-            throw new IllegalArgumentException();
+            return false;
+        
         SpellMessage spellMessage=(SpellMessage) message;
         
         if(casterEntry!=null){

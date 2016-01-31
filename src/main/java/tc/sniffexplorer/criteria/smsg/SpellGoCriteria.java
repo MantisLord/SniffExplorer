@@ -9,6 +9,7 @@ import tc.sniffexplorer.criteria.Criteria;
 import tc.sniffexplorer.message.Message;
 import tc.sniffexplorer.message.OpCode;
 import tc.sniffexplorer.gameentities.IdentifiableByEntry;
+import tc.sniffexplorer.message.smsg.SpellGoMessage;
 import tc.sniffexplorer.message.smsg.SpellStartMessage;
 
 /**
@@ -22,7 +23,7 @@ import tc.sniffexplorer.message.smsg.SpellStartMessage;
  *
  * @author chaouki
  */
-public class SpellStartCriteria extends SpellCriteria {
+public class SpellGoCriteria extends SpellCriteria {
     
     private Integer targetEntry;
     private String targetGUID;
@@ -35,21 +36,12 @@ public class SpellStartCriteria extends SpellCriteria {
         if(!super.isSatisfiedBy(message))
             return false;
         
-        if(!(message instanceof SpellStartMessage))
+        if(!(message instanceof SpellGoMessage))
             return false;
         
-        SpellStartMessage spellStartMessage=(SpellStartMessage) message;
+        SpellGoMessage spellGoMessage=(SpellGoMessage) message;
         
-        if(targetEntry!=null){
-            if(!(spellStartMessage.getTargetUnit()instanceof IdentifiableByEntry))
-                return false;
-            IdentifiableByEntry entryInstance = (IdentifiableByEntry) spellStartMessage.getTargetUnit();
-            if(!entryInstance.getEntry().equals(targetEntry))
-                return false;
-        }
-        
-        if(targetGUID!=null && !spellStartMessage.getTargetUnit().getGUID().equals(targetGUID))
-            return false;
+        // todo: complete this
         
         return true;
     }

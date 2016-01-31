@@ -26,9 +26,6 @@ public class Criteria {
         if(message==null)
             return false;
         
-        if(opcode!=null && !message.getOpCode().equals(opcode))
-            return false;
-        
         if(relatedGUID!= null && !message.contains(relatedGUID))
             return false;
         

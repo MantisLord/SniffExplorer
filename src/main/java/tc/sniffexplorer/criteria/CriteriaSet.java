@@ -17,7 +17,7 @@ public class CriteriaSet {
     private Set<Criteria> criterion=new HashSet<>(); // two "same" criteria object shoudn't be in the set. 
     // therefore, equals() and hashcode() need to be reimplemented for Criteria and each child classes.
     
-    public boolean IsSatisfiedBy(Message message){
+    public boolean IsSatisfiedBy(Message message){ // a CriteriaSet is satisfied if at least one Criteria object match the message
         for(Criteria criteria:criterion)
             if(criteria.isSatisfiedBy(message))
                 return true;
