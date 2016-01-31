@@ -48,7 +48,7 @@ public class SniffExplorer {
         spellGoCriteriaA.setSpellId(49560);
         
         SpellGoCriteria spellGoCriteriaB=new SpellGoCriteria();
-        spellGoCriteriaB.setSpellId(49560);
+        spellGoCriteriaB.setSpellId(49576);
         
         SpellGoCriteria spellGoCriteriaC=new SpellGoCriteria();
         spellGoCriteriaC.setSpellId(49575);
