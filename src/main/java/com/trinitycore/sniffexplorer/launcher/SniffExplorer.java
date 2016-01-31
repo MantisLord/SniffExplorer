@@ -26,7 +26,8 @@ public class SniffExplorer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+
+        // construct the CriteriaSet
         SpellCriteria spellCriteriaA=new SpellCriteria();
         spellCriteriaA.setSpellId(49560);
         
@@ -45,7 +46,8 @@ public class SniffExplorer {
         criteriaSet.addCriteria(spellCriteriaB);
         criteriaSet.addCriteria(spellCriteriaC);
         criteriaSet.addCriteria(spellCriteriaD);
-        
+
+        // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME);
         
         Parser parser=new Parser();
