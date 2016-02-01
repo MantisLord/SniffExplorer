@@ -49,9 +49,22 @@ public class SpellCriteria extends Criteria {
         return true;
     }
 
+    public SpellCriteria() {
+    }
+
+    public SpellCriteria(Integer spellId) {
+        this.spellId = spellId;
+    }
+
+    public SpellCriteria( Integer spellId, Integer casterEntry, String casterGUID) {
+        this.casterEntry = casterEntry;
+        this.casterGUID = casterGUID;
+        this.spellId = spellId;
+    }
+
     /*
-    GETTERS AND SETTERS
-    */
+            GETTERS AND SETTERS
+            */
     public Integer getCasterEntry() {
         return casterEntry;
     }

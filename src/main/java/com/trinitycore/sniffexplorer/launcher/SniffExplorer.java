@@ -28,24 +28,11 @@ public class SniffExplorer {
     public static void main(String[] args) {
 
         // construct the CriteriaSet
-        SpellCriteria spellCriteriaA=new SpellCriteria();
-        spellCriteriaA.setSpellId(49560);
-        
-        SpellCriteria spellCriteriaB=new SpellCriteria();
-        spellCriteriaB.setSpellId(49576);
-        
-        SpellCriteria spellCriteriaC=new SpellCriteria();
-        spellCriteriaC.setSpellId(49575);
-        
-        SpellCriteria spellCriteriaD=new SpellCriteria();
-        spellCriteriaD.setSpellId(51399);
-       
-        
         CriteriaSet criteriaSet=new CriteriaSet();
-        criteriaSet.addCriteria(spellCriteriaA);
-        criteriaSet.addCriteria(spellCriteriaB);
-        criteriaSet.addCriteria(spellCriteriaC);
-        criteriaSet.addCriteria(spellCriteriaD);
+        criteriaSet.addCriteria(new SpellCriteria(49560));
+        criteriaSet.addCriteria(new SpellCriteria(49576));
+        criteriaSet.addCriteria(new SpellCriteria(49575));
+        criteriaSet.addCriteria(new SpellCriteria(51399));
 
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME);
