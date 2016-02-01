@@ -9,6 +9,7 @@ import com.trinitycore.sniffexplorer.core.Parser;
 import com.trinitycore.sniffexplorer.core.Viewer;
 import com.trinitycore.sniffexplorer.core.ViewerFile;
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
+import com.trinitycore.sniffexplorer.criteria.smsg.AuraUpdateCriteria;
 import com.trinitycore.sniffexplorer.criteria.smsg.SpellCriteria;
 
 /**
@@ -33,6 +34,9 @@ public class SniffExplorer {
         criteriaSet.addCriteria(new SpellCriteria(49576));
         criteriaSet.addCriteria(new SpellCriteria(49575));
         criteriaSet.addCriteria(new SpellCriteria(51399));
+
+        criteriaSet.addCriteria(new AuraUpdateCriteria(51399));
+        criteriaSet.addCriteria(new AuraUpdateCriteria(49575));
 
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME);
