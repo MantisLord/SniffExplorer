@@ -18,15 +18,10 @@ import java.util.Locale;
 import java.util.logging.Level;
 
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
-import com.trinitycore.sniffexplorer.message.smsg.UpdateObjectMessage;
+import com.trinitycore.sniffexplorer.message.smsg.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.smsg.EmoteMessage;
-import com.trinitycore.sniffexplorer.message.smsg.OnMonsterMoveMessage;
-import com.trinitycore.sniffexplorer.message.smsg.SpellGoMessage;
-import com.trinitycore.sniffexplorer.message.smsg.SpellPeriodicAuraLogMessage;
-import com.trinitycore.sniffexplorer.message.smsg.SpellStartMessage;
 
 /**
  *
@@ -109,6 +104,9 @@ public class Parser {
 //            case "SMSG_MOVE_UPDATE":                        // XXXXXXX
 //                msg=new SpellStartMessage();
 //                break;
+            case "SMSG_AURA_UPDATE":                    // 0x0DD
+                msg=new AuraUpdateMessage();
+                break;
                 
             default:
                 log.info("Unsupported OpCode found: "+opCodeString);

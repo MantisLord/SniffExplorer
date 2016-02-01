@@ -17,5 +17,6 @@ public enum OpCode {
     SMSG_MOVE_UPDATE,
     SMSG_ON_MONSTER_MOVE,
     SMSG_UPDATE_OBJECT,
-    SMSG_EMOTE;
+    SMSG_EMOTE,
+    SMSG_AURA_UPDATE;
 }
