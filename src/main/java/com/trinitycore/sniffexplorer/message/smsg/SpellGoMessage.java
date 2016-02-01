@@ -58,9 +58,8 @@ public class SpellGoMessage extends SpellMessage {
 
     @Override
     public void display(PrintWriter writer) { // todo: FINISH THIS. ATM ITS A QUICK AND DIRTY COPY PAST OF SPELL_START_MESSAGE
-        DateFormat dateFormat=new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
-        writer.print(getOpCode().toString()+"    "+dateFormat.format(getDate())+" "); // todo: extra spaces has been added temporarly to take into account the different lenghts of the op codes. Need a proper fix
-        
+        super.display(writer);
+
         writer.format("Spell ID: %6d. Caster Unit: %s. ", getSpellId(), getCasterUnit().toString());
         if(getItemCasterGUID()!=null)
             writer.format("Item caster GUID: %18s. ", getItemCasterGUID().toString());

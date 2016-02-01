@@ -7,7 +7,10 @@ package com.trinitycore.sniffexplorer.message;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +32,11 @@ public abstract class Message implements Serializable {
     public abstract OpCodeType getOpCodeType();
     abstract public boolean contains(Integer relatedEntry);
     abstract public boolean contains(Long relatedGUID);
-    abstract public void display(PrintWriter printWriter);
+    public void display(PrintWriter printWriter){
+        DateFormat dateFormat=new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+        Formatter formatter = new Formatter(printWriter);
+        formatter.format("%-17s %23s ", getOpCode().toString(), dateFormat.format(getDate()));
+    }
 
     public int getId() {
         return id;

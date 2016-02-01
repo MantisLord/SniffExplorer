@@ -82,10 +82,9 @@ public class AuraUpdateMessage extends Message {
 
     @Override
     public void display(PrintWriter writer) {
-        DateFormat dateFormat=new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
-        writer.print(getOpCode().toString()+" "+dateFormat.format(getDate())+" ");
+        super.display(writer);
 
-        writer.format("Spell ID: %6d. Owner Unit: %s. ", getSpellId(), getOwner().toString());
+        writer.format("Spell ID: %6d. Owner Unit: %s.", getSpellId(), getOwner().toString());
         writer.println();
     }
 

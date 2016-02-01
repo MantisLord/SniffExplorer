@@ -145,9 +145,8 @@ public class SpellStartMessage extends SpellMessage {
 
     @Override
     public void display(PrintWriter writer) {
-        DateFormat dateFormat=new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
-        writer.print(getOpCode().toString()+" "+dateFormat.format(getDate())+" ");
-        
+        super.display(writer);
+
         writer.format("Spell ID: %6d. Caster Unit: %s. ", getSpellId(), getCasterUnit().toString());
         if(getItemCasterGUID()!=null)
             writer.format("Item caster GUID: %18s. ", getItemCasterGUID().toString());
