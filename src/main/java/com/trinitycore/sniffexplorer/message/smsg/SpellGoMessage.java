@@ -64,7 +64,8 @@ public class SpellGoMessage extends SpellMessage {
         writer.format("Spell ID: %6d. Caster Unit: %s. ", getSpellId(), getCasterUnit().toString());
         if(getItemCasterGUID()!=null)
             writer.format("Item caster GUID: %18s. ", getItemCasterGUID().toString());
-//        writer.format("Target Flags: %2d. Target Unit: %s Number: %d.%n", getTargetFlags(), getTargetUnit(), getId());
+//        writer.format("Target Flags: %2d. Target Unit: %s Number: %d.", getTargetFlags(), getTargetUnit(), getId());
+        writer.println();
     }
     
 }
