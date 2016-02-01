@@ -24,7 +24,7 @@ public class ViewerFile implements Viewer{
     private PrintWriter out;
 
     // used to group together spells and other events happening at the same time
-    private static final int MAX_DURATION_DIFFERENCE = 500;
+    private static final int MAX_DURATION_DIFFERENCE = 400;
     private static final boolean GROUP_BY_TIMESTAMP = true;
     private Date timeStampOfPreviousMessage;
     
