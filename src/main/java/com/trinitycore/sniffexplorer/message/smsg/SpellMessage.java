@@ -8,13 +8,101 @@ package com.trinitycore.sniffexplorer.message.smsg;
 import java.util.List;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
-import com.trinitycore.sniffexplorer.gameentities.Creature;
-import com.trinitycore.sniffexplorer.gameentities.Pet;
-import com.trinitycore.sniffexplorer.gameentities.Unit;
-import com.trinitycore.sniffexplorer.gameentities.Vehicule;
+import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.gameentities.GameObject;
-import com.trinitycore.sniffexplorer.gameentities.Player;
+import com.trinitycore.sniffexplorer.message.ParseUtils;
+
+
+ /* template
+ 0   ServerToClient: SMSG_SPELL_START (0x6415) Length: 53 ConnIdx: 2 Time: 06/17/2012 01:41:34.793 Number: 413913
+ 1   Caster GUID: Full: 0xF130CD160001CF6B Type: Creature Entry: 52502 Low: 118635
+ 2   Caster Unit GUID: Full: 0xF130CD160001CF6B Type: Creature Entry: 52502 Low: 118635
+ 3   Cast Count: 0
+ 4   Spell ID: 97155 (97155)
+ 5   Cast Flags: HasTrajectory, Projectile (34)
+ 6   Time: 0
+ 7   Time2: 0
+ 8   Target Flags: Unit (2)
+ 9   Target GUID: Full: 0xF130CD1800027FCC Type: Creature Entry: 52504 Low: 163788
+ 10  Ammo Display ID: 2414
+ 11  Ammo Inventory Type: Ammo (24)
+    */
+
+    /*
+    ServerToClient: SMSG_SPELL_START (0x6415) Length: 39 ConnIdx: 2 Time: 06/16/2012 22:48:02.677 Number: 7012
+    Caster GUID: Full: 0xFFFFEEEEDDDDCCC Type: Player Low: 11112222 Name: XXXXX
+    Caster Unit GUID: Full: 0xFFFFEEEEDDDDCCC Type: Player Low: 11112222 Name: XXXXX
+    Cast Count: 0
+    Spell ID: 99055 (99055)
+    Cast Flags: PendingCast, HasTrajectory, Unknown3 (11)
+    Time: 0
+    Time2: 0
+    Target Flags: Unit (2)
+    Target GUID: Full: 0xFFFFEEEEDDDDCCC Type: Player Low: 11112222 Name: XXXXX
+    */
+
+    /*
+    ServerToClient: SMSG_SPELL_START (0x6415) Length: 33 ConnIdx: 2 Time: 06/17/2012 01:41:15.932 Number: 412134
+    Caster GUID: Full: 0xFFFFEEEEDDDDCCC Type: Player Low: 11112222 Name: XXXXX
+    Caster Unit GUID: Full: 0xFFFFEEEEDDDDCCC Type: Player Low: 11112222 Name: XXXXX
+    Cast Count: 0
+    Spell ID: 54181 (54181)
+    Cast Flags: PendingCast, HasTrajectory, Unknown3 (11)
+    Time: 0
+    Time2: 0
+    Target Flags: Self (0)
+    */
+
+    /*
+    ServerToClient: SMSG_SPELL_GO (0x6DEF) Length: 44 ConnIdx: 2 Time: 02/25/2012 21:50:25.252 Number: 19793
+    Caster GUID: Full: 0x500000004468452 Type: Player Low: 71730258
+    Caster Unit GUID: Full: 0x500000004468452 Type: Player Low: 71730258
+    Cast Count: 0
+    Spell ID: 109860 (109860)
+    Cast Flags: PendingCast, Unknown2, Unknown7 (261)
+    Time: 0
+    Time2: 3061742090
+    Hit Count: 1
+    [0] Hit GUID: Full: 0x500000004468452 Type: Player Low: 71730258
+    Miss Count: 0
+    Target Flags: Unit (2)
+    Target GUID: 0x0
+    */
+
+    /*
+    ServerToClient: SMSG_SPELL_GO (0x6DEF) Length: 45 ConnIdx: 2 Time: 02/25/2012 21:50:22.834 Number: 19588
+    Caster GUID: Full: 0x45000002D5DB44B0 Type: Item Low: 12177851568
+    Caster Unit GUID: Full: 0x50000000444F698 Type: Player Low: 71628440
+    Cast Count: 0
+    Spell ID: 53365 (53365)
+    Cast Flags: PendingCast, Unknown3, Unknown7, Unknown23 (134217993)
+    Time: 0
+    Time2: 3061739676
+    Hit Count: 1
+    [0] Hit GUID: Full: 0x50000000444F698 Type: Player Low: 71628440
+    Miss Count: 0
+    Target Flags: Unit (2)
+    Target GUID: 0x0
+     */
+
+    /*
+    ServerToClient: SMSG_SPELL_GO (0x6E16) Length: 59 ConnIdx: 2 Time: 06/17/2012 00:39:28.662 Number: 307757
+    Caster GUID: Full: 0xF112EA21000018EA Type: GameObject Entry: 191009 Low: 6378
+    Caster Unit GUID: 0x0
+    Cast Count: 0
+    Spell ID: 17609 (17609)
+    Cast Flags: PendingCast, Unknown2, Unknown7, Unknown13 (33029)
+    Time: 0
+    Time2: 4158746954
+    Hit Count: 1
+    [0] Hit GUID: Full: 0x60000000456E3D8 Type: Player Low: 72803288 Name: Salantharasa
+    Miss Count: 0
+    Target Flags: Unit, DestinationLocation (66)
+    Target GUID: Full: 0x60000000456E3D8 Type: Player Low: 72803288 Name: Salantharasa
+    Destination Transport GUID: 0x0
+    Destination Position: X: 1776.5 Y: -4338.8 Z: -7.48
+    Unk Byte 2: 0
+     */
 
 /**
  *
@@ -23,79 +111,36 @@ import com.trinitycore.sniffexplorer.gameentities.Player;
 public abstract class SpellMessage extends Message {
     
     private Unit casterUnit;
-    private String itemCasterGUID;
+    private Unit caster;
     
     private Integer spellId;
     
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        
-        /**
-         * Caster
-         */
-        String[] words=lines.get(1).split("\\s+");
-        if(!words[0].equals("Caster") || 
-                (!words[5].equals("Creature") 
-                && !words[5].equals("Player") 
-                && !words[5].equals("Vehicle") 
-                && !words[5].equals("Pet") 
-                && !words[5].equals("Item")
-                && !words[5].equals("GameObject")))
-            throw new ParseException();
-            
-        if(words[5].equals("Creature"))
-            casterUnit=new Creature(Integer.parseInt(words[7]), words[3]);
-        else if(words[5].equals("Player"))
-            casterUnit=new Player((words.length==10)?words[9]:"", words[3]);
-        else if(words[5].equals("Vehicle"))
-            casterUnit=new Vehicule(Integer.parseInt(words[7]), words[3]);
-        else if(words[5].equals("Pet"))
-            casterUnit=new Pet(words[3]);
-        else if(words[5].equals("Item")){
-            itemCasterGUID=words[3];
-            
-            words=lines.get(2).split("\\s+");
-            if(words[6].equals("Player"))
-                casterUnit=new Player((words.length==11)?words[10]:"", words[4]);
-            else
-                throw new ParseException();
-        }
-        else if(words[5].equals("GameObject")) // @todo: harmonize the way GOs are modeled and stored.
-            casterUnit=new GameObject(Integer.parseInt(words[7]), words[3]);
-        else
-            throw new ParseException();
-        
+        caster=ParseUtils.parseGuidRemovePrefix(lines.get(1), "Caster GUID");
+        casterUnit=ParseUtils.parseGuidRemovePrefix(lines.get(2), "Caster Unit GUID");
+
+        int index=3;
+
         /**
          *  Spell ID
          */
-        words=lines.get(4).split("\\s+");
-        if(!words[0].equals("Spell") || !words[1].equals("ID:"))
-            throw new ParseException();
-        
-        spellId=Integer.valueOf(words[2]);
+        while(!lines.get(index).startsWith("Spell ID"))
+            index++;
+
+        String spellIdString = ParseUtils.removePrefixAndGetFirstElement(lines.get(index), "Spell ID");
+        spellId=Integer.valueOf(spellIdString);
     }
 
     public Unit getCasterUnit() {
         return casterUnit;
     }
 
-    public void setCasterUnit(Unit casterUnit) {
-        this.casterUnit = casterUnit;
-    }
-
-    public String getItemCasterGUID() {
-        return itemCasterGUID;
-    }
-
-    public void setItemCasterGUID(String itemCasterGUID) {
-        this.itemCasterGUID = itemCasterGUID;
-    }
-
     public Integer getSpellId() {
         return spellId;
     }
 
-    public void setSpellId(Integer spellId) {
-        this.spellId = spellId;
+    public Unit getCaster() {
+        return caster;
     }
 }

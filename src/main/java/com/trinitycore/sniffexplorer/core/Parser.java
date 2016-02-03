@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
 
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
 import com.trinitycore.sniffexplorer.message.smsg.*;
@@ -50,8 +49,8 @@ public class Parser {
                 }
             }
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+            log.error("", ex);
+        }
     }
 
     private Message parseOneMessage(List<String> lines) {
@@ -123,7 +122,7 @@ public class Parser {
             Date result =  df.parse(date);
             msg.setDate(result);
         } catch (ParseException ex) {
-            java.util.logging.Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Could not parse the date time.", ex);
         }
         
         /**

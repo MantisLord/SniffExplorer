@@ -3,35 +3,42 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.trinitycore.sniffexplorer.gameentities;
+package com.trinitycore.sniffexplorer.game.entities;
 
 /**
  *
  * @author chaouki
  */
-public class GameObject extends Unit implements IdentifiableByEntry {
-    
+public class Creature extends Unit implements IdentifiableByEntry {
+
     private Integer entry;
 
-    public GameObject() {
+    public Creature() {
     }
 
-    public GameObject(Integer entry, String GUID) {
+    public Creature(Integer entry, String GUID) {
         super(GUID);
         this.entry = entry;
     }
-    
+
+    @Override
+    public void setEntry(Integer entry) {
+        this.entry = entry;
+    }
+
     @Override
     public Integer getEntry() {
         return entry;
     }
 
-    public void setEntry(Integer entry) {
+    public void Integer(Integer entry) {
         this.entry = entry;
     }
-    
+
     @Override
     public String toString() {
-        return "GameObject{" + "entry=" + entry + ", GUID="+GUID+"}";
+        return "Creature{" + "entry=" + entry + ", GUID="+GUID+"}";
     }
+    
+    
 }

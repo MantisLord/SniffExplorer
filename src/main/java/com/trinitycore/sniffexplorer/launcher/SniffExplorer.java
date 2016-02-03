@@ -36,7 +36,8 @@ public class SniffExplorer {
         criteriaSet.addCriteria(new SpellCriteria(51399));
 
         criteriaSet.addCriteria(new AuraUpdateCriteria(51399));
-        criteriaSet.addCriteria(new AuraUpdateCriteria(49575));
+        criteriaSet.addCriteria(new AuraUpdateCriteria(49560));
+//        criteriaSet.addCriteria(new AuraUpdateCriteria());
 
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME);

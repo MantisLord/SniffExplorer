@@ -6,19 +6,13 @@
 package com.trinitycore.sniffexplorer.message.smsg;
 
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
-import com.trinitycore.sniffexplorer.gameentities.Unit;
-import com.trinitycore.sniffexplorer.gameentities.Vehicule;
+import com.trinitycore.sniffexplorer.game.entities.*;
 import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.gameentities.Creature;
-import com.trinitycore.sniffexplorer.gameentities.GameObject;
-import com.trinitycore.sniffexplorer.gameentities.Pet;
-import com.trinitycore.sniffexplorer.gameentities.Player;
+import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 /** Class which represent a SMSG_SPELL_START message
  * 
@@ -61,37 +55,16 @@ public class SpellStartMessage extends SpellMessage {
             targetUnit=getCasterUnit();
         }
         else if(targetFlags==2){ // case Unit
-            words=lines.get(9).split("\\s+");
-            if(!words[0].equals("Target") || 
-                    (!words[5].equals("Creature") 
-                    && !words[5].equals("Player") 
-                    && !words[5].equals("Vehicle") 
-                    && !words[5].equals("Pet") 
-                    && !words[5].equals("Item")
-                    && !words[5].equals("GameObject")))
-                throw new ParseException();
-            
-            if(words[5].equals("Creature"))
-                targetUnit=new Creature(Integer.parseInt(words[7]), words[3]);
-            else if(words[5].equals("Player"))
-                targetUnit=new Player((words.length==10)?words[9]:"", words[3]);
-            else if(words[5].equals("Vehicle"))
-                targetUnit=new Vehicule(Integer.parseInt(words[7]), words[3]);
-            else if(words[5].equals("Pet"))
-                targetUnit=new Pet(words[3]);
-            else if(words[5].equals("GameObject")) // @todo: harmonize the way GOs are modeled and stored.
-                targetUnit=new GameObject(Integer.parseInt(words[7]), words[3]);
-            else
-                throw new ParseException();
+            targetUnit= ParseUtils.parseGuidRemovePrefix(lines.get(9), "Target GUID");
         }
         else if(targetFlags==16)                                    // Item
-            log.info("targetFlags 16 unsupported yet.");
+            log.warn("targetFlags 16 unsupported yet.");
         else if(targetFlags==64)                                    // DestinationLocation
-            log.info("targetFlags 64 unsupported yet.");
+            log.warn("targetFlags 64 unsupported yet.");
         else if(targetFlags==96)                                    // SourceLocation, DestinationLocation
-            log.info("targetFlags 96 unsupported yet.");
+            log.warn("targetFlags 96 unsupported yet.");
         else if(targetFlags==2048)                                  // GameObject
-            log.info("targetFlags 2048 unsupported yet.");
+            log.warn("targetFlags 2048 unsupported yet.");
         else
             throw new ParseException("Target Flag "+targetFlags+" unsupported yet.");
     }
@@ -107,8 +80,8 @@ public class SpellStartMessage extends SpellMessage {
             GameObject caster=(GameObject)getCasterUnit();
             if(caster.getEntry().equals(relatedEntry))
                 return true;
-        } else if(getCasterUnit() instanceof Vehicule){
-            Vehicule caster=(Vehicule)getCasterUnit();
+        } else if(getCasterUnit() instanceof Vehicle){
+            Vehicle caster=(Vehicle)getCasterUnit();
             if(caster.getEntry().equals(relatedEntry))
                 return true;
         }
@@ -122,8 +95,8 @@ public class SpellStartMessage extends SpellMessage {
             GameObject target=(GameObject)getTargetUnit();
             if(target.getEntry().equals(relatedEntry))
                 return true;
-        } else if(getTargetUnit() instanceof Vehicule){
-            Vehicule target=(Vehicule)getTargetUnit();
+        } else if(getTargetUnit() instanceof Vehicle){
+            Vehicle target=(Vehicle)getTargetUnit();
             if(target.getEntry().equals(relatedEntry))
                 return true;
         }
@@ -148,9 +121,10 @@ public class SpellStartMessage extends SpellMessage {
         super.display(writer);
 
         writer.format("Spell ID: %6d. Caster Unit: %s. ", getSpellId(), getCasterUnit().toString());
-        if(getItemCasterGUID()!=null)
-            writer.format("Item caster GUID: %18s. ", getItemCasterGUID().toString());
-        writer.format("Target Flags: %2d. Target Unit: %s Number: %d.", getTargetFlags(), getTargetUnit(), getId());
+        if(getCaster() instanceof Item)
+            writer.format("Item caster GUID: %18s. ", getCaster().getGUID());
+//        writer.format("Target Flags: %2d. Target Unit: %s Number: %d.", getTargetFlags(), getTargetUnit(), getId());
+        writer.format("Target Flags: %2d. Target Unit: %s.", getTargetFlags(), getTargetUnit());
         writer.println();
     }
     

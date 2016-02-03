@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.trinitycore.sniffexplorer.gameentities;
+package com.trinitycore.sniffexplorer.game.entities;
 
 /**
  *
@@ -11,4 +11,5 @@ package com.trinitycore.sniffexplorer.gameentities;
  */
 public interface IdentifiableByEntry {
     public Integer getEntry();
+    public void setEntry(Integer entry);
 }

@@ -1,14 +1,12 @@
 package com.trinitycore.sniffexplorer.message.smsg;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
-import com.trinitycore.sniffexplorer.gameentities.*;
+import com.trinitycore.sniffexplorer.game.entities.*;
 import com.trinitycore.sniffexplorer.message.Message;
 import com.trinitycore.sniffexplorer.message.OpCode;
 import com.trinitycore.sniffexplorer.message.OpCodeType;
 
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 //ServerToClient: SMSG_AURA_UPDATE (0x4707) Length: 30 ConnIdx: 2 Time: 06/16/2012 23:41:13.241 Number: 170021
@@ -42,7 +40,7 @@ public class AuraUpdateMessage extends Message {
         else if(words[4].equals("Player"))
             owner=new Player((words.length==10)?words[8]:"", words[2]); // sometimes, the name is missing.
         else if(words[4].equals("Vehicle"))
-            owner=new Vehicule(Integer.parseInt(words[6]), words[2]);
+            owner=new Vehicle(Integer.parseInt(words[6]), words[2]);
         else if(words[4].equals("Pet"))
             owner=new Pet(words[2]);
         else if(words[4].equals("GameObject")) // @todo: harmonize the way GOs are modeled and stored.

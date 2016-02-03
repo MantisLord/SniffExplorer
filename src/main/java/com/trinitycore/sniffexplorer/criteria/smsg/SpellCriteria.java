@@ -6,7 +6,7 @@
 package com.trinitycore.sniffexplorer.criteria.smsg;
 
 import com.trinitycore.sniffexplorer.criteria.Criteria;
-import com.trinitycore.sniffexplorer.gameentities.IdentifiableByEntry;
+import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.message.Message;
 import com.trinitycore.sniffexplorer.message.smsg.SpellMessage;
 

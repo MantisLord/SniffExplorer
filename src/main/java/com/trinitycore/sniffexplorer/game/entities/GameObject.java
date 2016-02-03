@@ -3,24 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.trinitycore.sniffexplorer.gameentities;
+package com.trinitycore.sniffexplorer.game.entities;
 
 /**
  *
  * @author chaouki
  */
-public class Vehicule extends Unit implements IdentifiableByEntry{
+public class GameObject extends Unit implements IdentifiableByEntry {
     
     private Integer entry;
 
-    public Vehicule() {
+    public GameObject() {
     }
 
-    public Vehicule(Integer entry, String GUID) {
+    public GameObject(Integer entry, String GUID) {
         super(GUID);
         this.entry = entry;
     }
-
+    
     @Override
     public Integer getEntry() {
         return entry;
@@ -29,11 +29,9 @@ public class Vehicule extends Unit implements IdentifiableByEntry{
     public void setEntry(Integer entry) {
         this.entry = entry;
     }
-
+    
     @Override
     public String toString() {
-        return "Vehicule{" + "entry=" + entry + ", GUID="+GUID+"}";
+        return "GameObject{" + "entry=" + entry + ", GUID="+GUID+"}";
     }
-    
-    
 }
