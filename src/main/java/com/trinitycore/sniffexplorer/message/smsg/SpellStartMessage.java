@@ -72,31 +72,15 @@ public class SpellStartMessage extends SpellMessage {
         @Override
     public boolean contains(Integer relatedEntry) {
         // the caster could have the specified entry...
-        if(getCasterUnit() instanceof Creature){
-            Creature caster=(Creature)getCasterUnit();
-            if(caster.getEntry().equals(relatedEntry))
-                return true;
-        } else if(getCasterUnit() instanceof GameObject){
-            GameObject caster=(GameObject)getCasterUnit();
-            if(caster.getEntry().equals(relatedEntry))
-                return true;
-        } else if(getCasterUnit() instanceof Vehicle){
-            Vehicle caster=(Vehicle)getCasterUnit();
+        if(getCasterUnit() instanceof IdentifiableByEntry){
+            IdentifiableByEntry caster=(IdentifiableByEntry) getCasterUnit();
             if(caster.getEntry().equals(relatedEntry))
                 return true;
         }
         
         // or the target...
-        if(getTargetUnit() instanceof Creature){
-            Creature target=(Creature)getTargetUnit();
-            if(target.getEntry().equals(relatedEntry))
-                return true;
-        } else if(getTargetUnit() instanceof GameObject){
-            GameObject target=(GameObject)getTargetUnit();
-            if(target.getEntry().equals(relatedEntry))
-                return true;
-        } else if(getTargetUnit() instanceof Vehicle){
-            Vehicle target=(Vehicle)getTargetUnit();
+        if(getTargetUnit() instanceof IdentifiableByEntry){
+            IdentifiableByEntry target=(IdentifiableByEntry) getTargetUnit();
             if(target.getEntry().equals(relatedEntry))
                 return true;
         }
