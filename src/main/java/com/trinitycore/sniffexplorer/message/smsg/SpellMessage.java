@@ -120,15 +120,11 @@ public abstract class SpellMessage extends Message {
         caster=ParseUtils.parseGuidRemovePrefix(lines.get(1), "Caster GUID");
         casterUnit=ParseUtils.parseGuidRemovePrefix(lines.get(2), "Caster Unit GUID");
 
-        int index=3;
-
         /**
          *  Spell ID
          */
-        while(!lines.get(index).startsWith("Spell ID"))
-            index++;
-
-        String spellIdString = ParseUtils.removePrefixAndGetFirstElement(lines.get(index), "Spell ID");
+        int spellIdIndex = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Spell ID", 3);
+        String spellIdString = ParseUtils.removePrefixAndGetFirstElement(lines.get(spellIdIndex), "Spell ID");
         spellId=Integer.valueOf(spellIdString);
     }
 

@@ -11,6 +11,14 @@ import com.trinitycore.sniffexplorer.core.ViewerFile;
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
 import com.trinitycore.sniffexplorer.criteria.smsg.AuraUpdateCriteria;
 import com.trinitycore.sniffexplorer.criteria.smsg.SpellCriteria;
+import com.trinitycore.sniffexplorer.criteria.smsg.SpellGoCriteria;
+import com.trinitycore.sniffexplorer.criteria.smsg.SpellStartCriteria;
+import com.trinitycore.sniffexplorer.message.smsg.SpellGoMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -18,7 +26,10 @@ import com.trinitycore.sniffexplorer.criteria.smsg.SpellCriteria;
  */
 public class SniffExplorer {
 
-    private static final String INPUT_SNIFF_FILE_NAME ="sniff.txt";
+
+    protected static final Logger log = LoggerFactory.getLogger(SniffExplorer.class);
+
+    private static final String INPUT_SNIFF_FILE_NAME ="sniff4.txt";
     private static final String OUTPUT_SNIFF_FILE_NAME = "sniffexplorer.txt";
 
 //    private static final Integer CASTER_ENTRY=15989; // Sapphiron's entry in Naxx 10.
@@ -30,6 +41,15 @@ public class SniffExplorer {
 
         // construct the CriteriaSet
         CriteriaSet criteriaSet=new CriteriaSet();
+
+        /*
+        SpellGoCriteria spellGoCriteria=new SpellGoCriteria();
+        spellGoCriteria.setHasNonEmptyImmuneMissList(true);
+        criteriaSet.addCriteria(spellGoCriteria);
+        Set<Integer> spellIdSet=new HashSet<>();
+        */
+
+        /*
         criteriaSet.addCriteria(new SpellCriteria(49560));
         criteriaSet.addCriteria(new SpellCriteria(49576));
         criteriaSet.addCriteria(new SpellCriteria(49575));
@@ -38,14 +58,26 @@ public class SniffExplorer {
         criteriaSet.addCriteria(new AuraUpdateCriteria(51399));
         criteriaSet.addCriteria(new AuraUpdateCriteria(49560));
 //        criteriaSet.addCriteria(new AuraUpdateCriteria());
+        */
+
+        SpellCriteria spellCriteria= new SpellCriteria();
+//        spellCriteria.setCasterGUID("0x280000003283CBC");
+        criteriaSet.addCriteria(spellCriteria);
+
 
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME);
-        
+
         Parser parser=new Parser();
-        parser.parseFile(INPUT_SNIFF_FILE_NAME, criteriaSet, viewer); // the name of the file is either given as a parameter when executing the jar or it defaults to the one specified above
-        
+        parser.parseFile(INPUT_SNIFF_FILE_NAME, criteriaSet, message -> {
+            viewer.show(message);
+//            if(message instanceof SpellGoMessage)
+//                spellIdSet.add(((SpellGoMessage) message).getSpellId());
+        });
+
         viewer.cleanup();
+
+//        log.warn(spellIdSet.toString());
     }
     
 }

@@ -14,7 +14,8 @@ public enum UnitType {
     PET("Pet", Pet.class),
     GAME_OBJECT("GameObject", GameObject.class),
     ITEM("Item", Item.class),
-    TRANSPORT("Transport", Transport.class);
+    TRANSPORT("Transport", Transport.class),
+    DYNAMIC_OBJECT("DynamicObject", DynamicObject.class);
 
     private Class<Unit> unitClass;
     private String name;

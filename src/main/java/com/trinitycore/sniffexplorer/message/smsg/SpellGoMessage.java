@@ -105,7 +105,7 @@ public class SpellGoMessage extends SpellMessage {
     public void display(PrintWriter writer) { // todo: FINISH THIS. ATM ITS A QUICK AND DIRTY COPY PAST OF SPELL_START_MESSAGE
         super.display(writer);
 
-        writer.format("Spell ID: %6d. Caster Unit: %s. ", getSpellId(), getCasterUnit().toString());
+        writer.format("Spell ID: %6d. Caster Unit: %s. ", getSpellId(), getCasterUnit());
         if(getCaster() instanceof Item)
             writer.format(" Item caster GUID: %18s.", getCaster().getGUID());
 //        writer.format("Target Flags: %2d. Target Unit: %s Number: %d.", getTargetFlags(), getTargetUnit(), getId());
@@ -113,5 +113,12 @@ public class SpellGoMessage extends SpellMessage {
         writer.format(" Miss list: %s.", missedUnits);
         writer.println();
     }
-    
+
+    public List<Unit> getHitUnits() {
+        return hitUnits;
+    }
+
+    public Map<Unit, MissType> getMissedUnits() {
+        return missedUnits;
+    }
 }

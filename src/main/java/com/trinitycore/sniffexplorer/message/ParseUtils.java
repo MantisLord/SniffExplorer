@@ -5,6 +5,7 @@ import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.game.data.UnitType;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -84,5 +85,19 @@ public class ParseUtils {
         }
 
         return unit;
+    }
+
+    public static int getLineIndexThatStartWithPrefix(List<String> lines, String prefix, int startAt) {
+        int spellIdIndex= startAt;
+        while(!lines.get(spellIdIndex).startsWith(prefix))
+            spellIdIndex++;
+        return spellIdIndex;
+    }
+
+    public static int getLineIndexThatStartWithPrefix(List<String> lines, String prefix) {
+        int spellIdIndex=0;
+        while(!lines.get(spellIdIndex).startsWith(prefix))
+            spellIdIndex++;
+        return spellIdIndex;
     }
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
 import com.trinitycore.sniffexplorer.message.smsg.*;
@@ -33,7 +34,7 @@ public class Parser {
 //    private int countSMSG=0;
 //    private int countCMSG=0;
 
-    public void parseFile(String sniffFileName, CriteriaSet criteriaSet, Viewer viewer){
+    public void parseFile(String sniffFileName, CriteriaSet criteriaSet, Consumer<Message> consumer){
         
         List<String> lines=new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(sniffFileName))) {
@@ -43,7 +44,7 @@ public class Parser {
                 else if(!lines.isEmpty()){
                     Message msg=parseOneMessage(lines);
                     if(msg!=null && criteriaSet.IsSatisfiedBy(msg))
-                        viewer.show(msg);
+                        consumer.accept(msg);
                     
                     lines.clear();
                 }

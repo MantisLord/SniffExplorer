@@ -11,9 +11,9 @@ import com.trinitycore.sniffexplorer.message.Message;
  *
  * @author chaouki
  */
-public abstract interface Viewer {
+public interface Viewer {
     
-    public abstract void show(Message message);
-    public abstract void cleanup();
+    void show(Message message);
+    void cleanup();
     
 }

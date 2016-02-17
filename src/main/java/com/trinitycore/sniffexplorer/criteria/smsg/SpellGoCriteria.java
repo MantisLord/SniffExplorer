@@ -5,6 +5,7 @@
  */
 package com.trinitycore.sniffexplorer.criteria.smsg;
 
+import com.trinitycore.sniffexplorer.game.data.MissType;
 import com.trinitycore.sniffexplorer.message.Message;
 import com.trinitycore.sniffexplorer.message.smsg.SpellGoMessage;
 
@@ -23,30 +24,65 @@ public class SpellGoCriteria extends SpellCriteria {
     
     private Integer targetEntry;
     private String targetGUID;
-    
+
+    private Boolean hasNonEmptyHitList;
+    private Boolean hasNonEmptyMissList;
+
+    private Boolean hasNonEmptyImmuneMissList;
+
     // String casterDest;
-    // String targetDest;
-    
+
     @Override
     public boolean isSatisfiedBy(Message message){
         if(!super.isSatisfiedBy(message))
             return false;
-        
+
         if(!(message instanceof SpellGoMessage))
             return false;
-        
+
         SpellGoMessage spellGoMessage=(SpellGoMessage) message;
-        
+
         // todo: complete this
-        
+
+//        if(hasNonEmptyHitList!=null && !spellGoMessage.getHitUnits().isEmpty())
+//            return false;
+
+        if(hasNonEmptyMissList!=null){
+            if(hasNonEmptyMissList){
+                if(!spellGoMessage.getMissedUnits().isEmpty())
+                    return true;
+                else
+                    return false;
+            } else{
+                if(spellGoMessage.getMissedUnits().isEmpty())
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        if(hasNonEmptyImmuneMissList!=null){
+            if(hasNonEmptyImmuneMissList){
+                if(spellGoMessage.getMissedUnits().containsValue(MissType.IMMUNE1))
+                    return true;
+                else
+                    return false;
+            } else{
+                if(!spellGoMessage.getMissedUnits().containsValue(MissType.IMMUNE1))
+                    return true;
+                else
+                    return false;
+            }
+        }
+
         return true;
     }
 
-    
-    
     /*
     GETTERS SETTERS
     */
+
+
 
     public Integer getTargetEntry() {
         return targetEntry;
@@ -63,6 +99,17 @@ public class SpellGoCriteria extends SpellCriteria {
     public void setTargetGUID(String targetGUID) {
         this.targetGUID = targetGUID;
     }
-    
-    
+
+    public void setHasNonEmptyHitList(Boolean hasNonEmptyHitList) {
+        this.hasNonEmptyHitList = hasNonEmptyHitList;
+    }
+
+    public void setHasNonEmptyMissList(Boolean hasNonEmptyMissList) {
+        this.hasNonEmptyMissList = hasNonEmptyMissList;
+    }
+
+    // String targetDest;
+    public void setHasNonEmptyImmuneMissList(Boolean hasNonEmptyImmuneMissList) {
+        this.hasNonEmptyImmuneMissList = hasNonEmptyImmuneMissList;
+    }
 }

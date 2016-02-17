@@ -43,7 +43,10 @@ public class SpellStartMessage extends SpellMessage {
         /**
          * Target(s)
          */
-        String[] words=lines.get(8).split("\\s+"); // Target Flags
+        int targetFlagsIndex=0;
+        while(!lines.get(targetFlagsIndex).startsWith("Target Flags")) // each SPELL_GO message should have this line. no need to check for boundaries.
+            targetFlagsIndex++;
+        String[] words=lines.get(targetFlagsIndex).split("\\s+"); // Target Flags
         if(!words[0].equals("Target") || !words[1].equals("Flags:"))
             throw new ParseException();
         
@@ -55,7 +58,7 @@ public class SpellStartMessage extends SpellMessage {
             targetUnit=getCasterUnit();
         }
         else if(targetFlags==2){ // case Unit
-            targetUnit= ParseUtils.parseGuidRemovePrefix(lines.get(9), "Target GUID");
+            targetUnit= ParseUtils.parseGuidRemovePrefix(lines.get(targetFlagsIndex+1), "Target GUID");
         }
         else if(targetFlags==16)                                    // Item
             log.warn("targetFlags 16 unsupported yet.");
