@@ -17,6 +17,7 @@ import com.trinitycore.sniffexplorer.message.smsg.SpellGoMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -62,6 +63,8 @@ public class SniffExplorer {
 
         SpellCriteria spellCriteria= new SpellCriteria();
 //        spellCriteria.setCasterGUID("0x280000003283CBC");
+        spellCriteria.setMinTime("02/22/2010 02:46:11.000");
+        spellCriteria.setMaxTime("02/22/2010 02:46:13.000");
         criteriaSet.addCriteria(spellCriteria);
 
 
