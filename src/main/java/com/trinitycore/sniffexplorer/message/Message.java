@@ -9,6 +9,8 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
@@ -25,7 +27,7 @@ public abstract class Message implements Serializable {
     protected static Logger log = LoggerFactory.getLogger(Message.class);
     
     private int id;
-    private Date date;
+    private LocalDateTime time;
     
     public abstract void initialize(List<String> lines) throws ParseException;
     public abstract OpCode getOpCode();
@@ -33,9 +35,9 @@ public abstract class Message implements Serializable {
     abstract public boolean contains(Integer relatedEntry);
     abstract public boolean contains(Long relatedGUID);
     public void display(PrintWriter printWriter){
-        DateFormat dateFormat=new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.SSS");
         Formatter formatter = new Formatter(printWriter);
-        formatter.format("%-17s %23s ", getOpCode().toString(), dateFormat.format(getDate()));
+        formatter.format("%-17s %23s ", getOpCode().toString(), dateTimeFormatter.format(time));
     }
 
     public int getId() {
@@ -46,14 +48,14 @@ public abstract class Message implements Serializable {
         this.id = id;
     }
 
-    public Date getDate() {
-        return date;
+    public LocalDateTime getTime() {
+        return time;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTime(LocalDateTime time) {
+        this.time = time;
     }
-    
+
     public void printError(List<String> lines){
         log.error("Coudn't process the following "+getClass().getSimpleName()+": START-------------------");
         for(String line:lines)

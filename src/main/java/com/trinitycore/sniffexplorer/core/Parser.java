@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,8 +70,6 @@ public class Parser {
         }
         
         String opCodeString=words[1];
-        String dateString=words[8];
-        String timeString=words[9];
                 
         /** 
          *   READ OPCODE AND CONSTRUCT APPROPRIATE MESSAGE OBJECT
@@ -118,14 +118,10 @@ public class Parser {
          * Template: 06/16/2012 22:48:04.393
          */
         String date=words[8]+" "+words[9];
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS", Locale.ENGLISH);
-        try {  
-            Date result =  df.parse(date);
-            msg.setDate(result);
-        } catch (ParseException ex) {
-            log.error("Could not parse the date time.", ex);
-        }
-        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.SSS");
+        LocalDateTime localDateTime = LocalDateTime.parse(date, formatter);
+        msg.setTime(localDateTime);
+
         /**
          * READ AND SET UP THE ID
          */

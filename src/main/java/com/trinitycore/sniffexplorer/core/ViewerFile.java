@@ -7,7 +7,8 @@ package com.trinitycore.sniffexplorer.core;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import org.slf4j.Logger;
 import com.trinitycore.sniffexplorer.message.Message;
@@ -26,7 +27,7 @@ public class ViewerFile implements Viewer{
     // used to group together spells and other events happening at the same time
     private static final int MAX_DURATION_DIFFERENCE = 400;
     private static final boolean GROUP_BY_TIMESTAMP = true;
-    private Date timeStampOfPreviousMessage;
+    private LocalDateTime timeStampOfPreviousMessage;
     
     public ViewerFile(String fileName){
         try {
@@ -39,17 +40,13 @@ public class ViewerFile implements Viewer{
     @Override
     public void show(Message message) {
         if(GROUP_BY_TIMESTAMP && timeStampOfPreviousMessage != null &&
-                diffInMilliseconds(timeStampOfPreviousMessage, message.getDate()) > MAX_DURATION_DIFFERENCE)
+                message.getTime().until(timeStampOfPreviousMessage, ChronoUnit.MILLIS) > MAX_DURATION_DIFFERENCE)
             out.println();
 
         message.display(out);
-        timeStampOfPreviousMessage=message.getDate();
+        timeStampOfPreviousMessage=message.getTime();
     }
 
-    private long diffInMilliseconds(Date startDate, Date endDate){
-        return endDate.getTime() - startDate.getTime();
-    }
-    
     @Override
     public void cleanup(){
         out.close();

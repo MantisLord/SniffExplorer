@@ -8,6 +8,8 @@ package com.trinitycore.sniffexplorer.criteria;
 import com.trinitycore.sniffexplorer.message.Message;
 import com.trinitycore.sniffexplorer.message.OpCode;
 
+import java.time.LocalDateTime;
+
 /**
  *
  * @author chaouki
@@ -15,8 +17,8 @@ import com.trinitycore.sniffexplorer.message.OpCode;
 public class Criteria {
     
     private OpCode opcode;
-//    private Date minTime;
-//    private Date maxTime;
+    private LocalDateTime minTime;
+    private LocalDateTime maxTime;
     
     //search for this GUID in every GUID mentioned by the message
     private Long relatedGUID; // (do not forget to use Long.parseUnsignedLong() and Long.toUnsignedString() for this Long.
