@@ -96,7 +96,7 @@ public class SpellGoMessage extends SpellMessage {
     }
 
     @Override
-    public boolean contains(Long relatedGUID) {
+    public boolean contains(String relatedGUID) {
         return false;
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

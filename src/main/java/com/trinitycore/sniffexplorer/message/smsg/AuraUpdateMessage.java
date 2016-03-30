@@ -74,7 +74,7 @@ public class AuraUpdateMessage extends Message {
     }
 
     @Override
-    public boolean contains(Long relatedGUID) {
+    public boolean contains(String relatedGUID) {
         return false;
     }
 

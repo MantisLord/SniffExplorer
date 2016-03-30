@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ViewerFile implements Viewer{
 
-    private static Logger log = LoggerFactory.getLogger(Parser.class);
+    private static Logger log = LoggerFactory.getLogger(ViewerFile.class);
     
     private PrintWriter out;
 
@@ -40,7 +40,7 @@ public class ViewerFile implements Viewer{
     @Override
     public void show(Message message) {
         if(GROUP_BY_TIMESTAMP && timeStampOfPreviousMessage != null &&
-                message.getTime().until(timeStampOfPreviousMessage, ChronoUnit.MILLIS) > MAX_DURATION_DIFFERENCE)
+                timeStampOfPreviousMessage.until(message.getTime(), ChronoUnit.MILLIS) > MAX_DURATION_DIFFERENCE)
             out.println();
 
         message.display(out);

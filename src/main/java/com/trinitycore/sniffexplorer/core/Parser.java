@@ -81,7 +81,8 @@ public class Parser {
                 log.debug(lines.get(0));
                 return null;
         }
-        
+
+        // todo: move this mapping opcode -> class out of here
         switch(opCodeString){
             case "SMSG_SPELL_START":                        // 0x131
                 msg=new SpellStartMessage();
@@ -106,6 +107,15 @@ public class Parser {
 //                break;
             case "SMSG_AURA_UPDATE":                    // 0x0DD
                 msg=new AuraUpdateMessage();
+                break;
+            case "SMSG_FORCE_RUN_SPEED_CHANGE":
+            case "SMSG_FORCE_RUN_BACK_SPEED_CHANGE":
+            case "SMSG_FORCE_SWIM_SPEED_CHANGE":
+            case "SMSG_FORCE_FLIGHT_SPEED_CHANGE":
+            case "SMSG_FORCE_WALK_SPEED_CHANGE":
+            case "SMSG_FORCE_FLIGHT_BACK_SPEED_CHANGE":
+            case "SMSG_FORCE_SWIM_BACK_SPEED_CHANGE":
+                msg=new ForceSpeedChangeMessage();
                 break;
                 
             default:

@@ -33,7 +33,7 @@ public abstract class Message implements Serializable {
     public abstract OpCode getOpCode();
     public abstract OpCodeType getOpCodeType();
     abstract public boolean contains(Integer relatedEntry);
-    abstract public boolean contains(Long relatedGUID);
+    abstract public boolean contains(String relatedGUID);
     public void display(PrintWriter printWriter){
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.SSS");
         Formatter formatter = new Formatter(printWriter);

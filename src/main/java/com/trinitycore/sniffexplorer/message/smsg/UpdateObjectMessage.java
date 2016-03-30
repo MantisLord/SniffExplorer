@@ -38,7 +38,7 @@ public class UpdateObjectMessage extends Message{
     }
 
     @Override
-    public boolean contains(Long relatedGUID) {
+    public boolean contains(String relatedGUID) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

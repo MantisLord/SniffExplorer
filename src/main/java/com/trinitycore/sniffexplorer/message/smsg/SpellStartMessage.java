@@ -93,7 +93,7 @@ public class SpellStartMessage extends SpellMessage {
     }
 
     @Override
-    public boolean contains(Long relatedGUID) {
+    public boolean contains(String relatedGUID) {
         if(getCasterUnit().getGUID().equals(relatedGUID))
             return true;
         

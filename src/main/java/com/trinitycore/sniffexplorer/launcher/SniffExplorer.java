@@ -30,10 +30,11 @@ public class SniffExplorer {
 
     protected static final Logger log = LoggerFactory.getLogger(SniffExplorer.class);
 
-    private static final String INPUT_SNIFF_FILE_NAME ="sniff4.txt";
+    private static final String INPUT_SNIFF_FILE_NAME ="sniff.txt";
     private static final String OUTPUT_SNIFF_FILE_NAME = "sniffexplorer.txt";
 
-//    private static final Integer CASTER_ENTRY=15989; // Sapphiron's entry in Naxx 10.
+    private static final Integer SAPPHIRON_ENTRY =15989; // Sapphiron's entry in Naxx 10.
+    private static final int GLUTH_ENTRY = 15932;
 
     /**
      * @param args the command line arguments
@@ -43,12 +44,11 @@ public class SniffExplorer {
         // construct the CriteriaSet
         CriteriaSet criteriaSet=new CriteriaSet();
 
-        /*
-        SpellGoCriteria spellGoCriteria=new SpellGoCriteria();
-        spellGoCriteria.setHasNonEmptyImmuneMissList(true);
-        criteriaSet.addCriteria(spellGoCriteria);
-        Set<Integer> spellIdSet=new HashSet<>();
-        */
+//        SpellGoCriteria spellGoCriteria=new SpellGoCriteria();
+//        spellGoCriteria.setHasNonEmptyImmuneMissList(true);
+        SpellCriteria spellCriteria=new SpellCriteria();
+        spellCriteria.setCasterEntry(GLUTH_ENTRY);
+        criteriaSet.addCriteria(spellCriteria);
 
         /*
         criteriaSet.addCriteria(new SpellCriteria(49560));
@@ -61,26 +61,29 @@ public class SniffExplorer {
 //        criteriaSet.addCriteria(new AuraUpdateCriteria());
         */
 
-        SpellCriteria spellCriteria= new SpellCriteria();
+//        SpellCriteria spellCriteria= new SpellCriteria();
 //        spellCriteria.setCasterGUID("0x280000003283CBC");
-        spellCriteria.setMinTime("02/22/2010 02:46:11.000");
-        spellCriteria.setMaxTime("02/22/2010 02:46:13.000");
-        criteriaSet.addCriteria(spellCriteria);
+//        spellCriteria.setMinTime("02/22/2010 02:46:11.000");
+//        spellCriteria.setMaxTime("02/22/2010 02:46:13.000");
+//        spellCriteria.setSpellId(85667);
+//        criteriaSet.addCriteria(spellCriteria);
 
 
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME);
 
+        Set<Integer> spellIdSet=new HashSet<>();
+
         Parser parser=new Parser();
         parser.parseFile(INPUT_SNIFF_FILE_NAME, criteriaSet, message -> {
             viewer.show(message);
-//            if(message instanceof SpellGoMessage)
-//                spellIdSet.add(((SpellGoMessage) message).getSpellId());
+            if(message instanceof SpellGoMessage)
+                spellIdSet.add(((SpellGoMessage) message).getSpellId());
         });
 
         viewer.cleanup();
 
-//        log.warn(spellIdSet.toString());
+        log.warn(spellIdSet.toString());
     }
     
 }

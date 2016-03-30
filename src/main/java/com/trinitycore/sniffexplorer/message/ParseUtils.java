@@ -1,6 +1,7 @@
 package com.trinitycore.sniffexplorer.message;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
+import com.trinitycore.sniffexplorer.game.data.Position;
 import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.game.data.UnitType;
@@ -99,5 +100,25 @@ public class ParseUtils {
         while(!lines.get(spellIdIndex).startsWith(prefix))
             spellIdIndex++;
         return spellIdIndex;
+    }
+
+    /**
+     * method to parse this kind of line:
+     * X: 5268.676 Y: 1965.316 Z: 707.6967
+     * used to parse lines write by the method ???() in WPP.
+     *
+     * @return
+     */
+    public static Position parsePosition(String line){
+        String[] words=line.split("\\s+");
+        float X=Float.parseFloat(words[1]);
+        float Y=Float.parseFloat(words[3]);
+        float Z=Float.parseFloat(words[5]);
+        return new Position(X, Y, Z);
+    }
+
+    public static Position parsePositionRemovePrefix(String line, String prefix){
+        String linePosition = removePrefix(line, prefix);
+        return parsePosition(linePosition);
     }
 }

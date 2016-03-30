@@ -23,7 +23,7 @@ public class Criteria {
     private LocalDateTime maxTime;
     
     //search for this GUID in every GUID mentioned by the message
-    private Long relatedGUID; // (do not forget to use Long.parseUnsignedLong() and Long.toUnsignedString() for this Long.
+    private String relatedGUID; // (do not forget to use Long.parseUnsignedLong() and Long.toUnsignedString() for this Long.
     private Integer relatedEntry; //  search for this entry in every Entry mentioned by the message
     
     public boolean isSatisfiedBy(Message message){ // AND is applied between each condition inside a Criteria object. Meaning if one condition fails, the whole thing fails.
@@ -53,11 +53,11 @@ public class Criteria {
         this.opcode = opcode;
     }
 
-    public Long getRelatedGUID() {
+    public String getRelatedGUID() {
         return relatedGUID;
     }
 
-    public void setRelatedGUID(Long relatedGUID) {
+    public void setRelatedGUID(String relatedGUID) {
         this.relatedGUID = relatedGUID;
     }
 
