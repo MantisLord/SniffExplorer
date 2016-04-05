@@ -53,12 +53,15 @@ public class Position {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Position{");
+        final StringBuilder sb = new StringBuilder();
         sb.append("X=").append(X);
         sb.append(", Y=").append(Y);
         sb.append(", Z=").append(Z);
-        sb.append(", orientation=").append(orientation);
-        sb.append('}');
+        sb.append(", O=").append(orientation);
         return sb.toString();
+    }
+
+    public String toFormatedString(){
+        return String.format("%4.3f %4.3f %4.4f", getX(), getY(), getZ());
     }
 }

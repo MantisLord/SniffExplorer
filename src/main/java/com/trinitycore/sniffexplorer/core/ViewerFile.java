@@ -26,7 +26,7 @@ public class ViewerFile implements Viewer{
 
     // used to group together spells and other events happening at the same time
     private static final int MAX_DURATION_DIFFERENCE = 400;
-    private static final boolean GROUP_BY_TIMESTAMP = true;
+    private static final boolean GROUP_BY_TIMESTAMP = false;
     private LocalDateTime timeStampOfPreviousMessage;
     
     public ViewerFile(String fileName){
@@ -39,8 +39,12 @@ public class ViewerFile implements Viewer{
 
     @Override
     public void show(Message message) {
-        if(GROUP_BY_TIMESTAMP && timeStampOfPreviousMessage != null &&
-                timeStampOfPreviousMessage.until(message.getTime(), ChronoUnit.MILLIS) > MAX_DURATION_DIFFERENCE)
+        if(GROUP_BY_TIMESTAMP) {
+            if (timeStampOfPreviousMessage != null &&
+                    timeStampOfPreviousMessage.until(message.getTime(), ChronoUnit.MILLIS) > MAX_DURATION_DIFFERENCE)
+                out.println();
+        }
+        else
             out.println();
 
         message.display(out);

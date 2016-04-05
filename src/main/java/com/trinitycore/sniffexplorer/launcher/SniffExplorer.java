@@ -9,10 +9,8 @@ import com.trinitycore.sniffexplorer.core.Parser;
 import com.trinitycore.sniffexplorer.core.Viewer;
 import com.trinitycore.sniffexplorer.core.ViewerFile;
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
-import com.trinitycore.sniffexplorer.criteria.smsg.AuraUpdateCriteria;
-import com.trinitycore.sniffexplorer.criteria.smsg.SpellCriteria;
-import com.trinitycore.sniffexplorer.criteria.smsg.SpellGoCriteria;
-import com.trinitycore.sniffexplorer.criteria.smsg.SpellStartCriteria;
+import com.trinitycore.sniffexplorer.criteria.smsg.*;
+import com.trinitycore.sniffexplorer.game.data.SplineType;
 import com.trinitycore.sniffexplorer.message.smsg.SpellGoMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +29,7 @@ public class SniffExplorer {
     protected static final Logger log = LoggerFactory.getLogger(SniffExplorer.class);
 
     private static final String INPUT_SNIFF_FILE_NAME ="sniff.txt";
+//    private static final String INPUT_SNIFF_FILE_NAME ="sample";
     private static final String OUTPUT_SNIFF_FILE_NAME = "sniffexplorer.txt";
 
     private static final Integer SAPPHIRON_ENTRY =15989; // Sapphiron's entry in Naxx 10.
@@ -46,9 +45,9 @@ public class SniffExplorer {
 
 //        SpellGoCriteria spellGoCriteria=new SpellGoCriteria();
 //        spellGoCriteria.setHasNonEmptyImmuneMissList(true);
-        SpellCriteria spellCriteria=new SpellCriteria();
-        spellCriteria.setCasterEntry(GLUTH_ENTRY);
-        criteriaSet.addCriteria(spellCriteria);
+//        SpellCriteria spellCriteria=new SpellCriteria();
+//        spellCriteria.setCasterEntry(GLUTH_ENTRY);
+//        criteriaSet.addCriteria(spellCriteria);
 
         /*
         criteriaSet.addCriteria(new SpellCriteria(49560));
@@ -68,22 +67,25 @@ public class SniffExplorer {
 //        spellCriteria.setSpellId(85667);
 //        criteriaSet.addCriteria(spellCriteria);
 
+//        OnMonsterMoveCriteria onMonsterMoveCriteria=new OnMonsterMoveCriteria("0xF13060EC004BFC6C");
+        OnMonsterMoveCriteria onMonsterMoveCriteria=new OnMonsterMoveCriteria(SplineType.FacingTarget);
+        criteriaSet.addCriteria(onMonsterMoveCriteria);
 
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME);
 
-        Set<Integer> spellIdSet=new HashSet<>();
+//        Set<Integer> spellIdSet=new HashSet<>();
 
         Parser parser=new Parser();
         parser.parseFile(INPUT_SNIFF_FILE_NAME, criteriaSet, message -> {
             viewer.show(message);
-            if(message instanceof SpellGoMessage)
-                spellIdSet.add(((SpellGoMessage) message).getSpellId());
+//            if(message instanceof SpellGoMessage)
+//                spellIdSet.add(((SpellGoMessage) message).getSpellId());
         });
 
         viewer.cleanup();
 
-        log.warn(spellIdSet.toString());
+//        log.warn(spellIdSet.toString());
     }
     
 }

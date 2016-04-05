@@ -14,6 +14,10 @@ import com.trinitycore.sniffexplorer.message.Message;
 public interface Viewer {
     
     void show(Message message);
+
+    /**
+     * clear the resources and clean up. Needs to be called at the end.
+     */
     void cleanup();
     
 }

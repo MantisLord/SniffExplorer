@@ -6,12 +6,16 @@
 package com.trinitycore.sniffexplorer.message.smsg;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.data.Position;
 import com.trinitycore.sniffexplorer.game.data.SplineType;
 import com.trinitycore.sniffexplorer.game.entities.Creature;
+import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.Message;
@@ -26,8 +30,12 @@ public class OnMonsterMoveMessage extends Message {
 
     private Unit unit;
     private SplineType splineType;
-    private Position startPosition;
-    
+    private Unit facingUnit;
+    private Double facingAngle;
+    private List<Position> positions=new ArrayList<>();
+    private String splineFlagsLine;
+    private Integer moveTime;
+
     @Override
     public OpCode  getOpCode() {
         return OpCode.SMSG_ON_MONSTER_MOVE;
@@ -91,21 +99,57 @@ Waypoint Endpoint: X: 5887.709 Y: 508.2559 Z: 641.5698
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        unit = ParseUtils.parseGuidRemovePrefix(lines.get(1), "GUID");
-        this.startPosition = ParseUtils.parsePositionRemovePrefix(lines.get(3), "Position");
+        this.unit = ParseUtils.parseGuidRemovePrefix(lines.get(1), "GUID");
+
+        Position startPosition = ParseUtils.parsePositionRemovePrefix(lines.get(3), "Position");
+        positions.add(startPosition);
+
         String splineTypeString = ParseUtils.removePrefixAndGetFirstElement(lines.get(5), "Spline Type");
         this.splineType=SplineType.valueOf(splineTypeString);
-//        int waypointCountIdx = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Waypoints", 8);
-//        Integer waypointCount= Integer.valueOf(ParseUtils.removePrefix(lines.get(waypointCountIdx), "Waypoints"));
+
+        if(splineType.equals(SplineType.Stop))
+            return;
+        else if(splineType.equals(SplineType.FacingTarget))
+            facingUnit=ParseUtils.parseGuidRemovePrefix(lines.get(6), "Facing GUID");
+        else if(splineType.equals(SplineType.FacingAngle)) {
+            String angleString = ParseUtils.removePrefix(lines.get(6), "Facing Angle");
+            facingAngle=Double.parseDouble(angleString);
+        }
+
+        int splineFlagIdx = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Spline Flags", 6);
+        splineFlagsLine = lines.get(splineFlagIdx);
+        if(splineFlagsLine.contains("Catmullrom"))
+            return;
+
+        // move time
+        String moveTimeString = ParseUtils.removePrefix(lines.get(++splineFlagIdx), "Move Time");
+        moveTime = Integer.valueOf(moveTimeString);
+
+        int waypointCountIdx = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Waypoints", 8);
+        Integer waypointCount= Integer.valueOf(ParseUtils.removePrefix(lines.get(waypointCountIdx), "Waypoints"));
+        Position endPosition = ParseUtils.parsePositionRemovePrefix(lines.get(++waypointCountIdx), "Waypoint Endpoint");
+
+        if(waypointCount>1){
+            // waypoints comes in reverse. needs to store them and reverse them/
+            List<Position> savedPositions=new ArrayList<>();
+            for(int i=0; i<waypointCount-2;i++){
+                Position waypoint = ParseUtils.parsePositionRemovePrefix(lines.get(++waypointCountIdx), "Waypoint");
+                savedPositions.add(waypoint);
+            }
+            Collections.reverse(savedPositions);
+            positions.addAll(savedPositions);
+        }
+
+        positions.add(endPosition);
     }
 
     @Override
     public boolean contains(Integer relatedEntry) {
-        if(!(unit instanceof Creature))
+        if(!(unit instanceof IdentifiableByEntry))
             return false;
 
-        Creature creature=(Creature) unit;
-        if(creature.getEntry().equals(relatedEntry))
+        IdentifiableByEntry identifiableByEntry=(IdentifiableByEntry) unit;
+        if(identifiableByEntry.getEntry().equals(relatedEntry))
             return true;
         else
             return false;
@@ -120,15 +164,47 @@ Waypoint Endpoint: X: 5887.709 Y: 508.2559 Z: 641.5698
     }
 
     @Override
-    public void display(PrintWriter printWriter) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public String getUnitGUID() {
-        return unit.getGUID();
+    public void display(PrintWriter writer) {
+        super.display(writer);
+        writer.println();
+        writer.println(unit);
+        writer.println(splineType);
+        switch (splineType){
+            case FacingTarget: writer.println(facingUnit); break;
+            case FacingAngle: writer.println(facingAngle); break;
+        }
+        writer.println(splineFlagsLine);
+        writer.println("move time: "+moveTime);
+        writer.println(positions.size()+" points:");
+        for(Position position:positions)
+            writer.println(position.toFormatedString());
     }
 
     public Unit getUnit() {
         return unit;
+    }
+
+    public SplineType getSplineType() {
+        return splineType;
+    }
+
+    public List<Position> getPositions() {
+        return positions;
+    }
+
+    public String getSplineFlagsLine() {
+        return splineFlagsLine;
+    }
+
+    public Integer getMoveTime() {
+        return moveTime;
+    }
+
+    public Unit getFacingUnit() {
+        return facingUnit;
+    }
+
+    public Double getFacingAngle() {
+        return facingAngle;
     }
 }
