@@ -69,6 +69,7 @@ public class SniffExplorer {
 
 //        OnMonsterMoveCriteria onMonsterMoveCriteria=new OnMonsterMoveCriteria("0xF13060EC004BFC6C");
         OnMonsterMoveCriteria onMonsterMoveCriteria=new OnMonsterMoveCriteria(SplineType.FacingTarget);
+        onMonsterMoveCriteria.setFacingPlayer(true);
         criteriaSet.addCriteria(onMonsterMoveCriteria);
 
         // select the way the output will be rendered.

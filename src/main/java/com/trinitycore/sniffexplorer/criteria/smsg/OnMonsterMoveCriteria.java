@@ -2,6 +2,7 @@ package com.trinitycore.sniffexplorer.criteria.smsg;
 
 import com.trinitycore.sniffexplorer.criteria.Criteria;
 import com.trinitycore.sniffexplorer.game.data.SplineType;
+import com.trinitycore.sniffexplorer.game.entities.Player;
 import com.trinitycore.sniffexplorer.message.Message;
 import com.trinitycore.sniffexplorer.message.smsg.OnMonsterMoveMessage;
 import com.trinitycore.sniffexplorer.message.smsg.SpellMessage;
@@ -13,6 +14,7 @@ public class OnMonsterMoveCriteria extends Criteria {
 
     private String unitGUID;
     private SplineType splineType;
+    private Boolean facingPlayer;
 
     @Override
     public boolean isSatisfiedBy(Message message) {
@@ -30,12 +32,30 @@ public class OnMonsterMoveCriteria extends Criteria {
         if(splineType!=null && !splineType.equals(onMonsterMoveMessage.getSplineType()))
             return false;
 
+        if(facingPlayer != null && facingPlayer && !(onMonsterMoveMessage.getFacingUnit() instanceof Player))
+            return false;
+
+        if(facingPlayer != null && !facingPlayer && onMonsterMoveMessage.getFacingUnit() instanceof Player)
+            return false;
+
         return true;
     }
 
+    public void setUnitGUID(String unitGUID) {
+        this.unitGUID = unitGUID;
+    }
+
+    public void setSplineType(SplineType splineType) {
+        this.splineType = splineType;
+    }
+
+    public void setFacingPlayer(Boolean facingPlayer) {
+        this.facingPlayer = facingPlayer;
+    }
+
     /*
-    Constructors
-     */
+        Constructors
+         */
     public OnMonsterMoveCriteria(String unitGUID) {
         this.unitGUID = unitGUID;
     }
