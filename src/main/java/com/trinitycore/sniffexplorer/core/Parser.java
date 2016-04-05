@@ -102,9 +102,9 @@ public class Parser {
             case "SMSG_ON_MONSTER_MOVE":                    // 0x0DD
                 msg=new OnMonsterMoveMessage();
                 break;
-//            case "SMSG_MOVE_UPDATE":                        // XXXXXXX
-//                msg=new SpellStartMessage();
-//                break;
+            case "SMSG_MOVE_UPDATE":                        // XXXXXXX
+                msg=new MoveUpdateMessage();
+                break;
             case "SMSG_AURA_UPDATE":                    // 0x0DD
                 msg=new AuraUpdateMessage();
                 break;

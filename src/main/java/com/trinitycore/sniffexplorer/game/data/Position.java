@@ -1,5 +1,7 @@
 package com.trinitycore.sniffexplorer.game.data;
 
+import java.util.Locale;
+
 /**
  * Created by chaouki on 15-03-16.
  */
@@ -62,6 +64,6 @@ public class Position {
     }
 
     public String toFormatedString(){
-        return String.format("%4.3f %4.3f %4.4f", getX(), getY(), getZ());
+        return String.format(Locale.ENGLISH, "%4.3f %4.3f %4.4f", getX(), getY(), getZ());
     }
 }

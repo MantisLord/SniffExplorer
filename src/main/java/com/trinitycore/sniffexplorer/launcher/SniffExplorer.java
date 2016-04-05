@@ -72,6 +72,9 @@ public class SniffExplorer {
         onMonsterMoveCriteria.setFacingPlayer(true);
         criteriaSet.addCriteria(onMonsterMoveCriteria);
 
+        MoveUpdateCriteria moveUpdateCriteria=new MoveUpdateCriteria("0x60000000320D4F0");
+        criteriaSet.addCriteria(moveUpdateCriteria);
+
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME);
 
