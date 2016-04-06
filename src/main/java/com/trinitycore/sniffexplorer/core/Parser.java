@@ -8,15 +8,10 @@ package com.trinitycore.sniffexplorer.core;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Consumer;
 
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
@@ -116,6 +111,9 @@ public class Parser {
             case "SMSG_FORCE_FLIGHT_BACK_SPEED_CHANGE":
             case "SMSG_FORCE_SWIM_BACK_SPEED_CHANGE":
                 msg=new ForceSpeedChangeMessage();
+                break;
+            case "SMSG_ATTACKER_STATE_UPDATE":
+                msg=new AttackerStateUpdateMessage();
                 break;
                 
             default:

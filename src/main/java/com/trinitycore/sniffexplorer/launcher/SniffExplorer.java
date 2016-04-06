@@ -40,56 +40,47 @@ public class SniffExplorer {
      */
     public static void main(String[] args) {
 
-        // construct the CriteriaSet
+        // Here you should construct the CriteriaSet. This is all the criterias that will be used to determin which
+        // messages should be shown. If you are a user of the application, you don't need to modify any other part of
+        // the application then here.
         CriteriaSet criteriaSet=new CriteriaSet();
 
-//        SpellGoCriteria spellGoCriteria=new SpellGoCriteria();
-//        spellGoCriteria.setHasNonEmptyImmuneMissList(true);
-//        SpellCriteria spellCriteria=new SpellCriteria();
-//        spellCriteria.setCasterEntry(GLUTH_ENTRY);
-//        criteriaSet.addCriteria(spellCriteria);
-
-        /*
-        criteriaSet.addCriteria(new SpellCriteria(49560));
-        criteriaSet.addCriteria(new SpellCriteria(49576));
-        criteriaSet.addCriteria(new SpellCriteria(49575));
-        criteriaSet.addCriteria(new SpellCriteria(51399));
-
-        criteriaSet.addCriteria(new AuraUpdateCriteria(51399));
-        criteriaSet.addCriteria(new AuraUpdateCriteria(49560));
-//        criteriaSet.addCriteria(new AuraUpdateCriteria());
-        */
-
-//        SpellCriteria spellCriteria= new SpellCriteria();
-//        spellCriteria.setCasterGUID("0x280000003283CBC");
-//        spellCriteria.setMinTime("02/22/2010 02:46:11.000");
-//        spellCriteria.setMaxTime("02/22/2010 02:46:13.000");
-//        spellCriteria.setSpellId(85667);
-//        criteriaSet.addCriteria(spellCriteria);
-
-//        OnMonsterMoveCriteria onMonsterMoveCriteria=new OnMonsterMoveCriteria("0xF13060EC004BFC6C");
-        OnMonsterMoveCriteria onMonsterMoveCriteria=new OnMonsterMoveCriteria(SplineType.FacingTarget);
-        onMonsterMoveCriteria.setFacingPlayer(true);
+        OnMonsterMoveCriteria onMonsterMoveCriteria=new OnMonsterMoveCriteria();
+//        onMonsterMoveCriteria.setFacingPlayer(true);
+        onMonsterMoveCriteria.setUnitGUID("0xF1303E750000C3BD");
         criteriaSet.addCriteria(onMonsterMoveCriteria);
 
         MoveUpdateCriteria moveUpdateCriteria=new MoveUpdateCriteria("0x60000000320D4F0");
         criteriaSet.addCriteria(moveUpdateCriteria);
 
-        // select the way the output will be rendered.
-        Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME);
 
-//        Set<Integer> spellIdSet=new HashSet<>();
+        AttackerStateUpdateCriteria aaCriteriaA=new AttackerStateUpdateCriteria();
+        aaCriteriaA.setTargetGUID("0x60000000320D4F0");
+        AttackerStateUpdateCriteria aaCriteriaB=new AttackerStateUpdateCriteria();
+        aaCriteriaB.setAttackerGUID("0x60000000320D4F0");
+
+        AttackerStateUpdateCriteria aaCriteriaC=new AttackerStateUpdateCriteria();
+        aaCriteriaC.setTargetGUID("0xF1303E750000C3BD");
+        AttackerStateUpdateCriteria aaCriteriaD=new AttackerStateUpdateCriteria();
+        aaCriteriaD.setAttackerGUID("0xF1303E750000C3BD");
+        aaCriteriaD.setTargetGUID("0x60000000320D4F0");
+
+
+//        criteriaSet.addCriteria(aaCriteriaA);
+//        criteriaSet.addCriteria(aaCriteriaB);
+//        criteriaSet.addCriteria(aaCriteriaC);
+        criteriaSet.addCriteria(aaCriteriaD);
+
+        // select the way the output will be rendered.
+        Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME, false);
 
         Parser parser=new Parser();
         parser.parseFile(INPUT_SNIFF_FILE_NAME, criteriaSet, message -> {
             viewer.show(message);
-//            if(message instanceof SpellGoMessage)
-//                spellIdSet.add(((SpellGoMessage) message).getSpellId());
+
         });
 
         viewer.cleanup();
-
-//        log.warn(spellIdSet.toString());
     }
     
 }

@@ -26,20 +26,21 @@ public class ViewerFile implements Viewer{
 
     // used to group together spells and other events happening at the same time
     private static final int MAX_DURATION_DIFFERENCE = 400;
-    private static final boolean GROUP_BY_TIMESTAMP = false;
+    private final boolean groupByTimestamp;
     private LocalDateTime timeStampOfPreviousMessage;
     
-    public ViewerFile(String fileName){
+    public ViewerFile(String fileName, boolean groupByTimestamp){
         try {
             out= new PrintWriter(fileName);
         } catch (FileNotFoundException ex) {
             log.warn("FileNotFoundException thrown in ViewerFile.",ex);
         }
+        this.groupByTimestamp=groupByTimestamp;
     }
 
     @Override
     public void show(Message message) {
-        if(GROUP_BY_TIMESTAMP) {
+        if(groupByTimestamp) {
             if (timeStampOfPreviousMessage != null &&
                     timeStampOfPreviousMessage.until(message.getTime(), ChronoUnit.MILLIS) > MAX_DURATION_DIFFERENCE)
                 out.println();
