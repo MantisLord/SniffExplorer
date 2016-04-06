@@ -80,6 +80,14 @@ public class SniffExplorer {
 
         criteriaSet.addCriteria(attackStartStopCriteria);
 
+        UpdateObjectCriteria updateObjectCriteria=new UpdateObjectCriteria();
+        updateObjectCriteria.restrictByUnitAndChange(npcGUID, "UNIT_FIELD_BOUNDINGRADIUS");
+
+        UpdateObjectCriteria updateObjectCriteriaB=new UpdateObjectCriteria();
+        updateObjectCriteriaB.restrictByUnitAndChange(npcGUID, "UNIT_FIELD_COMBATREACH");
+
+        criteriaSet.addCriteria(updateObjectCriteria, updateObjectCriteriaB);
+
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME, false);
 

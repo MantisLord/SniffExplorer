@@ -24,7 +24,8 @@ public class CriteriaSet {
         return false;
     }
     
-    public void addCriteria(Criteria criteria){
-        criterion.add(criteria);
+    public void addCriteria(Criteria... criteriaVec){
+        for(Criteria criteria:criteriaVec)
+            criterion.add(criteria);
     }
 }

@@ -92,6 +92,7 @@ public class Parser {
                 msg=new EmoteMessage();
                 break;
             case "SMSG_UPDATE_OBJECT":                      // 0x0A9
+            case "SMSG_COMPRESSED_UPDATE_OBJECT":
                 msg=new UpdateObjectMessage();
                 break;
             case "SMSG_ON_MONSTER_MOVE":                    // 0x0DD
