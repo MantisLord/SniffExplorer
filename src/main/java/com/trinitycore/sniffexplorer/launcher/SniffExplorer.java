@@ -40,36 +40,45 @@ public class SniffExplorer {
      */
     public static void main(String[] args) {
 
-        // Here you should construct the CriteriaSet. This is all the criterias that will be used to determin which
-        // messages should be shown. If you are a user of the application, you don't need to modify any other part of
-        // the application then here.
+        // Here you should construct the CriteriaSet. It represent every criteria that will be used to determine which
+        // messages should be filtered. If you are an user of the application, you don't need to modify any other part of
+        // the application than here.
         CriteriaSet criteriaSet=new CriteriaSet();
+
+        String npcGUID = "0xF1303E750000C3BD";
+        String playerGUID = "0x60000000320D4F0";
 
         OnMonsterMoveCriteria onMonsterMoveCriteria=new OnMonsterMoveCriteria();
 //        onMonsterMoveCriteria.setFacingPlayer(true);
-        onMonsterMoveCriteria.setUnitGUID("0xF1303E750000C3BD");
+
+        onMonsterMoveCriteria.setUnitGUID(npcGUID);
         criteriaSet.addCriteria(onMonsterMoveCriteria);
 
-        MoveUpdateCriteria moveUpdateCriteria=new MoveUpdateCriteria("0x60000000320D4F0");
+        MoveUpdateCriteria moveUpdateCriteria=new MoveUpdateCriteria(playerGUID);
         criteriaSet.addCriteria(moveUpdateCriteria);
 
 
         AttackerStateUpdateCriteria aaCriteriaA=new AttackerStateUpdateCriteria();
-        aaCriteriaA.setTargetGUID("0x60000000320D4F0");
+        aaCriteriaA.setTargetGUID(playerGUID);
         AttackerStateUpdateCriteria aaCriteriaB=new AttackerStateUpdateCriteria();
-        aaCriteriaB.setAttackerGUID("0x60000000320D4F0");
+        aaCriteriaB.setAttackerGUID(playerGUID);
 
         AttackerStateUpdateCriteria aaCriteriaC=new AttackerStateUpdateCriteria();
-        aaCriteriaC.setTargetGUID("0xF1303E750000C3BD");
+        aaCriteriaC.setTargetGUID(npcGUID);
         AttackerStateUpdateCriteria aaCriteriaD=new AttackerStateUpdateCriteria();
-        aaCriteriaD.setAttackerGUID("0xF1303E750000C3BD");
-        aaCriteriaD.setTargetGUID("0x60000000320D4F0");
+        aaCriteriaD.setAttackerGUID(npcGUID);
+        aaCriteriaD.setTargetGUID(playerGUID);
+
+        AttackStartStopCriteria attackStartStopCriteria=new AttackStartStopCriteria();
+        attackStartStopCriteria.setAttackerGUID(npcGUID);
 
 
 //        criteriaSet.addCriteria(aaCriteriaA);
 //        criteriaSet.addCriteria(aaCriteriaB);
 //        criteriaSet.addCriteria(aaCriteriaC);
         criteriaSet.addCriteria(aaCriteriaD);
+
+        criteriaSet.addCriteria(attackStartStopCriteria);
 
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME, false);

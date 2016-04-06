@@ -115,6 +115,12 @@ public class Parser {
             case "SMSG_ATTACKER_STATE_UPDATE":
                 msg=new AttackerStateUpdateMessage();
                 break;
+            case "SMSG_ATTACK_START":
+                msg=new AttackStartMessage();
+                break;
+            case "SMSG_ATTACK_STOP":
+                msg=new AttackStopMessage();
+                break;
                 
             default:
                 log.info("Unsupported OpCode found: "+opCodeString);
