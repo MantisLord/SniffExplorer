@@ -44,6 +44,11 @@ public class AttackStartStopCriteria extends Criteria {
             return false;
     }
 
+    public AttackStartStopCriteria(String attackerGUID, String targetGUID) {
+        this.attackerGUID = attackerGUID;
+        this.targetGUID = targetGUID;
+    }
+
     public void setAttackerGUID(String attackerGUID) {
         this.attackerGUID = attackerGUID;
     }

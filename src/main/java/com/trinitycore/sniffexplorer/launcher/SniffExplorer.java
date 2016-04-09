@@ -45,51 +45,22 @@ public class SniffExplorer {
         String npcGUID = "0xF1303E760000BEC3";
         String playerGUID = "0x60000000320D4F0";
 
-        OnMonsterMoveCriteria onMonsterMoveCriteria=new OnMonsterMoveCriteria();
-//        onMonsterMoveCriteria.setFacingPlayer(true);
+        criteriaSet.addCriteria(
+                new OnMonsterMoveCriteria(npcGUID),
+                new MoveUpdateCriteria(playerGUID),
 
-        onMonsterMoveCriteria.setUnitGUID(npcGUID);
-        criteriaSet.addCriteria(onMonsterMoveCriteria);
+//                new AttackerStateUpdateCriteria(null, playerGUID),
+//                new AttackerStateUpdateCriteria(playerGUID, null),
+//                new AttackerStateUpdateCriteria(null, npcGUID),
+                new AttackerStateUpdateCriteria(npcGUID, playerGUID),
 
-        MoveUpdateCriteria moveUpdateCriteria=new MoveUpdateCriteria(playerGUID);
-        criteriaSet.addCriteria(moveUpdateCriteria);
-
-
-        AttackerStateUpdateCriteria aaCriteriaA=new AttackerStateUpdateCriteria();
-        aaCriteriaA.setTargetGUID(playerGUID);
-        AttackerStateUpdateCriteria aaCriteriaB=new AttackerStateUpdateCriteria();
-        aaCriteriaB.setAttackerGUID(playerGUID);
-
-        AttackerStateUpdateCriteria aaCriteriaC=new AttackerStateUpdateCriteria();
-        aaCriteriaC.setTargetGUID(npcGUID);
-        AttackerStateUpdateCriteria aaCriteriaD=new AttackerStateUpdateCriteria();
-        aaCriteriaD.setAttackerGUID(npcGUID);
-        aaCriteriaD.setTargetGUID(playerGUID);
-
-        AttackStartStopCriteria attackStartStopCriteria=new AttackStartStopCriteria();
-        attackStartStopCriteria.setAttackerGUID(npcGUID);
-
-
-//        criteriaSet.addCriteria(aaCriteriaA);
-//        criteriaSet.addCriteria(aaCriteriaB);
-//        criteriaSet.addCriteria(aaCriteriaC);
-        criteriaSet.addCriteria(aaCriteriaD);
-
-        criteriaSet.addCriteria(attackStartStopCriteria);
-
-        UpdateObjectCriteria updateObjectCriteria=new UpdateObjectCriteria();
-        updateObjectCriteria.restrictByUnitAndChange(npcGUID, "UNIT_FIELD_BOUNDINGRADIUS");
-
-        UpdateObjectCriteria updateObjectCriteriaB=new UpdateObjectCriteria();
-        updateObjectCriteriaB.restrictByUnitAndChange(npcGUID, "UNIT_FIELD_COMBATREACH");
-
-        UpdateObjectCriteria updateObjectCriteriaC=new UpdateObjectCriteria();
-        updateObjectCriteriaC.restrictByUnitAndChange(playerGUID, "UNIT_FIELD_BOUNDINGRADIUS");
-
-        UpdateObjectCriteria updateObjectCriteriaD=new UpdateObjectCriteria();
-        updateObjectCriteriaD.restrictByUnitAndChange(playerGUID, "UNIT_FIELD_COMBATREACH");
-
-        criteriaSet.addCriteria(updateObjectCriteria, updateObjectCriteriaB, updateObjectCriteriaC, updateObjectCriteriaD);
+                new AttackStartStopCriteria(npcGUID, null),
+                new UpdateObjectCriteria(npcGUID, "UNIT_FIELD_BOUNDINGRADIUS"),
+                new UpdateObjectCriteria(npcGUID, "UNIT_FIELD_COMBATREACH"),
+                new UpdateObjectCriteria(playerGUID, "UNIT_FIELD_BOUNDINGRADIUS"),
+                new UpdateObjectCriteria(playerGUID, "UNIT_FIELD_COMBATREACH"),
+                new SpellCriteria(null, null, npcGUID)
+        );
 
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME, false);

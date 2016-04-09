@@ -57,6 +57,11 @@ public class UpdateObjectCriteria extends Criteria {
         return true;
     }
 
+    public UpdateObjectCriteria(String unitGUID, String valueChange) {
+        this.unitGUID = unitGUID;
+        this.valueChange = valueChange;
+    }
+
     public void restrictByUnit(String unitGUID){
         this.unitGUID=unitGUID;
         this.valueChange=null;
