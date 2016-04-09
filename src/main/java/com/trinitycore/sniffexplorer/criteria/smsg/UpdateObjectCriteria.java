@@ -29,25 +29,37 @@ public class UpdateObjectCriteria extends Criteria {
         if(unitGUID!=null && valueChange!=null){
             List<UpdateObjectMessage.UpdateObject> updates = updateObjectMessage.getUpdates();
 
-            boolean anyMatch = updates.stream()
-                    .filter(uObjc -> uObjc.getUnit()!=null)
+            List<UpdateObjectMessage.UpdateObject> updateObjects = updates.stream()
+                    .filter(uObjc -> uObjc.getUnit() != null)
                     .filter(uObjc -> uObjc.getUnit().getGUID().equals(unitGUID))
-                    .anyMatch(uObjc -> uObjc.getRawData().stream().anyMatch(s -> s.contains(valueChange)));
+                    .filter(uObjc -> uObjc.getRawData().stream().anyMatch(s -> s.contains(valueChange)))
+                    .collect(Collectors.toList());
 
-            if (!anyMatch)
+            updateObjects.forEach(updateObject -> updateObject.setDisplay(true));
+
+            if (updateObjects.isEmpty())
                 return false;
         }
         else if(unitGUID!=null){
             List<UpdateObjectMessage.UpdateObject> updates = updateObjectMessage.getUpdates();
-            boolean anyMatch = updates.stream()
-                    .filter(uObjc -> uObjc.getUnit()!=null)
-                    .anyMatch(uObjc -> uObjc.getUnit().getGUID().equals(unitGUID));
 
-            if (!anyMatch)
+            List<UpdateObjectMessage.UpdateObject> updateObjects = updates.stream()
+                    .filter(uObjc -> uObjc.getUnit() != null)
+                    .filter(uObjc -> uObjc.getUnit().getGUID().equals(unitGUID))
+                    .collect(Collectors.toList());
+
+            updateObjects.forEach(updateObject -> updateObject.setDisplay(true));
+
+            if (updateObjects.isEmpty())
                 return false;
         }
 
         return true;
+    }
+
+    public void restrictByUnit(String unitGUID){
+        this.unitGUID=unitGUID;
+        this.valueChange=null;
     }
 
     public void restrictByUnitAndChange(String unitGUID, String valueChange){

@@ -10,14 +10,8 @@ import com.trinitycore.sniffexplorer.core.Viewer;
 import com.trinitycore.sniffexplorer.core.ViewerFile;
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
 import com.trinitycore.sniffexplorer.criteria.smsg.*;
-import com.trinitycore.sniffexplorer.game.data.SplineType;
-import com.trinitycore.sniffexplorer.message.smsg.SpellGoMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  *
@@ -44,8 +38,11 @@ public class SniffExplorer {
         // messages should be filtered. If you are an user of the application, you don't need to modify any other part of
         // the application than here.
         CriteriaSet criteriaSet=new CriteriaSet();
+        criteriaSet.setGlobalMinTime("06/16/2012 22:51:09.582");
+        criteriaSet.setGlobalMaxTime("06/16/2012 23:01:02.589");
 
-        String npcGUID = "0xF1303E750000C3BD";
+//        String npcGUID = "0xF1303E750000C3BD";
+        String npcGUID = "0xF1303E760000BEC3";
         String playerGUID = "0x60000000320D4F0";
 
         OnMonsterMoveCriteria onMonsterMoveCriteria=new OnMonsterMoveCriteria();
@@ -86,7 +83,13 @@ public class SniffExplorer {
         UpdateObjectCriteria updateObjectCriteriaB=new UpdateObjectCriteria();
         updateObjectCriteriaB.restrictByUnitAndChange(npcGUID, "UNIT_FIELD_COMBATREACH");
 
-        criteriaSet.addCriteria(updateObjectCriteria, updateObjectCriteriaB);
+        UpdateObjectCriteria updateObjectCriteriaC=new UpdateObjectCriteria();
+        updateObjectCriteriaC.restrictByUnitAndChange(playerGUID, "UNIT_FIELD_BOUNDINGRADIUS");
+
+        UpdateObjectCriteria updateObjectCriteriaD=new UpdateObjectCriteria();
+        updateObjectCriteriaD.restrictByUnitAndChange(playerGUID, "UNIT_FIELD_COMBATREACH");
+
+        criteriaSet.addCriteria(updateObjectCriteria, updateObjectCriteriaB, updateObjectCriteriaC, updateObjectCriteriaD);
 
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFile(OUTPUT_SNIFF_FILE_NAME, false);

@@ -75,14 +75,16 @@ Count: 2
         super.display(writer);
         writer.println();
         for(UpdateObject updateObject:updates)
-            for(String line:updateObject.getRawData())
-                writer.println(line);
+            if(updateObject.display)
+                for(String line:updateObject.getRawData())
+                    writer.println(line);
     }
 
     public class UpdateObject {
         private List<String> rawData;
         private Unit unit;
         private UpdateType updateType;
+        private boolean display=false;
 
         public UpdateObject(List<String> rawData) throws ParseException {
             this.rawData = rawData;
@@ -101,6 +103,10 @@ Count: 2
 
         public UpdateType getUpdateType() {
             return updateType;
+        }
+
+        public void setDisplay(boolean display) {
+            this.display = display;
         }
     }
 
