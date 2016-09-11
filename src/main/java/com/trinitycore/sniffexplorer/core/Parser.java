@@ -177,7 +177,7 @@ public class Parser {
          * READ AND SET UP THE ID
          */
         try{
-            msg.setId(Integer.valueOf(words[11]));
+            msg.setId(Integer.valueOf(words[words.length-1]));
         }catch(Exception e){
             e.printStackTrace();
             msg.setId(-1);
