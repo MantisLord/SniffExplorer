@@ -261,11 +261,7 @@ public class AoeSpellAnalyser {
         Integer packetNumber = spellGoMessage.getId();
         Integer spellId = spellGoMessage.getSpellId();
 
-//        if(spellTime.equals(LocalDateTime.of(2010, 9, 14, 9, 11, 2)))
-//            System.out.println("derp");
-
         // get the latest known position of the unit
-//        Position targetPosition = SniffExplorerUtils.getClosestKnownValue(spellTime, target, globalPositionMap, POSITION_PRECISION_BY_TIME);
         Position targetPosition = SniffExplorerUtils.getLatestKnownValueIfSameAsNext(packetNumber, target, globalPositionMap, ERROR_TOLERANCE);
         if(targetPosition == null){
             globalValuesCounter ++;
@@ -276,12 +272,12 @@ public class AoeSpellAnalyser {
             globalValuesCounter ++;
             return null;
         }
-//        Double targetBoundingRadius = SniffExplorerUtils.getLatestKnownValue(packetNumber, target, globalBoundingRadiusMap);
         Double casterCombatReach = SniffExplorerUtils.getLatestKnownValue(packetNumber, spellGoMessage.getCaster(), globalCombatReachMap);
         if(casterCombatReach == null){
             globalValuesCounter ++;
             return null;
         }
+//        Double targetBoundingRadius = SniffExplorerUtils.getLatestKnownValue(packetNumber, target, globalBoundingRadiusMap);
 //        Double casterBoundingRadius = SniffExplorerUtils.getLatestKnownValue(packetNumber, spellGoMessage.getCaster(), globalBoundingRadiusMap);
 
         double distance3D = GeometryUtils.getDistance3D(location, targetPosition);
@@ -292,7 +288,7 @@ public class AoeSpellAnalyser {
         float spellRadius = wrapperDBC.highestSpellRadius(spellId);
 //        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D >= spellRadius + casterCombatReach && distance3D <= spellRadius + targetCombatReach) {
 //        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D >= spellRadius + casterCombatReach + targetCombatReach) {
-        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D > spellRadius + casterCombatReach + targetCombatReach + ERROR_TOLERANCE + 0.5 && distance3D < 90)  {
+        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D > spellRadius + casterCombatReach + targetCombatReach + ERROR_TOLERANCE && distance3D < 90)  {
             predicateDistanceSatisfiedCounter++;
             return new RecordToDisplay(target, targetPosition.toFormatedStringWoOrientation(), distance3D, targetCombatReach);
         }
