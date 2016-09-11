@@ -16,7 +16,7 @@ import com.trinitycore.sniffexplorer.message.Message;
  * @author chaouki
  */
 public class CriteriaSet {
-    private Set<Criteria> criterion=new HashSet<>(); // todo (one day): two "same" criteria object shoudn't be in the set. therefore, in theory, equals() and hashcode() need to be reimplemented for Criteria and each child classes.
+    private HashSet<Criteria> criterion=new HashSet<>(); // todo (one day): two "same" criteria object shoudn't be in the set. therefore, in theory, equals() and hashcode() need to be reimplemented for Criteria and each child classes.
     private LocalDateTime globalMinTime;
     private LocalDateTime globalMaxTime;
 
@@ -35,6 +35,12 @@ public class CriteriaSet {
 
     public CriteriaSet(Criteria... criteriaVec) {
         addCriteria(criteriaVec);
+    }
+
+    public CriteriaSet(CriteriaSet positionCriteria, CriteriaSet radiusAndReachCriteria) {
+        HashSet<Criteria> criteriaSet = (HashSet<Criteria>) positionCriteria.criterion.clone();
+        criteriaSet.addAll(radiusAndReachCriteria.criterion);
+        this.criterion = criteriaSet;
     }
 
     public void addCriteria(Criteria... criteriaVec){

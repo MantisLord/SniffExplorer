@@ -7,8 +7,6 @@ package com.trinitycore.sniffexplorer.launcher;
 
 import com.antistupid.wardbc.lazy.WrapperDBC;
 import com.trinitycore.sniffexplorer.core.Parser;
-import com.trinitycore.sniffexplorer.core.Viewer;
-import com.trinitycore.sniffexplorer.core.ViewerFile;
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
 import com.trinitycore.sniffexplorer.criteria.smsg.*;
 import com.trinitycore.sniffexplorer.game.data.Position;
@@ -17,15 +15,10 @@ import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.smsg.*;
 import com.trinitycore.sniffexplorer.utils.GeometryUtils;
 import com.trinitycore.sniffexplorer.utils.SniffExplorerUtils;
-import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -38,10 +31,10 @@ public class SniffExplorer {
 
     protected static final Logger log = LoggerFactory.getLogger(SniffExplorer.class);
 
-    private static final String INPUT_SNIFF_DIRECTORY_PATH ="C:\\Sniffs\\335\\bin";
-//    private static final String INPUT_SNIFF_FILE_NAME ="sniff.txt";
-//    private static final String INPUT_SNIFF_FILE_NAME ="ArathiHighland_parsed.txt";
-//    private static final String INPUT_SNIFF_FILE_NAME ="sample";
+    private static final String INPUT_SNIFF ="C:\\Sniffs\\335\\bin";
+//    private static final String INPUT_SNIFF ="C:\\Sniffs\\335\\bin\\Dump_03_23_10_00_49_37_parsed.txt";
+//    private static final String INPUT_SNIFF ="ArathiHighland_parsed.txt";
+//    private static final String INPUT_SNIFF ="sample";
     private static final String OUTPUT_SNIFF_FILE_NAME = "sniffexplorer.txt";
 
     private static final Integer SAPPHIRON_ENTRY =15989; // Sapphiron's entry in Naxx 10.
@@ -49,6 +42,7 @@ public class SniffExplorer {
     public static final long POSITION_PRECISION_BY_TIME = 0; // in ms
     private static final double RADIUS_UNHIT_UNIT_SEARCH = 50; // in yards
     private static final Boolean ONLY_SHOW_SPELLS_WITH_AT_LEAST_ONE_HIT = true;
+    private static final Double ERROR_TOLERANCE = 0.1;
 
     private static WrapperDBC wrapperDBC = new WrapperDBC("F:\\TrinityCore\\source\\Build\\bin\\Release\\dbc");
     private static int globalValuesCounter = 0;
@@ -60,21 +54,23 @@ public class SniffExplorer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        File dir = new File(INPUT_SNIFF_DIRECTORY_PATH);
+        File dir = new File(INPUT_SNIFF);
         File[] directoryListing = dir.listFiles();
         if (directoryListing != null) {
             for (File file : directoryListing) {
                 if(file.getName().endsWith("_parsed.txt")){
-                    try {
+//                    try {
                         log.warn("parsing now: " + file.toString());
                         processFile(file);
-                    } catch (Exception e){
-                        log.warn("exception thrown for "+file, e);
-                    }
+//                    } catch (Exception e){
+//                        log.warn("exception thrown for "+file, e);
+//                    }
                 }
             }
         } else {
-            throw new IllegalArgumentException("Is not directory");
+            // file
+            log.warn("parsing now: " + dir.toString());
+            processFile(dir);
         }
     }
 
@@ -148,10 +144,9 @@ public class SniffExplorer {
         Parser parser=new Parser(file);
         // output the filtered messages to the viewer
 //        parser.parseFile(criteriaSet, viewer::show);
-        // gather the last known positions of every units during the entirety of the sniff's duration
-        fillGlobalUnitPositionsMap(parser, globalPositionMap);
-        // gather the last known bounding radius and combat reach of every units during the entirety of the sniff's duration
-        fillGlobalUnitBRadiusCReachMap(parser, globalCombatReachMap, globalBoundingRadiusMap);
+        //
+        fillHistograms(parser, globalPositionMap, globalCombatReachMap, globalBoundingRadiusMap);
+        //
         processAoeSpells(parser, globalPositionMap, globalCombatReachMap, globalBoundingRadiusMap);
         log.warn("counter: "+ counter);
         log.warn("Count of verified launches: "+(counter-globalValuesCounter));
@@ -163,65 +158,75 @@ public class SniffExplorer {
 //        log.warn(spellList.toString());
     }
 
-    public static void fillGlobalUnitBRadiusCReachMap(Parser parser,
-                                                       Map<Unit, TreeMap<Integer, Double>> globalCombatReachMap,
-                                                       Map<Unit, TreeMap<Integer, Double>> globalBoundingRadiusMap) {
-        CriteriaSet criteriaSet = new CriteriaSet(
-                new UpdateObjectCriteria(null, "UNIT_FIELD_BOUNDINGRADIUS"),
-                new UpdateObjectCriteria(null, "UNIT_FIELD_COMBATREACH")
-        );
-        parser.parseFile(criteriaSet, message -> {
-            if(!(message instanceof UpdateObjectMessage))
-                throw new IllegalArgumentException("The messages here should be of type UpdateObjectMessage");
-
-            UpdateObjectMessage updateObjectMessage = (UpdateObjectMessage) message;
-            for(UpdateObjectMessage.UpdateObject updateObject : updateObjectMessage.getUpdates()){
-                Unit unit = updateObject.getUnit();
-                if(updateObject.getBoundingRadius() != null)
-                    addElementToGlobalMap(globalBoundingRadiusMap, message.getId(), unit, updateObject.getBoundingRadius());
-
-                if(updateObject.getCombatReach() != null)
-                    addElementToGlobalMap(globalCombatReachMap, message.getId(), unit, updateObject.getCombatReach());
-            }
-        });
-    }
-
-    public static void fillGlobalUnitPositionsMap(Parser parser, Map<Unit, TreeMap<Integer, Position>> globalPositionMap) {
-        CriteriaSet criteriaSet = new CriteriaSet(
+    /**
+     * first part (position):
+     * gather the last known positions of every units during the entirety of the sniff's duration
+     *
+     * second part (combat reach and bounding radius):
+     * gather the last known bounding radius and combat reach of every units during the entirety of the sniff's duration
+     *
+     * @param parser
+     * @param globalPositionMap
+     * @param globalCombatReachMap
+     * @param globalBoundingRadiusMap
+     */
+    public static void fillHistograms(Parser parser,
+                                      Map<Unit, TreeMap<Integer, Position>> globalPositionMap,
+                                      Map<Unit, TreeMap<Integer, Double>> globalCombatReachMap,
+                                      Map<Unit, TreeMap<Integer, Double>> globalBoundingRadiusMap
+    ) {
+        CriteriaSet positionCriteria = new CriteriaSet(
                 new OnMonsterMoveCriteria(),
                 new MoveUpdateCriteria(),
                 new PlayerMovementCriteria()
         );
-        parser.parseFile(criteriaSet, message -> {
-            Unit unit = null;
-            Integer packetNumber = null;
-            Position position = null;
-            if(message instanceof OnMonsterMoveMessage){
-                OnMonsterMoveMessage onMonsterMoveMessage=(OnMonsterMoveMessage) message;
-                unit = onMonsterMoveMessage.getUnit();
-                packetNumber = onMonsterMoveMessage.getId();
-                position = onMonsterMoveMessage.getPositions().get(0);
-                if(position == null)
-                    throw new RuntimeException("fuckkk");
-            } else if(message instanceof MoveUpdateMessage) {
-                MoveUpdateMessage moveUpdateMessage=(MoveUpdateMessage) message;
-                unit = moveUpdateMessage.getMovingUnit();
-                packetNumber = moveUpdateMessage.getId();
-                position = moveUpdateMessage.getCurrentPos();
-                if(position == null)
-                    throw new RuntimeException("fuckkk");
-            } else{
-                PlayerMoveMessage playerMoveMessage=(PlayerMoveMessage) message;
-                unit = playerMoveMessage.getUnit();
-                packetNumber = playerMoveMessage.getId();
-                position = playerMoveMessage.getPosition();
-                if(position == null && playerMoveMessage.getOpCodeFull().startsWith("MSG_MOVE_TELEPORT"))
-                    return; // skip this one. this kind of packets (MSG_MOVE_TELEPORT and MSG_MOVE_TELEPORT_ACK) may or may not contain the unit position
-                if(position == null)
-                    throw new RuntimeException("fuckkk");
-            }
+        CriteriaSet radiusAndReachCriteria = new CriteriaSet(
+                new UpdateObjectCriteria(null, "UNIT_FIELD_BOUNDINGRADIUS"),
+                new UpdateObjectCriteria(null, "UNIT_FIELD_COMBATREACH")
+        );
+        parser.parseFile(new CriteriaSet(positionCriteria, radiusAndReachCriteria), message -> {
+            if(positionCriteria.IsSatisfiedBy(message)){
+                Unit unit = null;
+                Integer packetNumber = null;
+                Position position = null;
+                if(message instanceof OnMonsterMoveMessage){
+                    OnMonsterMoveMessage onMonsterMoveMessage=(OnMonsterMoveMessage) message;
+                    unit = onMonsterMoveMessage.getUnit();
+                    packetNumber = onMonsterMoveMessage.getId();
+                    position = onMonsterMoveMessage.getPositions().get(0);
+                    if(position == null)
+                        throw new RuntimeException("fuckkk");
+                } else if(message instanceof MoveUpdateMessage) {
+                    MoveUpdateMessage moveUpdateMessage=(MoveUpdateMessage) message;
+                    unit = moveUpdateMessage.getMovingUnit();
+                    packetNumber = moveUpdateMessage.getId();
+                    position = moveUpdateMessage.getCurrentPos();
+                    if(position == null)
+                        throw new RuntimeException("fuckkk");
+                } else{
+                    PlayerMoveMessage playerMoveMessage=(PlayerMoveMessage) message;
+                    unit = playerMoveMessage.getUnit();
+                    packetNumber = playerMoveMessage.getId();
+                    position = playerMoveMessage.getPosition();
+                    if(position == null && playerMoveMessage.getOpCodeFull().startsWith("MSG_MOVE_TELEPORT"))
+                        return; // skip this one. this kind of packets (MSG_MOVE_TELEPORT and MSG_MOVE_TELEPORT_ACK) may or may not contain the unit position
+                    if(position == null)
+                        throw new RuntimeException("fuckkk");
+                }
 
-            addElementToGlobalMap(globalPositionMap, packetNumber, unit, position);
+                addElementToGlobalMap(globalPositionMap, packetNumber, unit, position);
+            }
+            else if(radiusAndReachCriteria.IsSatisfiedBy(message)){
+                UpdateObjectMessage updateObjectMessage = (UpdateObjectMessage) message;
+                for(UpdateObjectMessage.UpdateObject updateObject : updateObjectMessage.getUpdates()){
+                    Unit unit = updateObject.getUnit();
+                    if(updateObject.getBoundingRadius() != null)
+                        addElementToGlobalMap(globalBoundingRadiusMap, message.getId(), unit, updateObject.getBoundingRadius());
+
+                    if(updateObject.getCombatReach() != null)
+                        addElementToGlobalMap(globalCombatReachMap, message.getId(), unit, updateObject.getCombatReach());
+                }
+            }
         });
     }
 
@@ -363,16 +368,24 @@ public class SniffExplorer {
 
         // get the latest known position of the unit
 //        Position targetPosition = SniffExplorerUtils.getClosestKnownValue(spellTime, target, globalPositionMap, POSITION_PRECISION_BY_TIME);
-        Position targetPosition = SniffExplorerUtils.getLatestKnownValueIfSameAsNext(packetNumber, target, globalPositionMap);
-        Double targetCombatReach = SniffExplorerUtils.getLatestKnownValue(packetNumber, target, globalCombatReachMap);
-        Double targetBoundingRadius = SniffExplorerUtils.getLatestKnownValue(packetNumber, target, globalBoundingRadiusMap);
-        Double casterCombatReach = SniffExplorerUtils.getLatestKnownValue(packetNumber, spellGoMessage.getCaster(), globalCombatReachMap);
-        Double casterBoundingRadius = SniffExplorerUtils.getLatestKnownValue(packetNumber, spellGoMessage.getCaster(), globalBoundingRadiusMap);
-//        if(targetPosition == null || targetCombatReach == null || targetBoundingRadius == null || casterCombatReach == null || casterBoundingRadius == null) {
-        if(targetPosition == null || targetCombatReach == null || casterCombatReach == null) {
+        Position targetPosition = SniffExplorerUtils.getLatestKnownValueIfSameAsNext(packetNumber, target, globalPositionMap, ERROR_TOLERANCE);
+        if(targetPosition == null){
             globalValuesCounter ++;
             return null;
         }
+        Double targetCombatReach = SniffExplorerUtils.getLatestKnownValue(packetNumber, target, globalCombatReachMap);
+        if(targetCombatReach == null){
+            globalValuesCounter ++;
+            return null;
+        }
+//        Double targetBoundingRadius = SniffExplorerUtils.getLatestKnownValue(packetNumber, target, globalBoundingRadiusMap);
+        Double casterCombatReach = SniffExplorerUtils.getLatestKnownValue(packetNumber, spellGoMessage.getCaster(), globalCombatReachMap);
+        if(casterCombatReach == null){
+            globalValuesCounter ++;
+            return null;
+        }
+//        Double casterBoundingRadius = SniffExplorerUtils.getLatestKnownValue(packetNumber, spellGoMessage.getCaster(), globalBoundingRadiusMap);
+
         double distance3D = GeometryUtils.getDistance3D(location, targetPosition);
 //        double distance2D = GeometryUtils.getDistance2D(location, targetPosition);
 //        log.warn("distance 3D: "+distance3D+" distance 2D: "+distance2D+" Position: "+position.toFormatedString());
@@ -381,7 +394,7 @@ public class SniffExplorer {
         float spellRadius = wrapperDBC.highestSpellRadius(spellId);
 //        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D >= spellRadius + casterCombatReach && distance3D <= spellRadius + targetCombatReach) {
 //        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D >= spellRadius + casterCombatReach + targetCombatReach) {
-        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D > spellRadius) {
+        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D > spellRadius + casterCombatReach + targetCombatReach + ERROR_TOLERANCE + 0.5 && distance3D < 90)  {
             predicateDistanceSatisfiedCounter++;
             return new RecordToDisplay(target, targetPosition.toFormatedStringWoOrientation(), distance3D, targetCombatReach);
         }

@@ -56,14 +56,19 @@ public class SniffExplorerUtils {
         if(packetNumberTMap.isEmpty())
             return null;
 
-        return packetNumberTMap.floorEntry(packetNumber).getValue();
+        Map.Entry<Integer, T> entry = packetNumberTMap.floorEntry(packetNumber);
+
+        if(entry != null)
+            return entry.getValue();
+        else
+            return null;
     }
 
-    public static Position  getLatestKnownValueIfSameAsNext(Integer packetNumber, Unit unit, Map<Unit, TreeMap<Integer, Position>> histogramMap) {
+    public static Position  getLatestKnownValueIfSameAsNext(Integer packetNumber, Unit unit, Map<Unit, TreeMap<Integer, Position>> histogramMap, Double errorTolerance) {
         Position before = getLatestKnownValue(packetNumber, unit, histogramMap);
         Position after = getNextKnownValue(packetNumber, unit, histogramMap);
-        if(before != null && after != null && GeometryUtils.getDistance3D(before, after) < 0.5)
-            return before;
+        if(before != null && after != null && GeometryUtils.getDistance3D(before, after) < errorTolerance)
+            return new Position((before.getX()+after.getX())/2, (before.getY()+after.getY())/2, (before.getZ()+after.getZ())/2);
         else
             return null;
     }
@@ -77,6 +82,11 @@ public class SniffExplorerUtils {
         if(packetNumberTMap.isEmpty())
             return null;
 
-        return packetNumberTMap.ceilingEntry(packetNumber).getValue();
+        Map.Entry<Integer, T> entry = packetNumberTMap.ceilingEntry(packetNumber);
+
+        if(entry != null)
+            return entry.getValue();
+        else
+            return null;
     }
 }
