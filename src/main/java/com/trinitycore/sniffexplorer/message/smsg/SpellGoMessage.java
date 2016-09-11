@@ -13,6 +13,7 @@ import java.util.Map;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.data.MissType;
+import com.trinitycore.sniffexplorer.game.data.Position;
 import com.trinitycore.sniffexplorer.game.entities.Item;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.OpCodeType;
@@ -25,9 +26,33 @@ import com.trinitycore.sniffexplorer.message.ParseUtils;
  */
 public class SpellGoMessage extends SpellMessage {
 
+/*
+ServerToClient: SMSG_SPELL_GO (0x0132) Length: 91 ConnIdx: 0 Time: 07/15/2010 21:18:47.000 Number: 198196
+Caster GUID: Full: 0x28000000215A3FE Type: Player Low: 34972670 Name: Kalvaan
+Caster Unit GUID: Full: 0x28000000215A3FE Type: Player Low: 34972670 Name: Kalvaan
+Cast Count: 101
+Spell ID: 42917 (42917)
+Cast Flags: Unknown7, PredictedPower, Unknown12, Unknown16 (280832)
+Time: 3623440014
+Hit Count: 5
+[0] Hit GUID: Full: 0xF13000951C0A820F Type: Creature Entry: 38172 Low: 688655
+[1] Hit GUID: Full: 0xF13000951D0A8210 Type: Creature Entry: 38173 Low: 688656
+[2] Hit GUID: Full: 0xF13000951D0A8211 Type: Creature Entry: 38173 Low: 688657
+[3] Hit GUID: Full: 0xF1300095210A8213 Type: Creature Entry: 38177 Low: 688659
+[4] Hit GUID: Full: 0xF1300096A70A8579 Type: Creature Entry: 38567 Low: 689529
+Miss Count: 0
+Target Flags: Unit, SourceLocation (34)
+Target GUID: 0x0
+Source Transport GUID: 0x0
+Source Position: X: 5271.361 Y: 2035.772 Z: 709.3193
+Rune Cooldown: 13316
+ */
+
     private List<Unit> hitUnits=new ArrayList<>();
     private Map<Unit, MissType> missedUnits=new HashMap<>();
-    
+    private Position sourceLocation;
+    private Position destinationLocation;
+
     @Override
     public OpCode getOpCode() {
         return OpCode.SMSG_SPELL_GO;
@@ -87,6 +112,21 @@ public class SpellGoMessage extends SpellMessage {
             MissType missType=MissType.getMissType(ParseUtils.removePrefixAndGetFirstElement(lines.get(missIndex + 1), "Miss Type"));
             missedUnits.put(missUnit, missType);
         }
+
+        /**
+         * Source Position and Destination Position
+         */
+
+        Integer sourceMask=getTargetFlags() & 32;
+        Integer destinationMask=getTargetFlags() & 64;
+        if(sourceMask != 0){
+            String sourcePositionString = ParseUtils.getLineThatStartWithPrefix(lines, "Source Position");
+            sourceLocation=ParseUtils.parsePositionRemovePrefix(sourcePositionString, "Source Position");
+        }
+        if(destinationMask != 0){
+            String sourcePositionString = ParseUtils.getLineThatStartWithPrefix(lines, "Destination Position");
+            destinationLocation=ParseUtils.parsePositionRemovePrefix(sourcePositionString, "Destination Position");
+        }
     }
 
     @Override
@@ -120,5 +160,13 @@ public class SpellGoMessage extends SpellMessage {
 
     public Map<Unit, MissType> getMissedUnits() {
         return missedUnits;
+    }
+
+    public Position getSourceLocation() {
+        return sourceLocation;
+    }
+
+    public Position getDestinationLocation() {
+        return destinationLocation;
     }
 }

@@ -25,6 +25,7 @@ public class MoveUpdateMessage extends Message{
     
     private Unit movingUnit;
     private Position currentPos;
+    private String movementFlagsLine;
 
 /*
 ServerToClient: SMSG_MOVE_UPDATE (0x79A2) Length: 29 ConnIdx: 2 Time: 06/16/2012 23:09:24.990 Number: 69944
@@ -35,12 +36,23 @@ Guid: Full: 0x60000000320D4F0 Type: Player Low: 52483312 Name: Gansinolo
 Position: X: 3694.42 Y: -5126.839 Z: 142.0237 O: 3.553918
  */
 
+/*
+ServerToClient: SMSG_MOVE_UPDATE (0x79A2) Length: 33 ConnIdx: 2 Time: 06/16/2012 23:20:08.307 Number: 100363
+Has spline data: False
+Extra Movement Flags: Unknown10 (2048)
+Movement flags: Forward (1)
+Timestamp: 4153986851
+Guid: Full: 0x60000000320D4F0 Type: Player Low: 52483312 Name: Gansinolo
+Position: X: 3265.232 Y: -3477.408 Z: 287.0757 O: 6.171607
+ */
+
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        int guidIndex = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Guid", 1);
-        int positionIndex = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Position", 2);
-        movingUnit=ParseUtils.parseGuidRemovePrefix(lines.get(guidIndex), "Guid");
-        currentPos=ParseUtils.parsePositionRemovePrefix(lines.get(positionIndex), "Position");
+        movementFlagsLine = ParseUtils.getLineThatStartWithPrefix(lines, "Movement flags");
+        String guidLine = ParseUtils.getLineThatStartWithPrefix(lines, "Guid");
+        movingUnit=ParseUtils.parseGuidRemovePrefix(guidLine, "Guid");
+        String positionLine = ParseUtils.getLineThatStartWithPrefix(lines, "Position");
+        currentPos=ParseUtils.parsePositionRemovePrefix(positionLine, "Position");
     }
 
     @Override
@@ -68,6 +80,8 @@ Position: X: 3694.42 Y: -5126.839 Z: 142.0237 O: 3.553918
         super.display(writer);
         writer.println();
         writer.println(movingUnit);
+        if(movementFlagsLine!=null)
+            writer.println(movementFlagsLine);
         writer.println(currentPos.toFormatedString());
     }
 
@@ -87,5 +101,9 @@ Position: X: 3694.42 Y: -5126.839 Z: 142.0237 O: 3.553918
 
     public Position getCurrentPos() {
         return currentPos;
+    }
+
+    public String getMovementFlagsLine() {
+        return movementFlagsLine;
     }
 }

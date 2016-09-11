@@ -7,50 +7,57 @@ import java.util.Locale;
  */
 public class Position {
 
-    private float X;
-    private float Y;
-    private float Z;
-    private float orientation;
+    private Float X;
+    private Float Y;
+    private Float Z;
+    private Float O;
 
     public Position() {
     }
 
-    public Position(float x, float y, float z) {
+    public Position(Float x, Float y, Float z) {
         X = x;
         Y = y;
         Z = z;
     }
 
-    public float getX() {
+    public Position(Float x, Float y, Float z, Float o) {
+        this.X = x;
+        this.Y = y;
+        this.Z = z;
+        this.O = o;
+    }
+
+    public Float getX() {
         return X;
     }
 
-    public void setX(float x) {
+    public void setX(Float x) {
         X = x;
     }
 
-    public float getY() {
+    public Float getY() {
         return Y;
     }
 
-    public void setY(float y) {
+    public void setY(Float y) {
         Y = y;
     }
 
-    public float getZ() {
+    public Float getZ() {
         return Z;
     }
 
-    public void setZ(float z) {
+    public void setZ(Float z) {
         Z = z;
     }
 
-    public float getOrientation() {
-        return orientation;
+    public Float getO() {
+        return O;
     }
 
-    public void setOrientation(float orientation) {
-        this.orientation = orientation;
+    public void setO(Float O) {
+        this.O = O;
     }
 
     @Override
@@ -59,11 +66,39 @@ public class Position {
         sb.append("X=").append(X);
         sb.append(", Y=").append(Y);
         sb.append(", Z=").append(Z);
-        sb.append(", O=").append(orientation);
+        sb.append(", O=").append(O);
         return sb.toString();
     }
 
     public String toFormatedString(){
-        return String.format(Locale.ENGLISH, "%4.3f %4.3f %4.4f", getX(), getY(), getZ());
+        if(getO() != null)
+            return String.format(Locale.ENGLISH, "%4.4f %4.4f %4.5f %4.6f", getX(), getY(), getZ(), getO());
+        else
+            return String.format(Locale.ENGLISH, "%4.4f %4.4f %4.5f", getX(), getY(), getZ());
+    }
+
+    public String toFormatedStringWoOrientation(){
+        return String.format(Locale.ENGLISH, "%4.4f %4.4f %4.5f", getX(), getY(), getZ());
+    }
+
+    @Override
+    public boolean equals(Object o) { // compare without the orientation
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Position position = (Position) o;
+
+        if (X != null ? !X.equals(position.X) : position.X != null) return false;
+        if (Y != null ? !Y.equals(position.Y) : position.Y != null) return false;
+        return !(Z != null ? !Z.equals(position.Z) : position.Z != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = X != null ? X.hashCode() : 0;
+        result = 31 * result + (Y != null ? Y.hashCode() : 0);
+        result = 31 * result + (Z != null ? Z.hashCode() : 0);
+        return result;
     }
 }

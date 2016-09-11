@@ -8,6 +8,7 @@ package com.trinitycore.sniffexplorer.message.smsg;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
@@ -38,6 +39,14 @@ Count: 2
 [1] GUID: Full: 0x4600000327F3078C Type: Item Low: 13555140492
 [1] ITEM_FIELD_DURABILITY: 69/9.668959E-44
  */
+
+/*
+ServerToClient: SMSG_COMPRESSED_UPDATE_OBJECT (0x01F6) Length: 34 ConnIdx: 0 Time: 10/08/2010 19:51:22.000 Number: 8177
+Count: 1
+[0] UpdateType: Values
+[0] GUID: Full: 0x2800000034341A1 Type: Player Low: 54739361 Name: Underod
+[0] UNIT_FIELD_POWER1: 23627/3.310848E-41
+ */
     
     @Override
     public OpCode getOpCode() {
@@ -51,11 +60,12 @@ Count: 2
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        int countIndex = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Count");
         updates=new ArrayList<>();
-        count=Long.valueOf(ParseUtils.removePrefix(lines.get(2), "Count"));
-        for(int i=0 ; i<count;i++){
+        this.count =Long.valueOf(ParseUtils.removePrefix(lines.get(countIndex), "Count"));
+        for(int i=0 ; i< this.count;i++){
             int startIndex=ParseUtils.getLineIndexThatStartWithPrefix(lines, "["+i+"]");
-            int endIndex=(i+1<count)?ParseUtils.getLineIndexThatStartWithPrefix(lines, "["+(i+1)+"]"):lines.size();
+            int endIndex=(i+1< this.count)?ParseUtils.getLineIndexThatStartWithPrefix(lines, "["+(i+1)+"]"):lines.size();
             updates.add(new UpdateObject(lines.subList(startIndex, endIndex)));
         }
     }
@@ -86,11 +96,38 @@ Count: 2
         private UpdateType updateType;
         private boolean display=false;
 
+        private Double combatReach;
+        private Double boundingRadius;
+
         public UpdateObject(List<String> rawData) throws ParseException {
             this.rawData = rawData;
             updateType=UpdateType.valueOf(ParseUtils.removePrefixAndGetFirstElement(rawData.get(0), "UpdateType"));
-            if(!updateType.equals(UpdateType.DestroyObjects))
+
+            // extract unit's data
+            if(!updateType.equals(UpdateType.DestroyObjects) && !updateType.equals(UpdateType.FarObjects))
                 unit=ParseUtils.parseGuidRemovePrefix(rawData.get(1), "GUID");
+
+            // extract potential change of combat reach
+            List<String> combatReachLines = rawData.stream()
+                    .filter(s -> s.contains("UNIT_FIELD_COMBATREACH"))
+                    .collect(Collectors.toList());
+
+            if (combatReachLines.size()>1)
+                throw new IllegalStateException("Found more than one line changing UNIT_FIELD_COMBATREACH for a single unit.");
+            else if(combatReachLines.size() == 1) {
+                combatReach=Double.valueOf(combatReachLines.get(0).split("/")[1]);
+            }
+
+            // extract potential change of bounding radius
+            List<String> boundingRadiusLines = rawData.stream()
+                    .filter(s -> s.contains("UNIT_FIELD_BOUNDINGRADIUS"))
+                    .collect(Collectors.toList());
+
+            if (boundingRadiusLines.size()>1)
+                throw new IllegalStateException("Found more than one line changing UNIT_FIELD_BOUNDINGRADIUS for a single unit.");
+            else if(boundingRadiusLines.size() == 1) {
+                boundingRadius=Double.valueOf(boundingRadiusLines.get(0).split("/")[1]);
+            }
         }
 
         public List<String> getRawData() {
@@ -108,13 +145,22 @@ Count: 2
         public void setDisplay(boolean display) {
             this.display = display;
         }
+
+        public Double getCombatReach() {
+            return combatReach;
+        }
+
+        public Double getBoundingRadius() {
+            return boundingRadius;
+        }
     }
 
     private enum UpdateType{
         CreateObject1,
         CreateObject2,
         DestroyObjects,
-        Values;
+        Values,
+        FarObjects;
     }
 
     public List<UpdateObject> getUpdates() {

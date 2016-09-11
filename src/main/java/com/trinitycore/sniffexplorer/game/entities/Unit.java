@@ -32,18 +32,19 @@ public abstract class Unit implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Unit other = (Unit) obj;
-        if (!Objects.equals(this.GUID, other.GUID)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Unit unit = (Unit) o;
+
+        return GUID.equals(unit.GUID);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return GUID.hashCode();
     }
 
     @Override

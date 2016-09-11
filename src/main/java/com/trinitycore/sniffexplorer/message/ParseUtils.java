@@ -3,6 +3,7 @@ package com.trinitycore.sniffexplorer.message;
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.data.Position;
 import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
+import com.trinitycore.sniffexplorer.game.entities.Player;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.game.data.UnitType;
 
@@ -21,9 +22,9 @@ public class ParseUtils {
      * cf https://github.com/TrinityCore/WowPacketParser/blob/master/WowPacketParser/Parsing/Parsers/SpellHandler.cs#L730
      * @return
      */
-    public static Unit parseReadGuid(){
-        return null;
-    }
+//    public static Unit parseReadGuid(){
+//        return null;
+//    }
 
     /**
      * method to parse this kind of line:
@@ -53,10 +54,16 @@ public class ParseUtils {
         return split[0];
     }
 
+    public static String removePrefixAndGetLastElement(String line, String prefix) {
+        String[] split = removePrefix(line, prefix).split("\\s+");
+        return split[split.length-1];
+    }
+
     /**
      * method to parse this kinds of line:
      Full: 0xF1306D7D00516C94 Type: Creature Entry: 28029 Low: 5336212
      Full: 0xF1306D7D00516C94 Type: Player Low: 5336212
+     Full: 0x280000002EAEE6F Type: Player Low: 48950895 Name: Vagali
      Full: 0xF150815900029F17 Type: Vehicle Entry: 33113 Low: 171799
      Full: 0xF140A1B13C000054 Type: Pet Low: 1006633044
      Full: 0xF112ED35000000ED Type: GameObject Entry: 191797 Low: 237
@@ -77,12 +84,18 @@ public class ParseUtils {
         // we set the GUID for every units.
         unit.setGUID(GUID);
 
-        // we set the entry of units that have one.
         switch (unitType){
+            // set the entry of units that have one.
             case CREATURE:
             case GAME_OBJECT:
             case VEHICLE:
                 ((IdentifiableByEntry)unit).setEntry(Integer.parseInt(words[5]));
+                break;
+            // we set the name of units that have one.
+            case PLAYER:
+                if(words.length>6)
+                    ((Player)unit).setName(words[7]);
+                break;
         }
 
         return unit;
@@ -95,11 +108,20 @@ public class ParseUtils {
         return spellIdIndex;
     }
 
-    public static int getLineIndexThatStartWithPrefix(List<String> lines, String prefix) {
-        int spellIdIndex=0;
-        while(!lines.get(spellIdIndex).startsWith(prefix))
-            spellIdIndex++;
-        return spellIdIndex;
+    public static Integer getLineIndexThatStartWithPrefix(List<String> lines, String prefix) {
+        for(int i=0 ; i<lines.size() ; i++)
+            if (lines.get(i).startsWith(prefix))
+                return i;
+
+        return null;
+    }
+
+    public static String getLineThatStartWithPrefix(List<String> lines, String prefix) {
+        for(String line:lines)
+            if (line.startsWith(prefix))
+                return line;
+
+        return null;
     }
 
     /**
@@ -114,7 +136,12 @@ public class ParseUtils {
         float X=Float.parseFloat(words[1]);
         float Y=Float.parseFloat(words[3]);
         float Z=Float.parseFloat(words[5]);
-        return new Position(X, Y, Z);
+        if(words.length>6){
+            float O=Float.parseFloat(words[7]);
+            return new Position(X, Y, Z, O);
+        }
+        else
+            return new Position(X, Y, Z);
     }
 
     public static Position parsePositionRemovePrefix(String line, String prefix){

@@ -1,0 +1,50 @@
+
+ServerToClient: SMSG_ON_MONSTER_MOVE (0x6E17) Length: 61 ConnIdx: 2 Time: 06/17/2012 00:35:36.174 Number: 301009
+GUID: Full: 0xF130779800000CD2 Type: Creature Entry: 30616 Low: 3282
+Toggle AnimTierInTrans: false
+Position: X: 3211 Y: 484 Z: 57.08333
+Move Ticks: 65679
+Spline Type: Normal (0)
+Spline Flags: Flying (512)
+Move Time: 6257
+Waypoints: 4
+Waypoint Endpoint: X: 3286 Y: 484 Z: 58.08333
+[0] Waypoint: X: 3280.75 Y: 484 Z: 57.58333
+[1] Waypoint: X: 3275.75 Y: 484 Z: 57.08333
+[2] Waypoint: X: 3254.75 Y: 484 Z: 56.58333
+
+ClientToServer: CMSG_QUERY_INSPECT_ACHIEVEMENTS (0x4D27) Length: 6 ConnIdx: 2 Time: 06/16/2012 22:46:00.700 Number: 4881
+GUID: Full: 0x60000000320D4F0 Type: Player Low: 52483312 Name: Gansinolo
+
+ServerToClient: SMSG_SPELL_GO (0x6E16) Length: 51 ConnIdx: 2 Time: 06/16/2012 22:43:49.862 Number: 321
+Caster GUID: Full: 0xF1307F0800002992 Type: Creature Entry: 32520 Low: 10642
+Caster Unit GUID: Full: 0xF1307F0800002992 Type: Creature Entry: 32520 Low: 10642
+Cast Count: 0
+Spell ID: 55137 (55137)
+Cast Flags: PendingCast, Unknown2, Unknown3, Unknown7, Unknown8, Unknown12 (17165)
+Time: 0
+Time2: 4151807494
+Hit Count: 0
+Miss Count: 0
+Target Flags: Unit, SourceLocation (34)
+Target GUID: 0x0
+Source Transport GUID: 0x0
+Source Position: X: 7256.418 Y: -2506.263 Z: 874.6564
+
+ServerToClient: SMSG_SPELL_GO (0x6E16) Length: 51 ConnIdx: 2 Time: 06/16/2012 22:43:49.862 Number: 322
+Caster GUID: Full: 0xF1307F080000298C Type: Creature Entry: 32520 Low: 10636
+Caster Unit GUID: Full: 0xF1307F080000298C Type: Creature Entry: 32520 Low: 10636
+Cast Count: 0
+Spell ID: 61180 (61180)
+Cast Flags: PendingCast, Unknown2, Unknown3, Unknown7, Unknown8, Unknown12 (17165)
+Time: 0
+Time2: 4151807494
+Hit Count: 0
+Miss Count: 0
+Target Flags: Unit, SourceLocation (34)
+Target GUID: 0x0
+Source Transport GUID: 0x0
+Source Position: X: 7309.399 Y: -2493.362 Z: 919.8745
+
+ClientToServer: CMSG_QUERY_INSPECT_ACHIEVEMENTS (0x4D27) Length: 6 ConnIdx: 2 Time: 06/16/2012 22:46:00.700 Number: 4881
+GUID: Full: 0x60000000320D4F0 Type: Player Low: 52483312 Name: Gansinolo

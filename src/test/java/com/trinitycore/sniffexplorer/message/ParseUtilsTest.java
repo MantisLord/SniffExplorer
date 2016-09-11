@@ -1,9 +1,11 @@
-package com.trinitycore.sniffexplorer.message;
+package com.trinitycore.sniffexplorer.message
+        ;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.entities.Creature;
 import com.trinitycore.sniffexplorer.game.entities.Player;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
+import com.trinitycore.sniffexplorer.message.ParseUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

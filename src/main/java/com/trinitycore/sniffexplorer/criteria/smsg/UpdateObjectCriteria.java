@@ -52,6 +52,17 @@ public class UpdateObjectCriteria extends Criteria {
 
             if (updateObjects.isEmpty())
                 return false;
+        } else if(valueChange!=null){
+            List<UpdateObjectMessage.UpdateObject> updates = updateObjectMessage.getUpdates();
+
+            List<UpdateObjectMessage.UpdateObject> updateObjects = updates.stream()
+                    .filter(uObjc -> uObjc.getRawData().stream().anyMatch(s -> s.contains(valueChange)))
+                    .collect(Collectors.toList());
+
+            updateObjects.forEach(updateObject -> updateObject.setDisplay(true));
+
+            if (updateObjects.isEmpty())
+                return false;
         }
 
         return true;
@@ -60,15 +71,5 @@ public class UpdateObjectCriteria extends Criteria {
     public UpdateObjectCriteria(String unitGUID, String valueChange) {
         this.unitGUID = unitGUID;
         this.valueChange = valueChange;
-    }
-
-    public void restrictByUnit(String unitGUID){
-        this.unitGUID=unitGUID;
-        this.valueChange=null;
-    }
-
-    public void restrictByUnitAndChange(String unitGUID, String valueChange){
-        this.unitGUID=unitGUID;
-        this.valueChange=valueChange;
     }
 }

@@ -6,8 +6,11 @@
 package com.trinitycore.sniffexplorer.core;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,28 +30,51 @@ import com.trinitycore.sniffexplorer.message.Message;
 public class Parser {
     
     private static Logger log = LoggerFactory.getLogger(Parser.class);
-    
+    private final File file;
+
 //    private int countSMSG=0;
 //    private int countCMSG=0;
 
-    public void parseFile(String sniffFileName, CriteriaSet criteriaSet, Consumer<Message> consumer){
-        
-        List<String> lines=new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(sniffFileName))) {
-            for (String line; (line = br.readLine()) != null;) {
+    public Parser(File file){
+        this.file = file;
+    }
+
+    public Parser(URL url){
+        try {
+            this.file = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Could not access the file.");
+        }
+        ;
+    }
+
+    public Parser(String sniffFileName){
+        this.file = new File(sniffFileName);
+    }
+
+    public void parseFile(CriteriaSet criteriaSet, Consumer<Message> consumer){
+        List<String> buffer=new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            for (String line ; (line = br.readLine()) != null; ) {
                 if(!line.isEmpty() && !line.trim().startsWith("# "))
-                    lines.add(line);
-                else if(!lines.isEmpty()){
-                    Message msg=parseOneMessage(lines);
-                    if(msg!=null && criteriaSet.IsSatisfiedBy(msg))
-                        consumer.accept(msg);
-                    
-                    lines.clear();
+                    buffer.add(line);
+                else if(!buffer.isEmpty()){
+                    parseAndConsumeBufferContent(criteriaSet, consumer, buffer);
                 }
             }
+            if(!buffer.isEmpty())
+                parseAndConsumeBufferContent(criteriaSet, consumer, buffer);
         } catch (IOException ex) {
             log.error("", ex);
         }
+    }
+
+    private void parseAndConsumeBufferContent(CriteriaSet criteriaSet, Consumer<Message> consumer, List<String> buffer) {
+        Message msg=parseOneMessage(buffer);
+        if(msg!=null && criteriaSet.IsSatisfiedBy(msg))
+            consumer.accept(msg);
+
+        buffer.clear();
     }
 
     private Message parseOneMessage(List<String> lines) {
@@ -71,7 +97,7 @@ public class Parser {
          */
         
         // unnamed op code. dont process.
-        if(opCodeString.length()<4 || !opCodeString.substring(1, 4).equals("MSG")){
+        if(!opCodeString.startsWith("SMSG") && !opCodeString.startsWith("MSG") && !opCodeString.startsWith("CMSG")){
                 log.debug("Unidentified OpCode found:");
                 log.debug(lines.get(0));
                 return null;
@@ -122,8 +148,18 @@ public class Parser {
             case "SMSG_ATTACK_STOP":
                 msg=new AttackStopMessage();
                 break;
+            case "SMSG_HIGHEST_THREAT_UPDATE":
+                msg=new HighestThreatUpdateMessage();
+                break;
                 
             default:
+
+                if(opCodeString.startsWith("MSG_MOVE") && !opCodeString.equals("MSG_MOVE_TIME_SKIPPED") && !opCodeString.equals("MSG_MOVE_WORLDPORT_ACK")){
+                    msg=new PlayerMoveMessage();
+                    break;
+                }
+
+
                 log.info("Unsupported OpCode found: "+opCodeString);
                 return null;
         }
@@ -153,7 +189,7 @@ public class Parser {
         try {
            msg.initialize(lines);
         } catch (Exception e) {
-            log.error("Complete parsing failed:", e);
+            log.debug("Complete parsing failed:", e);
             msg.printError(lines);
         }
         

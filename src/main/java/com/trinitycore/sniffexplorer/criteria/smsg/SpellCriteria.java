@@ -39,8 +39,12 @@ public class SpellCriteria extends Criteria {
             if(!entryInstance.getEntry().equals(casterEntry))
                 return false;
         }
-        
-        if(casterGUID!=null && !spellMessage.getCasterUnit().getGUID().equals(casterGUID))
+
+        // todo: this is incorrect. This should be fixed.
+        if(casterGUID!=null && spellMessage.getCasterUnit()!=null && !spellMessage.getCasterUnit().getGUID().equals(casterGUID))
+            return false;
+
+        if(casterGUID!=null && spellMessage.getCaster()!=null && !spellMessage.getCaster().getGUID().equals(casterGUID))
             return false;
         
         if(spellId!=null && !spellMessage.getSpellId().equals(spellId))

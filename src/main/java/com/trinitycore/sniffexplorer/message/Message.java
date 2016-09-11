@@ -57,10 +57,10 @@ public abstract class Message implements Serializable {
     }
 
     public void printError(List<String> lines){
-        log.error("Coudn't process the following "+getClass().getSimpleName()+": START-------------------");
+        log.debug("Coudn't process the following " + getClass().getSimpleName() + ": START-------------------");
         for(String line:lines)
-            log.error(line);
-        log.error("END--------------------------------------------------------------------------");
+            log.debug(line);
+        log.debug("END--------------------------------------------------------------------------");
     }
 }
 

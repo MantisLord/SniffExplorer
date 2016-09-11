@@ -116,31 +116,41 @@ Waypoint Endpoint: X: 5887.709 Y: 508.2559 Z: 641.5698
             facingAngle=Double.parseDouble(angleString);
         }
 
-        int splineFlagIdx = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Spline Flags", 6);
+        int splineFlagIdx = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Spline Flags");
         splineFlagsLine = lines.get(splineFlagIdx);
         if(splineFlagsLine.contains("Catmullrom"))
             return;
 
         // move time
-        String moveTimeString = ParseUtils.removePrefix(lines.get(++splineFlagIdx), "Move Time");
+        int moveTimeIdx = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Move Time");
+        String moveTimeString = ParseUtils.removePrefix(lines.get(moveTimeIdx), "Move Time");
         moveTime = Integer.valueOf(moveTimeString);
 
-        int waypointCountIdx = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Waypoints", 8);
+        int waypointCountIdx = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Waypoints");
         Integer waypointCount= Integer.valueOf(ParseUtils.removePrefix(lines.get(waypointCountIdx), "Waypoints"));
-        Position endPosition = ParseUtils.parsePositionRemovePrefix(lines.get(++waypointCountIdx), "Waypoint Endpoint");
 
-        if(waypointCount>1){
-            // waypoints comes in reverse. needs to store them and reverse them/
-            List<Position> savedPositions=new ArrayList<>();
-            for(int i=0; i<waypointCount-2;i++){
-                Position waypoint = ParseUtils.parsePositionRemovePrefix(lines.get(++waypointCountIdx), "Waypoint");
-                savedPositions.add(waypoint);
-            }
-            Collections.reverse(savedPositions);
-            positions.addAll(savedPositions);
+        Position endPosition = null;
+        if(!splineFlagsLine.contains("Flying"))
+            endPosition= ParseUtils.parsePositionRemovePrefix(lines.get(++waypointCountIdx), "Waypoint Endpoint");
+
+//        if(waypointCount>1){
+//            // waypoints comes in reverse. needs to store them and reverse them/
+//            List<Position> savedPositions=new ArrayList<>();
+//            for(int i=0; i<waypointCount-2;i++){
+//                Position waypoint = ParseUtils.parsePositionRemovePrefix(lines.get(++waypointCountIdx), "Waypoint");
+//                savedPositions.add(waypoint);
+//            }
+//            Collections.reverse(savedPositions);
+//            positions.addAll(savedPositions);
+//        }
+        for(int i=0 ; i<waypointCount-1 ; i++){
+            Position waypoint = ParseUtils.parsePositionRemovePrefix(lines.get(++waypointCountIdx), "Waypoint");
+            positions.add(waypoint);
         }
 
-        positions.add(endPosition);
+
+        if(endPosition!=null)
+            positions.add(endPosition);
     }
 
     @Override

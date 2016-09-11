@@ -104,6 +104,24 @@ import com.trinitycore.sniffexplorer.message.ParseUtils;
     Unk Byte 2: 0
      */
 
+    /*
+    ServerToClient: SMSG_SPELL_GO (0x0132) Length: 59 ConnIdx: 0 Time: 09/14/2010 09:07:31.000 Number: 781
+    Caster GUID: Full: 0xF130007A79008E5F Type: Creature Entry: 31353 ([DND] Icecrown Airship (N) - Attack Controller) Low: 36447
+    Caster Unit GUID: Full: 0xF130007A79008E5F Type: Creature Entry: 31353 ([DND] Icecrown Airship (N) - Attack Controller) Low: 36447
+    Cast Count: 0
+    Spell ID: Icecrown Airship - A - Attack - Tell Cannon to Fire - Single Start A (57659)
+    Cast Flags: PendingCast, Unknown3, Unknown7, Unknown12 (16649)
+    Time: 260061407
+    Hit Count: 1
+    [0] Hit GUID: Full: 0xF1300077BF008E60 Type: Creature Entry: 30655 ([DND] Icecrown Airship (A) - Cannon Controller 01) Low: 36448
+    Miss Count: 0
+    Target Flags: Unit, DestinationLocation (66)
+    Target GUID: 0x0
+    Destination Transport GUID: Full: 0x1FC0000000000027 Type: Transport Low: 39
+    Destination Position: X: -21.7234 Y: 19.33753 Z: 9.687197
+    Unk Byte 2: -90
+     */
+
 /**
  *
  * @author chaouki
@@ -114,6 +132,8 @@ public abstract class SpellMessage extends Message {
     private Unit caster;
     
     private Integer spellId;
+    private Integer targetFlags;
+    private Unit targetUnit;
     
     @Override
     public void initialize(List<String> lines) throws ParseException {
@@ -124,8 +144,36 @@ public abstract class SpellMessage extends Message {
          *  Spell ID
          */
         int spellIdIndex = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Spell ID", 3);
-        String spellIdString = ParseUtils.removePrefixAndGetFirstElement(lines.get(spellIdIndex), "Spell ID");
+        String spellIdString = ParseUtils.removePrefixAndGetLastElement(lines.get(spellIdIndex), "Spell ID");
+        spellIdString = spellIdString.substring(1, spellIdString.length()-1);
         spellId=Integer.valueOf(spellIdString);
+
+        /**
+         * Target(s)
+         */
+        Integer targetFlagsIndex = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Target Flags");
+        String[] split = lines.get(targetFlagsIndex).split("\\s+");
+        String targetFlagsString = split[split.length - 1].replace('(', ' ').replace(')', ' ').trim();
+        targetFlags=Integer.valueOf(targetFlagsString);
+
+        if(targetFlags==0){ // case Self
+            targetUnit=getCasterUnit();
+        }
+        else if(targetFlags==2){ // case Unit
+            targetUnit= ParseUtils.parseGuidRemovePrefix(lines.get(targetFlagsIndex+1), "Target GUID");
+        }
+//        else if(targetFlags==16)                                    // Item
+//            log.warn("targetFlags 16 unsupported yet.");
+//        else if(targetFlags==32)                                    // SourceLocation
+//            log.warn("targetFlags 32 unsupported yet.");
+//        else if(targetFlags==64)                                    // DestinationLocation
+//            log.warn("targetFlags 64 unsupported yet.");
+//        else if(targetFlags==96)                                    // SourceLocation, DestinationLocation
+//            log.warn("targetFlags 96 unsupported yet.");
+//        else if(targetFlags==2048)                                  // GameObject
+//            log.warn("targetFlags 2048 unsupported yet.");
+//        else
+//            log.warn("targetFlags "+targetFlags+" unsupported yet.");
     }
 
     public Unit getCasterUnit() {
@@ -138,5 +186,13 @@ public abstract class SpellMessage extends Message {
 
     public Unit getCaster() {
         return caster;
+    }
+
+    public Integer getTargetFlags() {
+        return targetFlags;
+    }
+
+    public Unit getTargetUnit() {
+        return targetUnit;
     }
 }

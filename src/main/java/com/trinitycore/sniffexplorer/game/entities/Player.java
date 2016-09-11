@@ -58,7 +58,7 @@ public class Player extends Unit{
     @Override
     public String toString() {
         if(!ANONYMIZE_GUIDS)
-            return "Player{GUID="+GUID+"}";
+            return String.format("Player. Name= %s GUID= %s", name, getGUID());
         else
             return "Player{GUID=XXXXXXXXXXXXXXXXXX}";
     }

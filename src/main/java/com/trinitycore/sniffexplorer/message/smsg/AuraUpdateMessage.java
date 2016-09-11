@@ -5,6 +5,7 @@ import com.trinitycore.sniffexplorer.game.entities.*;
 import com.trinitycore.sniffexplorer.message.Message;
 import com.trinitycore.sniffexplorer.message.OpCode;
 import com.trinitycore.sniffexplorer.message.OpCodeType;
+import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -51,11 +52,9 @@ public class AuraUpdateMessage extends Message {
         /**
          *  Spell ID
          */
-        words=lines.get(3).split("\\s+");
-        if(!words[1].equals("Spell") || !words[2].equals("ID:"))
-            throw new ParseException();
-
-        spellId=Integer.valueOf(words[3]);
+        String spellIdString = ParseUtils.removePrefixAndGetLastElement(lines.get(3), "Spell ID");
+        spellIdString = spellIdString.substring(1, spellIdString.length() - 1);
+        spellId=Integer.valueOf(spellIdString);
     }
 
     @Override

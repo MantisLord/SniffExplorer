@@ -1,4 +1,4 @@
-package com.trinitycore.sniffexplorer.message;
+package com.trinitycore.sniffexplorer;
 
 import org.junit.Assert;
 import org.junit.Test;
