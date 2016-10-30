@@ -37,9 +37,9 @@ public class CriteriaSet {
         addCriteria(criteriaVec);
     }
 
-    public CriteriaSet(CriteriaSet positionCriteria, CriteriaSet radiusAndReachCriteria) {
-        HashSet<Criteria> criteriaSet = (HashSet<Criteria>) positionCriteria.criterion.clone();
-        criteriaSet.addAll(radiusAndReachCriteria.criterion);
+    public CriteriaSet(CriteriaSet criteriaSetA, CriteriaSet criteriaSetB) {
+        HashSet<Criteria> criteriaSet = (HashSet<Criteria>) criteriaSetA.criterion.clone();
+        criteriaSet.addAll(criteriaSetB.criterion);
         this.criterion = criteriaSet;
     }
 
