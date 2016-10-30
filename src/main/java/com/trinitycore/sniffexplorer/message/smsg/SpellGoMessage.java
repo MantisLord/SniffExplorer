@@ -52,6 +52,7 @@ Rune Cooldown: 13316
     private Map<Unit, MissType> missedUnits=new HashMap<>();
     private Position sourceLocation;
     private Position destinationLocation;
+    private Long timeTicks;
 
     @Override
     public OpCode getOpCode() {
@@ -127,6 +128,13 @@ Rune Cooldown: 13316
             String sourcePositionString = ParseUtils.getLineThatStartWithPrefix(lines, "Destination Position");
             destinationLocation=ParseUtils.parsePositionRemovePrefix(sourcePositionString, "Destination Position");
         }
+
+        /**
+         * Time tick
+         */
+
+        String timeTickLine = ParseUtils.getLineThatStartWithPrefix(lines, "Time");
+        timeTicks=Long.parseLong(ParseUtils.removePrefix(timeTickLine, "Time"));
     }
 
     @Override
@@ -168,5 +176,9 @@ Rune Cooldown: 13316
 
     public Position getDestinationLocation() {
         return destinationLocation;
+    }
+
+    public Long getTimeTicks() {
+        return timeTicks;
     }
 }

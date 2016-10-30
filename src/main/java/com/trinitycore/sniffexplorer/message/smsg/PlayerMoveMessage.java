@@ -28,6 +28,7 @@ public class PlayerMoveMessage extends Message {
     private String opCodeFull;
     private Unit unit;
     private Position position;
+    private Long timeTicks;
 
 /*
 ServerToClient: MSG_MOVE_TELEPORT (0x00C5) Length: 52 ConnIdx: 0 Time: 07/15/2010 19:13:01.000 Number: 2454
@@ -77,6 +78,13 @@ Fall Speed: 0
 
         int indexPosition = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Position");
         position=ParseUtils.parsePositionRemovePrefix(lines.get(indexPosition), "Position");
+
+        /**
+         * Time tick
+         */
+
+        String timeTickLine = ParseUtils.getLineThatStartWithPrefix(lines, "Time");
+        timeTicks=Long.parseLong(ParseUtils.removePrefix(timeTickLine, "Time"));
     }
 
     @Override
@@ -109,6 +117,10 @@ Fall Speed: 0
 
     public Position getPosition() {
         return position;
+    }
+
+    public Long getTimeTicks() {
+        return timeTicks;
     }
 
     @Override
