@@ -3,8 +3,6 @@ package com.trinitycore.sniffexplorer.message.smsg;
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 import java.util.List;
@@ -19,19 +17,10 @@ public class ForceSpeedChangeMessage extends Message {
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
         unit = ParseUtils.parseGuidRemovePrefix(lines.get(1), "Guid");
         int newSpeedIdx = ParseUtils.getLineIndexThatStartWithPrefix(lines, "New Speed");
         newSpeed = Double.parseDouble(ParseUtils.removePrefixAndGetFirstElement(lines.get(newSpeedIdx), "New Speed"));
-    }
-
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_FORCE_X_SPEED_CHANGE;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
     }
 
     @Override

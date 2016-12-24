@@ -3,8 +3,6 @@ package com.trinitycore.sniffexplorer.message.smsg;
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.entities.*;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 import java.io.PrintWriter;
@@ -31,6 +29,7 @@ public class AuraUpdateMessage extends Message {
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
 
         String[] words=lines.get(1).split("\\s+");
         if(!words[0].equals("GUID:") || !words[1].equals("Full:") || !words[3].equals("Type:"))
@@ -55,16 +54,6 @@ public class AuraUpdateMessage extends Message {
         String spellIdString = ParseUtils.removePrefixAndGetLastElement(lines.get(3), "Spell ID");
         spellIdString = spellIdString.substring(1, spellIdString.length() - 1);
         spellId=Integer.valueOf(spellIdString);
-    }
-
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_AURA_UPDATE;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
     }
 
     @Override

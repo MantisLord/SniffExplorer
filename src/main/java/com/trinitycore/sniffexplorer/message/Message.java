@@ -24,16 +24,21 @@ import com.trinitycore.sniffexplorer.exceptions.ParseException;
  */
 public abstract class Message implements Serializable {
     
-    protected static Logger log = LoggerFactory.getLogger(Message.class);
-    
+    private static Logger log = LoggerFactory.getLogger(Message.class);
+
+    private List<String> messageText;
     private int id;
     private LocalDateTime time;
+    private Direction direction;
+    private OpCode opCode;
     
-    public abstract void initialize(List<String> lines) throws ParseException;
-    public abstract OpCode getOpCode();
-    public abstract OpCodeType getOpCodeType();
+    public void initialize(List<String> lines) throws ParseException{
+        this.messageText = lines;
+    }
+
     abstract public boolean contains(Integer relatedEntry);
     abstract public boolean contains(String relatedGUID);
+
     public void display(PrintWriter printWriter){
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.SSS");
         Formatter formatter = new Formatter(printWriter);
@@ -56,11 +61,25 @@ public abstract class Message implements Serializable {
         this.time = time;
     }
 
-    public void printError(List<String> lines){
-        log.debug("Coudn't process the following " + getClass().getSimpleName() + ": START-------------------");
-        for(String line:lines)
-            log.debug(line);
-        log.debug("END--------------------------------------------------------------------------");
+    public List<String> getMessageText() {
+        return messageText;
     }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public OpCode getOpCode() {
+        return opCode;
+    }
+
+    public void setOpCode(OpCode opCode) {
+        this.opCode = opCode;
+    }
+
 }
 

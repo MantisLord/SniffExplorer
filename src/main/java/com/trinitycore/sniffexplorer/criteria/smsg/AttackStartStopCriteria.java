@@ -1,5 +1,6 @@
 package com.trinitycore.sniffexplorer.criteria.smsg;
 
+import com.trinitycore.sniffexplorer.criteria.BaseCriteria;
 import com.trinitycore.sniffexplorer.criteria.Criteria;
 import com.trinitycore.sniffexplorer.message.Message;
 import com.trinitycore.sniffexplorer.message.smsg.AttackStartMessage;
@@ -9,7 +10,7 @@ import com.trinitycore.sniffexplorer.message.smsg.AttackerStateUpdateMessage;
 /**
  * Created by chaouki on 06-04-16.
  */
-public class AttackStartStopCriteria extends Criteria {
+public class AttackStartStopCriteria extends BaseCriteria {
 
     private String attackerGUID;
     private String targetGUID;

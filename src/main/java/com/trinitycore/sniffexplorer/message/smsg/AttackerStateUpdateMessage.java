@@ -1,12 +1,9 @@
 package com.trinitycore.sniffexplorer.message.smsg;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
-import com.trinitycore.sniffexplorer.game.data.Position;
 import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 import java.io.PrintWriter;
@@ -41,19 +38,10 @@ Rage Gained: 130
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
         this.attacker = ParseUtils.parseGuidRemovePrefix(lines.get(2), "AttackerGUID");
         this.target = ParseUtils.parseGuidRemovePrefix(lines.get(3), "TargetGUID");
         this.damage= Long.valueOf(ParseUtils.removePrefix(lines.get(4), "Damage"));
-    }
-
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_ATTACKER_STATE_UPDATE;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
     }
 
     @Override

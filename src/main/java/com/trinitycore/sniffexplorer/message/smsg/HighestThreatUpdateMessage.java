@@ -4,8 +4,6 @@ import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.entities.Creature;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 import java.io.PrintWriter;
@@ -34,18 +32,9 @@ Size: 3
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
         unit=ParseUtils.parseGuidRemovePrefix(lines.get(1), "GUID");
         newHighest=ParseUtils.parseGuidRemovePrefix(lines.get(2), "New Highest");
-    }
-
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_HIGHEST_THREAT_UPDATE;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
     }
 
     @Override

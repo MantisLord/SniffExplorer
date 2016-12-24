@@ -47,8 +47,8 @@ public class SniffExplorerUtils {
 //        return localDateTimeTMap.get(closestUpdateTime);
 //    }
 
-    public static  <T> T  getLatestKnownValue(Integer packetNumber, Unit unit, Map<Unit, TreeMap<Integer, T>> histogramMap) {
-        TreeMap<Integer, T> packetNumberTMap = histogramMap.get(unit);
+    public static  <T> T  getLatestKnownValue(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, T>> histogramMap) {
+        TreeMap<Long, T> packetNumberTMap = histogramMap.get(unit);
 
         if(packetNumberTMap == null)
             return null;
@@ -56,7 +56,7 @@ public class SniffExplorerUtils {
         if(packetNumberTMap.isEmpty())
             return null;
 
-        Map.Entry<Integer, T> entry = packetNumberTMap.floorEntry(packetNumber);
+        Map.Entry<Long, T> entry = packetNumberTMap.floorEntry(packetNumber);
 
         if(entry != null)
             return entry.getValue();
@@ -64,7 +64,7 @@ public class SniffExplorerUtils {
             return null;
     }
 
-    public static Position  getLatestKnownValueIfSameAsNext(Integer packetNumber, Unit unit, Map<Unit, TreeMap<Integer, Position>> histogramMap, Double errorTolerance) {
+    public static Position  getLatestKnownValueIfSameAsNext(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, Position>> histogramMap, Double errorTolerance) {
         Position before = getLatestKnownValue(packetNumber, unit, histogramMap);
         Position after = getNextKnownValue(packetNumber, unit, histogramMap);
         if(before != null && after != null && GeometryUtils.getDistance3D(before, after) < errorTolerance)
@@ -73,8 +73,8 @@ public class SniffExplorerUtils {
             return null;
     }
 
-    public static  <T> T  getNextKnownValue(Integer packetNumber, Unit unit, Map<Unit, TreeMap<Integer, T>> histogramMap) {
-        TreeMap<Integer, T> packetNumberTMap = histogramMap.get(unit);
+    public static  <T> T  getNextKnownValue(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, T>> histogramMap) {
+        TreeMap<Long, T> packetNumberTMap = histogramMap.get(unit);
 
         if(packetNumberTMap == null)
             return null;
@@ -82,7 +82,7 @@ public class SniffExplorerUtils {
         if(packetNumberTMap.isEmpty())
             return null;
 
-        Map.Entry<Integer, T> entry = packetNumberTMap.ceilingEntry(packetNumber);
+        Map.Entry<Long, T> entry = packetNumberTMap.ceilingEntry(packetNumber);
 
         if(entry != null)
             return entry.getValue();

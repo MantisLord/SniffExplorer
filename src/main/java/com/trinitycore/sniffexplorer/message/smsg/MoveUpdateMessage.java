@@ -13,8 +13,6 @@ import com.trinitycore.sniffexplorer.game.data.Position;
 import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 /** SMSG_MOVE_UPDATE
@@ -48,6 +46,7 @@ Position: X: 3265.232 Y: -3477.408 Z: 287.0757 O: 6.171607
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
         movementFlagsLine = ParseUtils.getLineThatStartWithPrefix(lines, "Movement flags");
         String guidLine = ParseUtils.getLineThatStartWithPrefix(lines, "Guid");
         movingUnit=ParseUtils.parseGuidRemovePrefix(guidLine, "Guid");
@@ -83,16 +82,6 @@ Position: X: 3265.232 Y: -3477.408 Z: 287.0757 O: 6.171607
         if(movementFlagsLine!=null)
             writer.println(movementFlagsLine);
         writer.println(currentPos.toFormatedString());
-    }
-
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_MOVE_UPDATE;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
     }
 
     public Unit getMovingUnit() {

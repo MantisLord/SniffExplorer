@@ -1,5 +1,6 @@
 package com.trinitycore.sniffexplorer.criteria.smsg;
 
+import com.trinitycore.sniffexplorer.criteria.BaseCriteria;
 import com.trinitycore.sniffexplorer.criteria.Criteria;
 import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.message.Message;
@@ -8,7 +9,7 @@ import com.trinitycore.sniffexplorer.message.smsg.AuraUpdateMessage;
 /**
  * Created by chaouki on 01-02-16.
  */
-public class AuraUpdateCriteria extends Criteria {
+public class AuraUpdateCriteria extends BaseCriteria {
 
     private Integer ownerEntry;
     private String ownerGUID;

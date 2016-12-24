@@ -5,6 +5,7 @@
  */
 package com.trinitycore.sniffexplorer.criteria.smsg;
 
+import com.trinitycore.sniffexplorer.criteria.BaseCriteria;
 import com.trinitycore.sniffexplorer.criteria.Criteria;
 import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.message.Message;
@@ -15,7 +16,7 @@ import com.trinitycore.sniffexplorer.message.smsg.SpellMessage;
  *
  * @author chaouki
  */
-public class SpellCriteria extends Criteria {
+public class SpellCriteria extends BaseCriteria {
     
     private Integer casterEntry;
     private String casterGUID;

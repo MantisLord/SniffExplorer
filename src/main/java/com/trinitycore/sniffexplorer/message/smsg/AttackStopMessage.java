@@ -4,8 +4,6 @@ import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 import java.io.PrintWriter;
@@ -28,18 +26,9 @@ Unk int: 0
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
         this.attacker = ParseUtils.parseGuidRemovePrefix(lines.get(1), "GUID");
         this.target = ParseUtils.parseGuidRemovePrefix(lines.get(2), "Victim GUID");
-    }
-
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_ATTACK_STOP;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
     }
 
     @Override

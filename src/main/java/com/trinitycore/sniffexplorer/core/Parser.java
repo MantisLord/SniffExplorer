@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
+import com.trinitycore.sniffexplorer.message.BasicMessage;
+import com.trinitycore.sniffexplorer.message.Direction;
+import com.trinitycore.sniffexplorer.message.OpCode;
 import com.trinitycore.sniffexplorer.message.smsg.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,13 +86,16 @@ public class Parser {
         //      0               1               2       3     4     5     6   7     8           9           10      11
         // ServerToClient: SMSG_ATTACK_START (0x2D15) Length: 16 ConnIdx: 2 Time: 06/16/2012 22:48:04.393 Number: 7022
         // ClientToServer: 30740 (0x7814) Length: 33 ConnIdx: 2 Time: 06/16/2012 22:48:04.409 Number: 7023
+        // ServerToClient: MSG_MOVE_START_FORWARD (0x00B5) Length: 37 ConnIdx: 0 Time: 05/15/2010 23:21:50.000 Number: 921400 (part of another packet)
         String[] words=lines.get(0).split("\\s+");
-        if(words.length!=12 || !words[3].equals("Length:") || !words[5].equals("ConnIdx:") || !words[7].equals("Time:") || !words[10].equals("Number:")){
+        if(words.length < 12 || !words[3].equals("Length:") || !words[5].equals("ConnIdx:") || !words[7].equals("Time:") || !words[10].equals("Number:")){
             log.info("Unidentified message found:");
             log.info(lines.get(0));
             return null;
         }
-        
+
+        String direction = words[0];
+        direction = direction.substring(0, direction.length()-1);
         String opCodeString=words[1];
                 
         /** 
@@ -103,52 +109,54 @@ public class Parser {
                 return null;
         }
 
+        OpCode opCode = OpCode.valueOf(opCodeString);
+
         // todo: move this mapping opcode -> class out of here
-        switch(opCodeString){
-            case "SMSG_SPELL_START":                        // 0x131
+        switch(opCode){
+            case SMSG_SPELL_START:                        // 0x131
                 msg=new SpellStartMessage();
                 break;
-            case "SMSG_SPELL_GO":                           // 0x132
+            case SMSG_SPELL_GO:                           // 0x132
                 msg=new SpellGoMessage();
                 break;
-            case "SMSG_SPELL_PERIODIC_AURA_LOG":            // 0x24E
+            case SMSG_SPELL_PERIODIC_AURA_LOG:            // 0x24E
                 msg=new SpellPeriodicAuraLogMessage();
                 break;
-            case "SMSG_EMOTE":                              // 0x103
+            case SMSG_EMOTE:                              // 0x103
                 msg=new EmoteMessage();
                 break;
-            case "SMSG_UPDATE_OBJECT":                      // 0x0A9
-            case "SMSG_COMPRESSED_UPDATE_OBJECT":
+            case SMSG_UPDATE_OBJECT:                      // 0x0A9
+            case SMSG_COMPRESSED_UPDATE_OBJECT:
                 msg=new UpdateObjectMessage();
                 break;
-            case "SMSG_ON_MONSTER_MOVE":                    // 0x0DD
+            case SMSG_ON_MONSTER_MOVE:                    // 0x0DD
                 msg=new OnMonsterMoveMessage();
                 break;
-            case "SMSG_MOVE_UPDATE":                        // XXXXXXX
-                msg=new MoveUpdateMessage();
-                break;
-            case "SMSG_AURA_UPDATE":                    // 0x0DD
+//            case SMSG_MOVE_UPDATE:                        // XXXXXXX
+//                msg=new MoveUpdateMessage();
+//                break;
+            case SMSG_AURA_UPDATE:                    // 0x0DD
                 msg=new AuraUpdateMessage();
                 break;
-            case "SMSG_FORCE_RUN_SPEED_CHANGE":
-            case "SMSG_FORCE_RUN_BACK_SPEED_CHANGE":
-            case "SMSG_FORCE_SWIM_SPEED_CHANGE":
-            case "SMSG_FORCE_FLIGHT_SPEED_CHANGE":
-            case "SMSG_FORCE_WALK_SPEED_CHANGE":
-            case "SMSG_FORCE_FLIGHT_BACK_SPEED_CHANGE":
-            case "SMSG_FORCE_SWIM_BACK_SPEED_CHANGE":
+            case SMSG_FORCE_RUN_SPEED_CHANGE:
+            case SMSG_FORCE_RUN_BACK_SPEED_CHANGE:
+            case SMSG_FORCE_SWIM_SPEED_CHANGE:
+            case SMSG_FORCE_FLIGHT_SPEED_CHANGE:
+            case SMSG_FORCE_WALK_SPEED_CHANGE:
+            case SMSG_FORCE_FLIGHT_BACK_SPEED_CHANGE:
+            case SMSG_FORCE_SWIM_BACK_SPEED_CHANGE:
                 msg=new ForceSpeedChangeMessage();
                 break;
-            case "SMSG_ATTACKER_STATE_UPDATE":
+            case SMSG_ATTACKER_STATE_UPDATE:
                 msg=new AttackerStateUpdateMessage();
                 break;
-            case "SMSG_ATTACK_START":
+            case SMSG_ATTACK_START:
                 msg=new AttackStartMessage();
                 break;
-            case "SMSG_ATTACK_STOP":
+            case SMSG_ATTACK_STOP:
                 msg=new AttackStopMessage();
                 break;
-            case "SMSG_HIGHEST_THREAT_UPDATE":
+            case SMSG_HIGHEST_THREAT_UPDATE:
                 msg=new HighestThreatUpdateMessage();
                 break;
                 
@@ -159,13 +167,19 @@ public class Parser {
                     break;
                 }
 
-
-                log.info("Unsupported OpCode found: "+opCodeString);
-                return null;
+                log.info("No specific parsing implemented for opcode {} direction {}", opCodeString, direction);
+                msg=new BasicMessage();
+                break;
         }
-        
-        /**
-         * READ AND SET UP THE TIME AND DATE 
+
+        /*
+         * SET OPCODE AND DIRECTION
+         */
+        msg.setOpCode(opCode);
+        msg.setDirection(Direction.valueOf(direction));
+
+        /*
+         * READ AND SET UP THE TIME AND DATE
          * Template: 06/16/2012 22:48:04.393
          */
         String date=words[8]+" "+words[9];
@@ -173,24 +187,27 @@ public class Parser {
         LocalDateTime localDateTime = LocalDateTime.parse(date, formatter);
         msg.setTime(localDateTime);
 
-        /**
+        /*
          * READ AND SET UP THE ID
          */
         try{
-            msg.setId(Integer.valueOf(words[words.length-1]));
+            msg.setId(Integer.valueOf(words[11]));
         }catch(Exception e){
             e.printStackTrace();
             msg.setId(-1);
         }
         
-        /**
+        /*
          *  SPECIFIC MESSAGES PARSING PROCEDURE (dependent on the opcode)
          */
         try {
            msg.initialize(lines);
         } catch (Exception e) {
             log.debug("Complete parsing failed:", e);
-            msg.printError(lines);
+            log.debug("Couldn't process the following " + msg.getClass().getSimpleName() + ": START-------------------");
+            for(String line: lines)
+                log.debug(line);
+            log.debug("END--------------------------------------------------------------------------");
         }
         
         return msg;

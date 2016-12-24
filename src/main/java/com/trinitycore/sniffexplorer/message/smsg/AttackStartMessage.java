@@ -4,8 +4,6 @@ import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 import java.io.PrintWriter;
@@ -27,18 +25,9 @@ Victim GUID: Full: 0xF1305E8F0000D723 Type: Creature Entry: 24207 Low: 55075
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
         this.attacker = ParseUtils.parseGuidRemovePrefix(lines.get(1), "GUID");
         this.target = ParseUtils.parseGuidRemovePrefix(lines.get(2), "Victim GUID");
-    }
-
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_ATTACK_START;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
     }
 
     @Override

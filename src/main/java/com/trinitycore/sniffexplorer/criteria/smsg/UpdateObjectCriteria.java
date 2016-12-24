@@ -1,5 +1,6 @@
 package com.trinitycore.sniffexplorer.criteria.smsg;
 
+import com.trinitycore.sniffexplorer.criteria.BaseCriteria;
 import com.trinitycore.sniffexplorer.criteria.Criteria;
 import com.trinitycore.sniffexplorer.message.Message;
 import com.trinitycore.sniffexplorer.message.smsg.UpdateObjectMessage;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Created by chaouki on 06-04-16.
  */
-public class UpdateObjectCriteria extends Criteria {
+public class UpdateObjectCriteria extends BaseCriteria {
 
     private String unitGUID;
     private String valueChange;

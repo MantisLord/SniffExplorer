@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 /**
@@ -47,19 +45,10 @@ Count: 1
 [0] GUID: Full: 0x2800000034341A1 Type: Player Low: 54739361 Name: Underod
 [0] UNIT_FIELD_POWER1: 23627/3.310848E-41
  */
-    
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_UPDATE_OBJECT;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
-    }
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
         int countIndex = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Count");
         updates=new ArrayList<>();
         this.count =Long.valueOf(ParseUtils.removePrefix(lines.get(countIndex), "Count"));

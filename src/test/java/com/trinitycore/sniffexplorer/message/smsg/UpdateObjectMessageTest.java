@@ -1,6 +1,7 @@
 package com.trinitycore.sniffexplorer.message.smsg;
 
 import com.trinitycore.sniffexplorer.core.Parser;
+import com.trinitycore.sniffexplorer.criteria.BaseCriteria;
 import com.trinitycore.sniffexplorer.criteria.Criteria;
 import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
 import org.junit.Assert;
@@ -20,7 +21,7 @@ public class UpdateObjectMessageTest {
     public void parseCombatReach_sample1(){
         Parser parser = new Parser(getClass().getResource(INPUT_SNIFF_FILE_NAME_1));
         CriteriaSet criteriaSet=new CriteriaSet();
-        criteriaSet.addCriteria(new Criteria());
+        criteriaSet.addCriteria(new BaseCriteria());
 
         parser.parseFile( criteriaSet, message -> {
             Assert.assertThat(message.getClass(), is(UpdateObjectMessage.class));
@@ -43,7 +44,7 @@ public class UpdateObjectMessageTest {
     public void parseCombatReach_sample2(){
         Parser parser = new Parser(getClass().getResource(INPUT_SNIFF_FILE_NAME_2));
         CriteriaSet criteriaSet=new CriteriaSet();
-        criteriaSet.addCriteria(new Criteria());
+        criteriaSet.addCriteria(new BaseCriteria());
 
         parser.parseFile( criteriaSet, message -> {
             Assert.assertThat(message.getClass(), is(UpdateObjectMessage.class));

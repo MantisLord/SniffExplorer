@@ -16,8 +16,6 @@ import com.trinitycore.sniffexplorer.game.data.MissType;
 import com.trinitycore.sniffexplorer.game.data.Position;
 import com.trinitycore.sniffexplorer.game.entities.Item;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
-import com.trinitycore.sniffexplorer.message.OpCode;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 /** Class which represent SMSG_SPELL_GO messages
@@ -53,16 +51,6 @@ Rune Cooldown: 13316
     private Position sourceLocation;
     private Position destinationLocation;
     private Long timeTicks;
-
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_SPELL_GO;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
-    }
 
     @Override
     public void initialize(List<String> lines) throws ParseException {

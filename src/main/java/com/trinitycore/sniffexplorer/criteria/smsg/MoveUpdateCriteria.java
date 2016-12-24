@@ -1,5 +1,6 @@
 package com.trinitycore.sniffexplorer.criteria.smsg;
 
+import com.trinitycore.sniffexplorer.criteria.BaseCriteria;
 import com.trinitycore.sniffexplorer.criteria.Criteria;
 import com.trinitycore.sniffexplorer.game.entities.Player;
 import com.trinitycore.sniffexplorer.message.Message;
@@ -9,7 +10,7 @@ import com.trinitycore.sniffexplorer.message.smsg.OnMonsterMoveMessage;
 /**
  * Created by chaouki on 05-04-16.
  */
-public class MoveUpdateCriteria extends Criteria {
+public class MoveUpdateCriteria extends BaseCriteria {
 
     private String unitGUID;
 

@@ -122,6 +122,20 @@ import com.trinitycore.sniffexplorer.message.ParseUtils;
     Unk Byte 2: -90
      */
 
+    /*
+    ServerToClient: SMSG_SPELL_GO (0x0132) Length: 42 ConnIdx: 0 Time: 05/15/2010 19:33:24.000 Number: 377266
+    Caster GUID: Full: 0xF1300077C300192D Type: Creature Entry: 30659 (Violet Hold Guard) Low: 6445
+    Caster Unit GUID: Full: 0xF1300077C300192D Type: Creature Entry: 30659 (Violet Hold Guard) Low: 6445
+    Cast Count: 0
+    Spell ID: Permanent Feign Death (29266)
+    Cast Flags: Unknown7 (256)
+    Time: 2641683562
+    Hit Count: 1
+    [0] Hit GUID: Full: 0xF1300077C300192D Type: Creature Entry: 30659 (Violet Hold Guard) Low: 6445
+    Miss Count: 0
+    Target Flags: Unit (2)
+    Target GUID: 0x0
+     */
 /**
  *
  * @author chaouki
@@ -137,6 +151,7 @@ public abstract class SpellMessage extends Message {
     
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
         caster=ParseUtils.parseGuidRemovePrefix(lines.get(1), "Caster GUID");
         casterUnit=ParseUtils.parseGuidRemovePrefix(lines.get(2), "Caster Unit GUID");
 

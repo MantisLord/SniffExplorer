@@ -7,19 +7,14 @@ package com.trinitycore.sniffexplorer.message.smsg;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.data.Position;
 import com.trinitycore.sniffexplorer.game.data.SplineType;
-import com.trinitycore.sniffexplorer.game.entities.Creature;
 import com.trinitycore.sniffexplorer.game.entities.IdentifiableByEntry;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCode;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 /**
@@ -36,17 +31,7 @@ public class OnMonsterMoveMessage extends Message {
     private String splineFlagsLine;
     private Integer moveTime;
 
-    @Override
-    public OpCode  getOpCode() {
-        return OpCode.SMSG_ON_MONSTER_MOVE;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
-    }
-
-/*
+    /*
 ServerToClient: SMSG_ON_MONSTER_MOVE (0x00DD) Length: 53 ConnIdx: 0 Time: 07/15/2010 21:40:26.000 Number: 262441
 GUID: Full: 0xF130003A210A8000 Type: Creature Entry: 14881 Low: 688128
 Toggle AnimTierInTrans: false
@@ -99,6 +84,7 @@ Waypoint Endpoint: X: 5887.709 Y: 508.2559 Z: 641.5698
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
         this.unit = ParseUtils.parseGuidRemovePrefix(lines.get(1), "GUID");
 
         Position startPosition = ParseUtils.parsePositionRemovePrefix(lines.get(3), "Position");

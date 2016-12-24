@@ -1,5 +1,6 @@
 package com.trinitycore.sniffexplorer.criteria.smsg;
 
+import com.trinitycore.sniffexplorer.criteria.BaseCriteria;
 import com.trinitycore.sniffexplorer.criteria.Criteria;
 import com.trinitycore.sniffexplorer.game.data.SplineType;
 import com.trinitycore.sniffexplorer.game.entities.Player;
@@ -10,7 +11,7 @@ import com.trinitycore.sniffexplorer.message.smsg.SpellMessage;
 /**
  * Created by chaouki on 15-03-16.
  */
-public class OnMonsterMoveCriteria extends Criteria {
+public class OnMonsterMoveCriteria extends BaseCriteria {
 
     private String unitGUID;
     private SplineType splineType;

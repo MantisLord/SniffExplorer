@@ -1,5 +1,6 @@
 package com.trinitycore.sniffexplorer.criteria.smsg;
 
+import com.trinitycore.sniffexplorer.criteria.BaseCriteria;
 import com.trinitycore.sniffexplorer.criteria.Criteria;
 import com.trinitycore.sniffexplorer.message.Message;
 import com.trinitycore.sniffexplorer.message.smsg.AttackerStateUpdateMessage;
@@ -8,7 +9,7 @@ import com.trinitycore.sniffexplorer.message.smsg.PlayerMoveMessage;
 /**
  * Created by chaouki on 10-04-16.
  */
-public class PlayerMovementCriteria extends Criteria {
+public class PlayerMovementCriteria extends BaseCriteria {
 
     private String unitGUID;
 

@@ -2,19 +2,13 @@ package com.trinitycore.sniffexplorer.message.smsg;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.game.data.Position;
-import com.trinitycore.sniffexplorer.game.entities.Player;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.message.ParseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Formatter;
 import java.util.List;
 
 /**
@@ -59,6 +53,8 @@ Fall Speed: 0
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
+
         opCodeFull=lines.get(0).split("\\s+")[1];
 
 //        if(opCodeFull.equals("MSG_MOVE_TELEPORT_ACK"))
@@ -73,7 +69,9 @@ Fall Speed: 0
         } catch (Exception e){
             try{
                 unit = ParseUtils.parseGuidRemovePrefix(guidLine, "Guid");
-            } catch (Exception e1){}
+            } catch (Exception e1){
+                throw new IllegalArgumentException(e1);
+            }
         }
 
         int indexPosition = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Position");
@@ -85,16 +83,6 @@ Fall Speed: 0
 
         String timeTickLine = ParseUtils.getLineThatStartWithPrefix(lines, "Time");
         timeTicks=Long.parseLong(ParseUtils.removePrefix(timeTickLine, "Time"));
-    }
-
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.MSG_MOVE_;
-    }
-
-    @Override
-    public OpCodeType getOpCodeType() {
-        return null;
     }
 
     @Override

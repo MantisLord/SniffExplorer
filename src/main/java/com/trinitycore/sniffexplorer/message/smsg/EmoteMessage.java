@@ -8,28 +8,18 @@ package com.trinitycore.sniffexplorer.message.smsg;
 import java.io.PrintWriter;
 import java.util.List;
 
+import com.trinitycore.sniffexplorer.exceptions.ParseException;
 import com.trinitycore.sniffexplorer.message.Message;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
-import com.trinitycore.sniffexplorer.message.OpCode;
 
 /**
  *
  * @author chaouki
  */
 public class EmoteMessage extends Message {
-    
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_EMOTE;
-    }
 
     @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
-    }
-
-    @Override
-    public void initialize(List<String> lines) {
+    public void initialize(List<String> lines) throws ParseException {
+        super.initialize(lines);
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

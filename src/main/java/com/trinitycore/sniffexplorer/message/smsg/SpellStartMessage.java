@@ -9,10 +9,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import com.trinitycore.sniffexplorer.game.entities.*;
-import com.trinitycore.sniffexplorer.message.OpCodeType;
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
-import com.trinitycore.sniffexplorer.message.OpCode;
-import com.trinitycore.sniffexplorer.message.ParseUtils;
 
 /** Class which represent a SMSG_SPELL_START message
  * 
@@ -21,18 +18,7 @@ import com.trinitycore.sniffexplorer.message.ParseUtils;
  * @author chaouki
  */
 public class SpellStartMessage extends SpellMessage {
-    
-    @Override
-    public OpCode getOpCode() {
-        return OpCode.SMSG_SPELL_START;
-    }
 
-    @Override
-    public OpCodeType getOpCodeType() {
-        return OpCodeType.SMSG;
-    }
-
-    
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
