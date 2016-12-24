@@ -53,27 +53,21 @@ public class CorrectionFinder {
     private static void processFile(File file) {
         CriteriaSet criteriaSet=new CriteriaSet();
 
-        criteriaSet.addCriteria(
-                new Criteria() {
-                    @Override
-                    public boolean isSatisfiedBy(Message message) {
-                        List<OpCode> ignoredOpcodes = new ArrayList<OpCode>();
-                        ignoredOpcodes.add(OpCode.SMSG_SPELL_GO);
-                        ignoredOpcodes.add(OpCode.SMSG_ON_MONSTER_MOVE);
+        criteriaSet.addCriteria(message -> {
+            List<OpCode> ignoredOpcodes = new ArrayList<>();
+            ignoredOpcodes.add(OpCode.SMSG_SPELL_GO);
+            ignoredOpcodes.add(OpCode.SMSG_ON_MONSTER_MOVE);
 
-                        return message.getDirection().equals(Direction.ServerToClient)
-                                && (message.getOpCode() == null || !ignoredOpcodes.contains(message.getOpCode()))
+            return message.getDirection().equals(Direction.ServerToClient)
+                    && (message.getOpCode() == null || !ignoredOpcodes.contains(message.getOpCode()))
 //                                && message.getMessageText().stream().anyMatch(line -> line.startsWith("Position"))
-                                && message.getMessageText().stream().anyMatch(line -> line.contains("X: ") && line.contains("Y: ") && line.contains("Z: "))
-                                && message.getMessageText().stream().noneMatch(line -> line.contains("SMSG_COMPRESSED_UPDATE_OBJECT"))
-                                && message.getMessageText().stream().noneMatch(line -> line.contains("MSG_MOVE_SET_FLIGHT_SPEED"))
-                                && message.getMessageText().stream().noneMatch(line -> line.contains("MSG_MOVE_SET_RUN_SPEED"))
-                                ;
+                    && message.getMessageText().stream().anyMatch(line -> line.contains("X: ") && line.contains("Y: ") && line.contains("Z: "))
+                    && message.getMessageText().stream().noneMatch(line -> line.contains("SMSG_COMPRESSED_UPDATE_OBJECT"))
+                    && message.getMessageText().stream().noneMatch(line -> line.contains("MSG_MOVE_SET_FLIGHT_SPEED"))
+                    && message.getMessageText().stream().noneMatch(line -> line.contains("MSG_MOVE_SET_RUN_SPEED"))
 //                                && message.getMessageText().stream().anyMatch(line -> line.contains("0x28000000322F2D4"));
-
-                    }
-                }
-        );
+                    ;
+        });
 
         // select the way the output will be rendered.
         Viewer viewer=new ViewerFullMessageFile(OUTPUT_SNIFF_FILE_NAME);

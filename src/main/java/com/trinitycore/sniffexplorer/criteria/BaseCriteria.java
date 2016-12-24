@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author chaouki
  */
-public class BaseCriteria extends Criteria {
+public class BaseCriteria implements Criteria {
     
     private OpCode opcode;
     private LocalDateTime minTime;
