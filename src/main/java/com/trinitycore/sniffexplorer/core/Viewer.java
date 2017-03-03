@@ -18,6 +18,6 @@ public interface Viewer {
     /**
      * clear the resources and clean up. Needs to be called at the end.
      */
-    void cleanup();
+    void close();
     
 }

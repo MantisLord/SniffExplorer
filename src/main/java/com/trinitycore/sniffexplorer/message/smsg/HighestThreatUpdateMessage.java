@@ -32,7 +32,6 @@ Size: 3
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
         unit=ParseUtils.parseGuidRemovePrefix(lines.get(1), "GUID");
         newHighest=ParseUtils.parseGuidRemovePrefix(lines.get(2), "New Highest");
     }

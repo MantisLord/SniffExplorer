@@ -29,7 +29,6 @@ public class AuraUpdateMessage extends Message {
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
 
         String[] words=lines.get(1).split("\\s+");
         if(!words[0].equals("GUID:") || !words[1].equals("Full:") || !words[3].equals("Type:"))

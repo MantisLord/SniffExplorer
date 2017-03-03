@@ -34,12 +34,19 @@ public class Parser {
     
     private static Logger log = LoggerFactory.getLogger(Parser.class);
     private final File file;
+    private final boolean useFullParsing;
 
 //    private int countSMSG=0;
 //    private int countCMSG=0;
 
     public Parser(File file){
         this.file = file;
+        this.useFullParsing = true;
+    }
+
+    public Parser(File file, boolean useFullParsing){
+        this.file = file;
+        this.useFullParsing = useFullParsing;
     }
 
     public Parser(URL url){
@@ -48,11 +55,16 @@ public class Parser {
         } catch (URISyntaxException e) {
             throw new RuntimeException("Could not access the file.");
         }
-        ;
+        useFullParsing = true;
     }
 
-    public Parser(String sniffFileName){
-        this.file = new File(sniffFileName);
+    public Parser(URL url, boolean useFullParsing){
+        try {
+            this.file = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Could not access the file.");
+        }
+        this.useFullParsing = useFullParsing;
     }
 
     public void parseFile(CriteriaSet criteriaSet, Consumer<Message> consumer){
@@ -109,7 +121,12 @@ public class Parser {
                 return null;
         }
 
-        OpCode opCode = OpCode.valueOf(opCodeString);
+        OpCode opCode = null;
+        try {
+            opCode = OpCode.valueOf(opCodeString);
+        } catch (IllegalArgumentException e){
+            opCode = OpCode.UNKNOWN;
+        }
 
         // todo: move this mapping opcode -> class out of here
         switch(opCode){
@@ -159,7 +176,8 @@ public class Parser {
             case SMSG_HIGHEST_THREAT_UPDATE:
                 msg=new HighestThreatUpdateMessage();
                 break;
-                
+
+            case UNKNOWN:
             default:
 
                 if(opCodeString.startsWith("MSG_MOVE") && !opCodeString.equals("MSG_MOVE_TIME_SKIPPED") && !opCodeString.equals("MSG_MOVE_WORLDPORT_ACK")){
@@ -196,18 +214,25 @@ public class Parser {
             e.printStackTrace();
             msg.setId(-1);
         }
+
+        /*
+         STORE THE FULL MESSAGE
+         */
+        msg.setMessageText(lines);
         
         /*
          *  SPECIFIC MESSAGES PARSING PROCEDURE (dependent on the opcode)
          */
-        try {
-           msg.initialize(lines);
-        } catch (Exception e) {
-            log.debug("Complete parsing failed:", e);
-            log.debug("Couldn't process the following " + msg.getClass().getSimpleName() + ": START-------------------");
-            for(String line: lines)
-                log.debug(line);
-            log.debug("END--------------------------------------------------------------------------");
+        if(useFullParsing){
+            try {
+                msg.initialize(lines);
+            } catch (Exception e) {
+                log.debug("Complete parsing failed:", e);
+                log.debug("Couldn't process the following " + msg.getClass().getSimpleName() + ": START-------------------");
+                for(String line: lines)
+                    log.debug(line);
+                log.debug("END--------------------------------------------------------------------------");
+            }
         }
         
         return msg;

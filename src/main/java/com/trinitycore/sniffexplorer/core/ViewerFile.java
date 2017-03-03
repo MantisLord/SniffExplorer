@@ -53,7 +53,7 @@ public class ViewerFile implements Viewer{
     }
 
     @Override
-    public void cleanup(){
+    public void close(){
         out.close();
     }
 }

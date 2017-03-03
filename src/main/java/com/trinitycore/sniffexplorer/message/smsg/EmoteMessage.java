@@ -19,7 +19,6 @@ public class EmoteMessage extends Message {
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

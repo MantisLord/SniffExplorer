@@ -25,7 +25,6 @@ Victim GUID: Full: 0xF1305E8F0000D723 Type: Creature Entry: 24207 Low: 55075
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
         this.attacker = ParseUtils.parseGuidRemovePrefix(lines.get(1), "GUID");
         this.target = ParseUtils.parseGuidRemovePrefix(lines.get(2), "Victim GUID");
     }

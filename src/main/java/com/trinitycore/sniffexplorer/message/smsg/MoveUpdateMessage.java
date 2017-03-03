@@ -46,7 +46,6 @@ Position: X: 3265.232 Y: -3477.408 Z: 287.0757 O: 6.171607
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
         movementFlagsLine = ParseUtils.getLineThatStartWithPrefix(lines, "Movement flags");
         String guidLine = ParseUtils.getLineThatStartWithPrefix(lines, "Guid");
         movingUnit=ParseUtils.parseGuidRemovePrefix(guidLine, "Guid");

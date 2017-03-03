@@ -38,7 +38,6 @@ Rage Gained: 130
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
         this.attacker = ParseUtils.parseGuidRemovePrefix(lines.get(2), "AttackerGUID");
         this.target = ParseUtils.parseGuidRemovePrefix(lines.get(3), "TargetGUID");
         this.damage= Long.valueOf(ParseUtils.removePrefix(lines.get(4), "Damage"));

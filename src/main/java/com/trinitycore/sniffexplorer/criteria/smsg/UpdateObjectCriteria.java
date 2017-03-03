@@ -73,4 +73,7 @@ public class UpdateObjectCriteria extends BaseCriteria {
         this.unitGUID = unitGUID;
         this.valueChange = valueChange;
     }
+
+    public UpdateObjectCriteria() {
+    }
 }

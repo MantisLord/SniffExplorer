@@ -12,6 +12,8 @@ package com.trinitycore.sniffexplorer.message;
  * @author chaouki
  */
 public enum OpCode {
+    UNKNOWN,
+
     CMSG_BOOTME,
     CMSG_DBLOOKUP,
     CMSG_QUERY_OBJECT_POSITION,

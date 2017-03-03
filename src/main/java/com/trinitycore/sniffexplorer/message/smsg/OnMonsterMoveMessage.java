@@ -84,7 +84,6 @@ Waypoint Endpoint: X: 5887.709 Y: 508.2559 Z: 641.5698
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
         this.unit = ParseUtils.parseGuidRemovePrefix(lines.get(1), "GUID");
 
         Position startPosition = ParseUtils.parsePositionRemovePrefix(lines.get(3), "Position");

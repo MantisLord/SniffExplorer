@@ -31,11 +31,8 @@ public abstract class Message implements Serializable {
     private LocalDateTime time;
     private Direction direction;
     private OpCode opCode;
-    
-    public void initialize(List<String> lines) throws ParseException{
-        this.messageText = lines;
-    }
 
+    abstract public void initialize(List<String> lines) throws ParseException;
     abstract public boolean contains(Integer relatedEntry);
     abstract public boolean contains(String relatedGUID);
 
@@ -59,6 +56,10 @@ public abstract class Message implements Serializable {
 
     public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public void setMessageText(List<String> messageText) {
+        this.messageText = messageText;
     }
 
     public List<String> getMessageText() {

@@ -76,7 +76,7 @@ public class SniffExplorer {
         // output the filtered messages to the viewer
         parser.parseFile(criteriaSet, viewer::show);
         // this methods needs to be called once message has been read in order to clear the resources.
-        viewer.cleanup();
+        viewer.close();
 
 //        new AoeSpellAnalyser().processFile(file);
     }

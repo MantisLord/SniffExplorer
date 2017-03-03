@@ -48,7 +48,6 @@ Count: 1
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
         int countIndex = ParseUtils.getLineIndexThatStartWithPrefix(lines, "Count");
         updates=new ArrayList<>();
         this.count =Long.valueOf(ParseUtils.removePrefix(lines.get(countIndex), "Count"));
@@ -144,7 +143,7 @@ Count: 1
         }
     }
 
-    private enum UpdateType{
+    public enum UpdateType{
         CreateObject1,
         CreateObject2,
         DestroyObjects,

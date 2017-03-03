@@ -26,7 +26,6 @@ Unk int: 0
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
         this.attacker = ParseUtils.parseGuidRemovePrefix(lines.get(1), "GUID");
         this.target = ParseUtils.parseGuidRemovePrefix(lines.get(2), "Victim GUID");
     }

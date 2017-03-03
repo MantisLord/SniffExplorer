@@ -53,8 +53,6 @@ Fall Speed: 0
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
-
         opCodeFull=lines.get(0).split("\\s+")[1];
 
 //        if(opCodeFull.equals("MSG_MOVE_TELEPORT_ACK"))

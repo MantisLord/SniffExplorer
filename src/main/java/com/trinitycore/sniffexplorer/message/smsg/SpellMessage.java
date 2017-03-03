@@ -151,7 +151,6 @@ public abstract class SpellMessage extends Message {
     
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
         caster=ParseUtils.parseGuidRemovePrefix(lines.get(1), "Caster GUID");
         casterUnit=ParseUtils.parseGuidRemovePrefix(lines.get(2), "Caster Unit GUID");
 

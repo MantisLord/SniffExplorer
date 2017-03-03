@@ -17,7 +17,6 @@ public class ForceSpeedChangeMessage extends Message {
 
     @Override
     public void initialize(List<String> lines) throws ParseException {
-        super.initialize(lines);
         unit = ParseUtils.parseGuidRemovePrefix(lines.get(1), "Guid");
         int newSpeedIdx = ParseUtils.getLineIndexThatStartWithPrefix(lines, "New Speed");
         newSpeed = Double.parseDouble(ParseUtils.removePrefixAndGetFirstElement(lines.get(newSpeedIdx), "New Speed"));
