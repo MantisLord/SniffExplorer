@@ -22,6 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.*;
 
+import static org.assertj.core.api.Assertions.*;
+
 /**
  * Created by chaouki on 12-09-16.
  */
@@ -131,24 +133,13 @@ public class AoeSpellAnalyser {
                     unit = onMonsterMoveMessage.getUnit();
                     packetNumber = onMonsterMoveMessage.getId();
                     position = onMonsterMoveMessage.getPositions().get(0);
-                    if(position == null)
-                        throw new RuntimeException("fuckkk");
+                    assertThat(position).isNotNull();
                 } else if(message instanceof MoveUpdateMessage) {
                     MoveUpdateMessage moveUpdateMessage=(MoveUpdateMessage) message;
                     unit = moveUpdateMessage.getMovingUnit();
                     packetNumber = moveUpdateMessage.getId();
                     position = moveUpdateMessage.getCurrentPos();
-                    if(position == null)
-                        throw new RuntimeException("fuckkk");
-                } else{
-                    PlayerMoveMessage playerMoveMessage=(PlayerMoveMessage) message;
-                    unit = playerMoveMessage.getUnit();
-                    packetNumber = playerMoveMessage.getId();
-                    position = playerMoveMessage.getPosition();
-                    if(position == null && playerMoveMessage.getOpCodeFull().startsWith("MSG_MOVE_TELEPORT"))
-                        return; // skip this one. this kind of packets (MSG_MOVE_TELEPORT and MSG_MOVE_TELEPORT_ACK) may or may not contain the unit position
-                    if(position == null)
-                        throw new RuntimeException("fuckkk");
+                    assertThat(position).isNotNull();
                 }
                 */
 
@@ -164,8 +155,7 @@ public class AoeSpellAnalyser {
                     position = playerMoveMessage.getPosition();
                     if (position == null && playerMoveMessage.getOpCodeFull().startsWith("MSG_MOVE_TELEPORT"))
                         return; // skip this one. this kind of packets (MSG_MOVE_TELEPORT and MSG_MOVE_TELEPORT_ACK) may or may not contain the unit position
-                    if (position == null)
-                        throw new RuntimeException("fuckkk");
+                    assertThat(position).isNotNull();
                 } else
                     throw new RuntimeException("fuckkk");
 
