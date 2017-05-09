@@ -46,13 +46,14 @@ public class AoeSpellAnalyser {
 
         final Set<Integer> spellList=new HashSet<>();
         final Map<Unit, TreeMap<Long, Position>> globalPositionMap=new HashMap<>();
+        final Map<Unit, TreeMap<Long, Position>> globalStopPositionMap=new HashMap<>();
         final Map<Unit, TreeMap<Long, Double>> globalCombatReachMap=new HashMap<>();
         final Map<Unit, TreeMap<Long, Double>> globalBoundingRadiusMap=new HashMap<>();
 
         Parser parser=new Parser(file);
         findTimeSyncDelta(parser);
-        fillHistograms(parser, globalPositionMap, globalCombatReachMap, globalBoundingRadiusMap);
-        processAoeSpells(parser, globalPositionMap, globalCombatReachMap, globalBoundingRadiusMap);
+        fillHistograms(parser, globalPositionMap, globalStopPositionMap, globalCombatReachMap, globalBoundingRadiusMap);
+        processAoeSpells(parser, globalPositionMap, globalStopPositionMap, globalCombatReachMap, globalBoundingRadiusMap);
         logger.warn("counter: "+ counter);
         logger.warn("Count of verified launches: "+(counter-globalValuesCounter));
 //        logger.warn("predicateDistanceUnsatisfiedCounter: "+ predicateDistanceUnsatisfiedCounter);
@@ -106,6 +107,7 @@ public class AoeSpellAnalyser {
      */
     public void fillHistograms(Parser parser,
                                       Map<Unit, TreeMap<Long, Position>> globalPositionMap,
+                                      Map<Unit, TreeMap<Long, Position>> globalStopPositionMap,
                                       Map<Unit, TreeMap<Long, Double>> globalCombatReachMap,
                                       Map<Unit, TreeMap<Long, Double>> globalBoundingRadiusMap
     ) {
@@ -147,7 +149,11 @@ public class AoeSpellAnalyser {
                     PlayerMoveMessage playerMoveMessage = (PlayerMoveMessage) message;
 
                     // skip compressed movement packets since they are not well understood and i get data with them that make no sense to me so far
-                    if(playerMoveMessage.getIsPartOfAnotherPacket())
+//                    if(playerMoveMessage.getIsPartOfAnotherPacket())
+//                        return;
+
+                    // MSG_MOVE_TELEPORT can be used on NPCs. Skip them
+                    if(!(playerMoveMessage.getUnit() instanceof Player))
                         return;
 
                     unit = playerMoveMessage.getUnit();
@@ -156,6 +162,9 @@ public class AoeSpellAnalyser {
                     if (position == null && playerMoveMessage.getOpCodeFull().startsWith("MSG_MOVE_TELEPORT"))
                         return; // skip this one. this kind of packets (MSG_MOVE_TELEPORT and MSG_MOVE_TELEPORT_ACK) may or may not contain the unit position
                     assertThat(position).isNotNull();
+
+                    if(playerMoveMessage.getIsNotMoving())
+                        addElementToGlobalMap(globalStopPositionMap, timeTicks, unit, position);
                 } else
                     throw new RuntimeException("fuckkk");
 
@@ -194,10 +203,12 @@ public class AoeSpellAnalyser {
         changesMap.put(timeTicks, newElement);
     }
 
-    public static void processAoeSpells(Parser parser, Map<Unit,
-            TreeMap<Long, Position>> globalPositionMap, Map<Unit,
-            TreeMap<Long, Double>> globalCombatReachMap, Map<Unit,
-            TreeMap<Long, Double>> globalBoundingRadiusMap) {
+    public static void processAoeSpells(Parser parser,
+                                        Map<Unit, TreeMap<Long, Position>> globalPositionMap,
+                                        Map<Unit, TreeMap<Long, Position>> globalStopPositionMap,
+                                        Map<Unit, TreeMap<Long, Double>> globalCombatReachMap,
+                                        Map<Unit, TreeMap<Long, Double>> globalBoundingRadiusMap
+    ) {
         CriteriaSet criteriaSet = new CriteriaSet(
                 new SpellGoCriteria()
         );
@@ -258,9 +269,9 @@ public class AoeSpellAnalyser {
                 // initial conditions on the spell message met. let's get to work now
                 List<RecordToDisplay> recordToDisplayList =new ArrayList<>();
                 for(Unit unit:spellGoMessage.getHitUnits())
-                    recordToDisplayList.add(computeAndShowPosition(spellGoMessage, unit, globalPositionMap, globalCombatReachMap, globalBoundingRadiusMap));
+                    recordToDisplayList.add(computeAndShowPosition(spellGoMessage, unit, globalPositionMap, globalStopPositionMap, globalCombatReachMap, globalBoundingRadiusMap));
                 for(Unit unit:spellGoMessage.getMissedUnits().keySet())
-                    recordToDisplayList.add(computeAndShowPosition(spellGoMessage, unit, globalPositionMap, globalCombatReachMap, globalBoundingRadiusMap));
+                    recordToDisplayList.add(computeAndShowPosition(spellGoMessage, unit, globalPositionMap, globalStopPositionMap, globalCombatReachMap, globalBoundingRadiusMap));
 
                 // remove nulls from the list (computeAndShowPosition() can return null)
                 recordToDisplayList.removeIf(p -> p == null);
@@ -321,7 +332,12 @@ public class AoeSpellAnalyser {
         });
     }
 
-    private static RecordToDisplay computeAndShowPosition(SpellGoMessage spellGoMessage, Unit target, Map<Unit, TreeMap<Long, Position>> globalPositionMap, Map<Unit, TreeMap<Long, Double>> globalCombatReachMap, Map<Unit, TreeMap<Long, Double>> globalBoundingRadiusMap) {
+    private static RecordToDisplay computeAndShowPosition(SpellGoMessage spellGoMessage,
+                                                          Unit target,
+                                                          Map<Unit, TreeMap<Long, Position>> globalPositionMap,
+                                                          Map<Unit, TreeMap<Long, Position>> globalStopPositionMap,
+                                                          Map<Unit, TreeMap<Long, Double>> globalCombatReachMap,
+                                                          Map<Unit, TreeMap<Long, Double>> globalBoundingRadiusMap) {
         counter++;
         Position location;
 //        if(spellGoMessage.getSourceLocation()!=null && spellGoMessage.getDestinationLocation()!=null)
@@ -336,7 +352,7 @@ public class AoeSpellAnalyser {
         Integer spellId = spellGoMessage.getSpellId();
 
         // get the latest known position of the unit
-        Position targetPosition = SniffExplorerUtils.getLatestKnownValueIfSameAsNext(timeTicks, target, globalPositionMap, ERROR_TOLERANCE);
+        Position targetPosition = SniffExplorerUtils.getLastPositionIfTheUnitIsStopped(timeTicks, target, globalPositionMap, globalStopPositionMap);
         if(targetPosition == null){
             globalValuesCounter ++;
             return null;

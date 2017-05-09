@@ -24,6 +24,7 @@ public class PlayerMoveMessage extends Message {
     private Position position;
     private Long timeTicks;
     private Boolean isPartOfAnotherPacket;
+    private Boolean isNotMoving;
 
 /*
 ServerToClient: MSG_MOVE_TELEPORT (0x00C5) Length: 52 ConnIdx: 0 Time: 07/15/2010 19:13:01.000 Number: 2454
@@ -84,6 +85,7 @@ Fall Speed: 0
         timeTicks=Long.parseLong(ParseUtils.removePrefix(timeTickLine, "Time"));
 
         isPartOfAnotherPacket = lines.get(0).endsWith("(part of another packet)");
+        isNotMoving = lines.stream().anyMatch(s -> s.equals("Movement Flags: None (0)"));
     }
 
     @Override
@@ -124,5 +126,9 @@ Fall Speed: 0
 
     public Boolean getIsPartOfAnotherPacket() {
         return isPartOfAnotherPacket;
+    }
+
+    public Boolean getIsNotMoving() {
+        return isNotMoving;
     }
 }
