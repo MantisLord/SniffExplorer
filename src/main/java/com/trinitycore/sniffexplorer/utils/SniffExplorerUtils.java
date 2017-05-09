@@ -68,7 +68,8 @@ public class SniffExplorerUtils {
         Position before = getLatestKnownValue(packetNumber, unit, histogramMap);
         Position after = getNextKnownValue(packetNumber, unit, histogramMap);
         if(before != null && after != null && GeometryUtils.getDistance3D(before, after) < errorTolerance)
-            return new Position((before.getX()+after.getX())/2, (before.getY()+after.getY())/2, (before.getZ()+after.getZ())/2);
+//            return new Position((before.getX()+after.getX())/2, (before.getY()+after.getY())/2, (before.getZ()+after.getZ())/2);if(before != null && after != null && GeometryUtils.getDistance3D(before, after) < 0.5)
+            return before;
         else
             return null;
     }

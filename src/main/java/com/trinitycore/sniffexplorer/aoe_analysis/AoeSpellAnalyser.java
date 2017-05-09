@@ -6,6 +6,7 @@ import com.trinitycore.sniffexplorer.criteria.CriteriaSet;
 import com.trinitycore.sniffexplorer.criteria.smsg.*;
 import com.trinitycore.sniffexplorer.game.data.Position;
 import com.trinitycore.sniffexplorer.game.entities.Creature;
+import com.trinitycore.sniffexplorer.game.entities.Player;
 import com.trinitycore.sniffexplorer.game.entities.Unit;
 import com.trinitycore.sniffexplorer.message.Message;
 import com.trinitycore.sniffexplorer.message.smsg.*;
@@ -29,7 +30,7 @@ public class AoeSpellAnalyser {
     protected static final Logger logger = LoggerFactory.getLogger(AoeSpellAnalyser.class);
 
     private static final Boolean ONLY_SHOW_SPELLS_WITH_AT_LEAST_ONE_HIT = true;
-    private static final Double ERROR_TOLERANCE = 0.1;
+    private static final Double ERROR_TOLERANCE = 1.5;
 
     private static WrapperDBC wrapperDBC = new WrapperDBC("F:\\TrinityCore\\source\\Build\\bin\\Release\\dbc");
     private static int globalValuesCounter = 0;
@@ -153,6 +154,11 @@ public class AoeSpellAnalyser {
 
                 if(message instanceof PlayerMoveMessage) {
                     PlayerMoveMessage playerMoveMessage = (PlayerMoveMessage) message;
+
+                    // skip compressed movement packets since they are not well understood and i get data with them that make no sense to me so far
+                    if(playerMoveMessage.getIsPartOfAnotherPacket())
+                        return;
+
                     unit = playerMoveMessage.getUnit();
                     timeTicks = playerMoveMessage.getTimeTicks();
                     position = playerMoveMessage.getPosition();
@@ -243,12 +249,21 @@ public class AoeSpellAnalyser {
 //                    return;
 
                 // only selected AoE using the implicit target values
-                List<Integer> acceptedSpellImplicitTargets = Arrays.asList(15, 16, 28);
+                List<Integer> acceptedSpellImplicitTargets = Arrays.asList(15);
                 int[] spellImplicitTargets = wrapperDBC.getSpellImplicitTargets(spellGoMessage.getSpellId());
                 if (spellImplicitTargets == null)
                     return;
                 if(!acceptedSpellImplicitTargets.contains(spellImplicitTargets[0]) && !acceptedSpellImplicitTargets.contains(spellImplicitTargets[1]))
                     return;
+
+                // restrict to Aoe with a small radius
+                float spellRadius = wrapperDBC.highestSpellRadius(spellGoMessage.getSpellId());
+                if(spellRadius >= 50.0)
+                    return;
+
+                // restrict to caster being creatures
+                if(spellGoMessage.getCasterUnit() instanceof Player)
+                        return;
 
                 // initial conditions on the spell message met. let's get to work now
                 List<RecordToDisplay> recordToDisplayList =new ArrayList<>();
@@ -304,7 +319,7 @@ public class AoeSpellAnalyser {
                     logger.warn("Spell at "+dateTimeFormatter.format(spellGoMessage.getTime()));
                     logger.warn("Spell location: " + location.toFormatedStringWoOrientation());
                     logger.warn("Spell id: " + spellGoMessage.getSpellId());
-                    logger.warn("Spell range: " + wrapperDBC.highestSpellRadius(spellGoMessage.getSpellId()));
+                    logger.warn("Spell range: " + spellRadius);
                     logger.warn("Spell effect implicit targets: " + Arrays.toString(spellImplicitTargets));
                     logger.warn("Caster: " + spellGoMessage.getCasterUnit().toString());
                     logger.warn("Caster combat reach: " + SniffExplorerUtils.getLatestKnownValue(spellGoMessage.getTimeTicks(), spellGoMessage.getCasterUnit(), globalCombatReachMap));
@@ -337,15 +352,7 @@ public class AoeSpellAnalyser {
             return null;
         }
         Double targetCombatReach = SniffExplorerUtils.getLatestKnownValue(timeTicks, target, globalCombatReachMap);
-        if(targetCombatReach == null){
-            globalValuesCounter ++;
-            return null;
-        }
         Double casterCombatReach = SniffExplorerUtils.getLatestKnownValue(timeTicks, spellGoMessage.getCaster(), globalCombatReachMap);
-        if(casterCombatReach == null){
-            globalValuesCounter ++;
-            return null;
-        }
 //        Double targetBoundingRadius = SniffExplorerUtils.getLatestKnownValue(packetNumber, target, globalBoundingRadiusMap);
 //        Double casterBoundingRadius = SniffExplorerUtils.getLatestKnownValue(packetNumber, spellGoMessage.getCaster(), globalBoundingRadiusMap);
 
@@ -355,11 +362,13 @@ public class AoeSpellAnalyser {
 //        logger.warn(unit.getGUID() + " " +position.toFormatedStringWoOrientation() + " " + distance3D);
 
         float spellRadius = wrapperDBC.highestSpellRadius(spellId);
+        boolean distanceCondition = distance3D >= spellRadius;
+
 //        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D >= spellRadius + casterCombatReach && distance3D <= spellRadius + targetCombatReach) {
-        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D >= spellRadius + targetCombatReach) {
+        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distanceCondition) {
 //        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D > spellRadius + targetCombatReach + ERROR_TOLERANCE + 2 && distance3D < 90)  {
             predicateDistanceSatisfiedCounter++;
-            return new RecordToDisplay(target, targetPosition.toFormatedStringWoOrientation(), distance3D, targetCombatReach);
+            return new RecordToDisplay(target, targetPosition.toFormatedStringWoOrientation(), distance3D, targetCombatReach != null ? targetCombatReach : 0.0);
         }
         else{
             predicateDistanceUnsatisfiedCounter++;

@@ -23,6 +23,7 @@ public class PlayerMoveMessage extends Message {
     private Unit unit;
     private Position position;
     private Long timeTicks;
+    private Boolean isPartOfAnotherPacket;
 
 /*
 ServerToClient: MSG_MOVE_TELEPORT (0x00C5) Length: 52 ConnIdx: 0 Time: 07/15/2010 19:13:01.000 Number: 2454
@@ -81,6 +82,8 @@ Fall Speed: 0
 
         String timeTickLine = ParseUtils.getLineThatStartWithPrefix(lines, "Time");
         timeTicks=Long.parseLong(ParseUtils.removePrefix(timeTickLine, "Time"));
+
+        isPartOfAnotherPacket = lines.get(0).endsWith("(part of another packet)");
     }
 
     @Override
@@ -117,5 +120,9 @@ Fall Speed: 0
         writer.println(this.getUnit());
         if(this.getPosition() != null)
             writer.println(this.getPosition().toFormatedStringWoOrientation());
+    }
+
+    public Boolean getIsPartOfAnotherPacket() {
+        return isPartOfAnotherPacket;
     }
 }

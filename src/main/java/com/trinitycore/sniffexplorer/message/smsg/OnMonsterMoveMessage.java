@@ -7,6 +7,7 @@ package com.trinitycore.sniffexplorer.message.smsg;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.trinitycore.sniffexplorer.exceptions.ParseException;
@@ -118,16 +119,6 @@ Waypoint Endpoint: X: 5887.709 Y: 508.2559 Z: 641.5698
         if(!splineFlagsLine.contains("Flying"))
             endPosition= ParseUtils.parsePositionRemovePrefix(lines.get(++waypointCountIdx), "Waypoint Endpoint");
 
-//        if(waypointCount>1){
-//            // waypoints comes in reverse. needs to store them and reverse them/
-//            List<Position> savedPositions=new ArrayList<>();
-//            for(int i=0; i<waypointCount-2;i++){
-//                Position waypoint = ParseUtils.parsePositionRemovePrefix(lines.get(++waypointCountIdx), "Waypoint");
-//                savedPositions.add(waypoint);
-//            }
-//            Collections.reverse(savedPositions);
-//            positions.addAll(savedPositions);
-//        }
         for(int i=0 ; i<waypointCount-1 ; i++){
             Position waypoint = ParseUtils.parsePositionRemovePrefix(lines.get(++waypointCountIdx), "Waypoint");
             positions.add(waypoint);

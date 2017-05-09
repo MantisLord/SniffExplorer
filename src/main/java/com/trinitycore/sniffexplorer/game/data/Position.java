@@ -101,4 +101,13 @@ public class Position {
         result = 31 * result + (Z != null ? Z.hashCode() : 0);
         return result;
     }
+
+    public boolean isBetween2D(Position A, Position B) {
+        double abs = Math.abs(distance2D(A, this) + distance2D(B, this) - distance2D(A, B));
+        return abs < 0.001f;
+    }
+
+    private double distance2D(Position a, Position b) {
+        return Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getY() - b.getY(), 2));
+    }
 }
