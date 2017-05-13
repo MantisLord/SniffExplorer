@@ -69,8 +69,31 @@ public class SniffExplorerUtils {
         return packetNumberTMap.floorEntry(packetNumber);
     }
 
-    public static Position  getLatestKnownValueIfSameAsNext(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, Position>> histogramMap, Double errorTolerance) {
-        Position before = getLatestKnownValue(packetNumber, unit, histogramMap);
+    public static  Position  getLatestKnownValuePosition(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, List<Position>>> histogramMap) {
+        Map.Entry<Long, List<Position>> entry = getLatestKnownEntryPosition(packetNumber, unit, histogramMap);
+
+        if(entry != null){
+            List<Position> values = entry.getValue();
+            return values.get(values.size()-1);
+        }
+        else
+            return null;
+    }
+
+    public static Map.Entry<Long, List<Position>>  getLatestKnownEntryPosition(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, List<Position>>> histogramMap) {
+        TreeMap<Long, List<Position>> packetNumberTMap = histogramMap.get(unit);
+
+        if(packetNumberTMap == null)
+            return null;
+
+        if(packetNumberTMap.isEmpty())
+            return null;
+
+        return packetNumberTMap.floorEntry(packetNumber);
+    }
+
+    public static Position  getLatestKnownValueIfSameAsNext(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, List<Position>>> histogramMap, Double errorTolerance) {
+        Position before = getLatestKnownValuePosition(packetNumber, unit, histogramMap);
         Position after = getNextKnownValue(packetNumber, unit, histogramMap);
         if(before != null && after != null && GeometryUtils.getDistance3D(before, after) < errorTolerance)
 //            return new Position((before.getX()+after.getX())/2, (before.getY()+after.getY())/2, (before.getZ()+after.getZ())/2);if(before != null && after != null && GeometryUtils.getDistance3D(before, after) < 0.5)
@@ -79,10 +102,10 @@ public class SniffExplorerUtils {
             return null;
     }
 
-    public static Position getLastPositionIfTheUnitIsStopped(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, Position>> histogramMap, Map<Unit, TreeMap<Long, Position>> globalStopPositionMap) {
-        Map.Entry<Long, Position> latestKnownEntry = getLatestKnownEntry(packetNumber, unit, histogramMap);
-        Map.Entry<Long, Position> latestKnownStopEntry = getLatestKnownEntry(packetNumber, unit, globalStopPositionMap);
-        Position nextKnownValue = getNextKnownValue(packetNumber, unit, histogramMap);
+    public static Position getLastPositionIfTheUnitIsStopped(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, List<Position>>> histogramMap, Map<Unit, TreeMap<Long, List<Position>>> globalStopPositionMap) {
+        Map.Entry<Long, List<Position>> latestKnownEntry = getLatestKnownEntry(packetNumber, unit, histogramMap);
+        Map.Entry<Long, List<Position>> latestKnownStopEntry = getLatestKnownEntry(packetNumber, unit, globalStopPositionMap);
+//        Position nextKnownValue = getNextKnownValue(packetNumber, unit, histogramMap);
 
         if(latestKnownEntry == null || latestKnownStopEntry == null)
             return null;
@@ -92,25 +115,32 @@ public class SniffExplorerUtils {
             return null;
         }
 
-        Position lastKnownPosition = latestKnownEntry.getValue();
-        Assertions.assertThat(lastKnownPosition).isEqualTo(latestKnownStopEntry.getValue());
-        Assertions.assertThat(lastKnownPosition).isEqualTo(nextKnownValue);
+        Position lastKnownPosition = getLatestKnownValuePosition(packetNumber, unit, histogramMap);
+        Position lastKnownStopPosition = getLatestKnownValuePosition(packetNumber, unit, globalStopPositionMap);
+
+        if(latestKnownEntry.getValue().size() > 1 && !lastKnownPosition.equals(lastKnownStopPosition))
+            return null;
+
+        Assertions.assertThat(lastKnownPosition).isEqualTo(lastKnownStopPosition);
+//        Assertions.assertThat(lastKnownPosition).isEqualTo(nextKnownValue);
 
         return lastKnownPosition;
     }
 
-    public static  <T> T  getNextKnownValue(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, T>> histogramMap) {
+    public static  <T> T  getNextKnownValue(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, List<T>>> histogramMap) {
 
-        Map.Entry<Long, T> entry = getNextKnownEntry(packetNumber, unit, histogramMap);
+        Map.Entry<Long, List<T>> entry = getNextKnownEntry(packetNumber, unit, histogramMap);
 
-        if(entry != null)
-            return entry.getValue();
+        if(entry != null){
+            List<T> values = entry.getValue();
+            return values.get(0);
+        }
         else
             return null;
     }
 
-    public static  <T> Map.Entry<Long, T>  getNextKnownEntry(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, T>> histogramMap) {
-        TreeMap<Long, T> packetNumberTMap = histogramMap.get(unit);
+    public static  <T> Map.Entry<Long, List<T>>  getNextKnownEntry(Long packetNumber, Unit unit, Map<Unit, TreeMap<Long, List<T>>> histogramMap) {
+        TreeMap<Long, List<T>> packetNumberTMap = histogramMap.get(unit);
 
         if(packetNumberTMap == null)
             return null;

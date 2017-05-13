@@ -45,8 +45,8 @@ public class AoeSpellAnalyser {
     public void processFile(File file) {
 
         final Set<Integer> spellList=new HashSet<>();
-        final Map<Unit, TreeMap<Long, Position>> globalPositionMap=new HashMap<>();
-        final Map<Unit, TreeMap<Long, Position>> globalStopPositionMap=new HashMap<>();
+        final Map<Unit, TreeMap<Long, List<Position>>> globalPositionMap=new HashMap<>();
+        final Map<Unit, TreeMap<Long, List<Position>>> globalStopPositionMap=new HashMap<>();
         final Map<Unit, TreeMap<Long, Double>> globalCombatReachMap=new HashMap<>();
         final Map<Unit, TreeMap<Long, Double>> globalBoundingRadiusMap=new HashMap<>();
 
@@ -106,8 +106,8 @@ public class AoeSpellAnalyser {
      * @param globalBoundingRadiusMap
      */
     public void fillHistograms(Parser parser,
-                                      Map<Unit, TreeMap<Long, Position>> globalPositionMap,
-                                      Map<Unit, TreeMap<Long, Position>> globalStopPositionMap,
+                                      Map<Unit, TreeMap<Long, List<Position>>> globalPositionMap,
+                                      Map<Unit,  TreeMap<Long, List<Position>>> globalStopPositionMap,
                                       Map<Unit, TreeMap<Long, Double>> globalCombatReachMap,
                                       Map<Unit, TreeMap<Long, Double>> globalBoundingRadiusMap
     ) {
@@ -157,25 +157,27 @@ public class AoeSpellAnalyser {
                         return;
 
                     unit = playerMoveMessage.getUnit();
-                    timeTicks = playerMoveMessage.getTimeTicks();
+//                    timeTicks = playerMoveMessage.getTimeTicks();
+                    timeTicks =  (long) message.getId();
                     position = playerMoveMessage.getPosition();
                     if (position == null && playerMoveMessage.getOpCodeFull().startsWith("MSG_MOVE_TELEPORT"))
                         return; // skip this one. this kind of packets (MSG_MOVE_TELEPORT and MSG_MOVE_TELEPORT_ACK) may or may not contain the unit position
                     assertThat(position).isNotNull();
 
-                    if(playerMoveMessage.getIsNotMoving())
-                        addElementToGlobalMap(globalStopPositionMap, timeTicks, unit, position);
+                    if(playerMoveMessage.getIsNotMoving() != null && playerMoveMessage.getIsNotMoving())
+                        addPositionToGlobalMap(globalStopPositionMap, timeTicks, unit, position);
                 } else
                     throw new RuntimeException("fuckkk");
 
-                addElementToGlobalMap(globalPositionMap, timeTicks, unit, position);
+                addPositionToGlobalMap(globalPositionMap, timeTicks, unit, position);
             }
             /**
              *  >>>>>>>>>> FILLING COMBAT REACH AND BOUNDING RADIUS <<<<<<<<<<<<<<<<<<<<<<
              */
             else if(radiusAndReachCriteria.IsSatisfiedBy(message)){
                 UpdateObjectMessage updateObjectMessage = (UpdateObjectMessage) message;
-                Long timeTicks = getEpochTime(message).add(BigInteger.valueOf(timeSyncDelta)).longValueExact(); // timeTicks = timestamp + timeSyncDelta
+//                Long timeTicks = getEpochTime(message).add(BigInteger.valueOf(timeSyncDelta)).longValueExact(); // timeTicks = timestamp + timeSyncDelta
+                Long timeTicks = (long) message.getId();
                 for(UpdateObjectMessage.UpdateObject updateObject : updateObjectMessage.getUpdates()){
                     Unit unit = updateObject.getUnit();
                     if(updateObject.getBoundingRadius() != null)
@@ -203,9 +205,32 @@ public class AoeSpellAnalyser {
         changesMap.put(timeTicks, newElement);
     }
 
+    private static void addPositionToGlobalMap(Map<Unit, TreeMap<Long, List<Position>>> globalMap, Long timeTicks, Unit unit, Position newElement) {
+        if(newElement == null)
+            throw new IllegalArgumentException("newElement should not be null");
+
+        TreeMap<Long, List<Position>> changesMap;
+        if(globalMap.containsKey(unit))
+            changesMap = globalMap.get(unit);
+        else{
+            changesMap = new TreeMap<>();
+            globalMap.put(unit, changesMap);
+        }
+
+        List<Position> positionList;
+        if(changesMap.containsKey(timeTicks))
+            positionList = changesMap.get(timeTicks);
+        else{
+            positionList = new ArrayList<>();
+            changesMap.put(timeTicks, positionList);
+        }
+
+        positionList.add(newElement);
+    }
+
     public static void processAoeSpells(Parser parser,
-                                        Map<Unit, TreeMap<Long, Position>> globalPositionMap,
-                                        Map<Unit, TreeMap<Long, Position>> globalStopPositionMap,
+                                        Map<Unit,  TreeMap<Long, List<Position>>> globalPositionMap,
+                                        Map<Unit,  TreeMap<Long, List<Position>>> globalStopPositionMap,
                                         Map<Unit, TreeMap<Long, Double>> globalCombatReachMap,
                                         Map<Unit, TreeMap<Long, Double>> globalBoundingRadiusMap
     ) {
@@ -317,12 +342,13 @@ public class AoeSpellAnalyser {
 
                 if(shouldDisplaySpell){
                     logger.warn("------------------------");
+                    logger.warn("Packet Number: "+ spellGoMessage.getId());
                     logger.warn("Spell at "+dateTimeFormatter.format(spellGoMessage.getTime()));
                     logger.warn("Spell location: " + location.toFormatedStringWoOrientation());
                     logger.warn("Spell id: " + spellGoMessage.getSpellId());
                     logger.warn("Spell range: " + spellRadius);
                     logger.warn("Spell effect implicit targets: " + Arrays.toString(spellImplicitTargets));
-                    logger.warn("Caster: " + spellGoMessage.getCasterUnit().toString());
+                    logger.warn("Caster: " + ((spellGoMessage.getCasterUnit() != null) ? spellGoMessage.getCasterUnit().toString() : null));
                     logger.warn("Caster combat reach: " + SniffExplorerUtils.getLatestKnownValue(spellGoMessage.getTimeTicks(), spellGoMessage.getCasterUnit(), globalCombatReachMap));
                     for(RecordToDisplay recordToDisplay : recordToDisplayList)
                         logger.warn(recordToDisplay.toString());
@@ -334,8 +360,8 @@ public class AoeSpellAnalyser {
 
     private static RecordToDisplay computeAndShowPosition(SpellGoMessage spellGoMessage,
                                                           Unit target,
-                                                          Map<Unit, TreeMap<Long, Position>> globalPositionMap,
-                                                          Map<Unit, TreeMap<Long, Position>> globalStopPositionMap,
+                                                          Map<Unit,  TreeMap<Long, List<Position>>> globalPositionMap,
+                                                          Map<Unit,  TreeMap<Long, List<Position>>> globalStopPositionMap,
                                                           Map<Unit, TreeMap<Long, Double>> globalCombatReachMap,
                                                           Map<Unit, TreeMap<Long, Double>> globalBoundingRadiusMap) {
         counter++;
@@ -348,7 +374,7 @@ public class AoeSpellAnalyser {
         else
             location=spellGoMessage.getSourceLocation();
 
-        Long timeTicks = spellGoMessage.getTimeTicks();
+        Long timeTicks = (long) spellGoMessage.getId();
         Integer spellId = spellGoMessage.getSpellId();
 
         // get the latest known position of the unit
@@ -363,15 +389,23 @@ public class AoeSpellAnalyser {
 //        Double casterBoundingRadius = SniffExplorerUtils.getLatestKnownValue(packetNumber, spellGoMessage.getCaster(), globalBoundingRadiusMap);
 
         double distance3D = GeometryUtils.getDistance3D(location, targetPosition);
+
 //        double distance2D = GeometryUtils.getDistance2D(location, targetPosition);
 //        logger.warn("distance 3D: "+distance3D+" distance 2D: "+distance2D+" Position: "+position.toFormatedString());
 //        logger.warn(unit.getGUID() + " " +position.toFormatedStringWoOrientation() + " " + distance3D);
 
         float spellRadius = wrapperDBC.highestSpellRadius(spellId);
-        boolean distanceCondition = distance3D >= spellRadius;
+        if(distance3D > spellRadius *2) // potentially too far away from that player to get updates on his position
+            return null;
+
+        boolean distanceCondition;
+        if(targetCombatReach != null && targetCombatReach > 0.1)
+            distanceCondition = distance3D > spellRadius + targetCombatReach;
+        else
+            distanceCondition = distance3D > spellRadius;
 
 //        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D >= spellRadius + casterCombatReach && distance3D <= spellRadius + targetCombatReach) {
-        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distanceCondition) {
+        if(spellRadius > 0 && (spellGoMessage.getCasterUnit() == null || !spellGoMessage.getCasterUnit().equals(target)) && distanceCondition) {
 //        if(spellRadius > 0 && !spellGoMessage.getCasterUnit().equals(target) && distance3D > spellRadius + targetCombatReach + ERROR_TOLERANCE + 2 && distance3D < 90)  {
             predicateDistanceSatisfiedCounter++;
             return new RecordToDisplay(target, targetPosition.toFormatedStringWoOrientation(), distance3D, targetCombatReach != null ? targetCombatReach : 0.0);

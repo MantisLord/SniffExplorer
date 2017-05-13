@@ -84,12 +84,15 @@ public class Position {
     @Override
     public boolean equals(Object o) { // compare without the orientation
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         Position position = (Position) o;
 
-        if (X != null ? !X.equals(position.X) : position.X != null) return false;
-        if (Y != null ? !Y.equals(position.Y) : position.Y != null) return false;
+        if (X != null ? !X.equals(position.X) : position.X != null)
+            return false;
+        if (Y != null ? !Y.equals(position.Y) : position.Y != null)
+            return false;
         return !(Z != null ? !Z.equals(position.Z) : position.Z != null);
 
     }
